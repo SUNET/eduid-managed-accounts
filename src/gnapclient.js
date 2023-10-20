@@ -1,3 +1,7 @@
+/**
+ * Inspired by https://github.com/interop-alliance/gnap-client-js
+ */
+
 'use strict'
 
 import axios from 'axios' // todo: consider 'apisauce' instead
