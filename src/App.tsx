@@ -55,11 +55,12 @@ async function App() {
 
 
   let jws_header = {
-    "typ": "gnap-binding+jwsd",
+    "typ": "gnap-binding+jws",
     "alg": alg,
     "kid": "eduid_managed_accounts_1",
     "htm": "POST",
-    "uri": "https://auth-test.sunet.se/transaction",
+    //"uri": "https://auth-test.sunet.se/transaction",
+    "uri": "https://api.eduid.docker/auth/transaction",
     "created": Date.now(),
 }
 
@@ -85,25 +86,69 @@ async function App() {
   // let res = DefaultService.transactionTransactionPost(gr, undefined, clientHeader)
   // console.log(res)
 
+  
+  // With fetch()
 
-  const url = "https://auth-test.sunet.se/transaction"
+  const url = "https://api.eduid.docker/auth/transaction"
   
   const headers = {
-    'detached-jws': clientHeader,
-    'Content-Type': "application/json",
-  
+    // "detached-jws": clientHeader,
+    "Content-Type": "application/jose+json",
+    // "Content-Type": "application/json",
+    //"Content-Type": "plain/text",
+    // "Sec-Fetch-Mode": "no-cors",
   }
 
-  const request: RequestInit = {
+  // encodeURIComponent(btoa(JSON.stringify({ ... })))
+
+
+  const request:any = {
       headers: headers,
-      body: JSON.stringify(gr),
+      body: jws,
+      //body: encodeURIComponent(btoa(JSON.stringify(gr))),
       method: "POST",
       // signal: controller.signal,
-      mode: "no-cors"
+      // mode: "no-cors",
   };
+  console.log("REQUEST ", request)
 
   let response = await fetch(url, request);
   console.log("RES ", response)
+
+  let responseJson:any = await response.json()
+  console.log("JSON ", responseJson)
+
+  let token = responseJson.access_token?.value
+  console.log("TOKEN ", token)
+
+
+  // SCIM
+
+  
+  const scimUrl = "https://api.eduid.docker/scim/Groups"
+
+  const scimHeaders = {
+    Authorization: "Bearer " + token,
+
+  }
+
+  const scimRequest:any = {
+    headers: scimHeaders,
+    method: "GET"
+  }
+
+  let scimResponse = await fetch(scimUrl, scimRequest);
+  console.log("SCIM ", scimResponse)
+
+
+
+
+
+
+
+
+
+
 
 
   return (
