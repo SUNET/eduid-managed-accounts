@@ -39,10 +39,6 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-this-alias": "off",
   },
-  globals: {
-    // global variables from init-config and public-path, to prevent having "no-undef" errors
-    __webpack_public_path__: true,
-  },
   settings: {
     react: {
       version: "detect",
