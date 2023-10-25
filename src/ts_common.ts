@@ -3,6 +3,7 @@ import file_jwks from "./jwks.json";
 import { AccessTokenFlags, AccessTokenRequest, GrantRequest } from "./services/openapi";
 
 export const url = "https://api.eduid.docker/auth/transaction";
+export const scimUrl = "https://api.eduid.docker/scim/Groups";
 
 const atr: AccessTokenRequest = {
   access: [{ "scope": "eduid.se", "type": "scim-api" }],
@@ -30,42 +31,23 @@ const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(gr)))
   .setProtectedHeader(jws_header)
   .sign(privateKey);
 
-console.log("JWS ", jws);
-
-// With fetch()
-
 const headers = {
   "Content-Type": "application/jose+json",
 };
 
-export const request: any = {
+export const jwsRequest: any = {
   headers: headers,
   body: jws,
   method: "POST",
 };
-console.log("REQUEST ", request);
 
-let response = await fetch(url, request);
-console.log("RES ", response);
-
-let responseJson: any = await response.json();
-console.log("JSON ", responseJson);
-
-let token = responseJson.access_token?.value;
-console.log("TOKEN ", token);
-
-// SCIM
-
-export const scimUrl = "https://api.eduid.docker/scim/Groups";
-
-const scimHeaders = {
-  Authorization: "Bearer " + token,
+export const scimHeaders = (token: string) => {
+  return {
+    Authorization: "Bearer " + token,
+  };
 };
 
 export const scimRequest: any = {
   headers: scimHeaders,
   method: "GET",
 };
-
-let scimResponse = await fetch(scimUrl, scimRequest);
-console.log("SCIM ", scimResponse);
