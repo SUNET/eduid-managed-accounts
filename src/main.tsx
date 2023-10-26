@@ -48,7 +48,19 @@ async function fetchTokenWithJws() {
   if (response instanceof Error) {
     throw response;
   }
-  return await response.json();
+  const response_json = await response.json()
+  console.log("jwsRequest", response_json)
+  
+  const redirect_url = response_json?.interact.redirect
+
+  window.location.href = redirect_url
+  
+  console.log("window.location.hash ", window.location.hash)
+  window.location.hash
+  
+  return "token";
+
+
 }
 
 async function fetchScimData(token: any) {
