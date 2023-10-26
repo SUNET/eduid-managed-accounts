@@ -1,10 +1,14 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { fetchTokenWithJws } from "./apis/fetchTokenWithJws";
 import { ReduxIntlProvider } from "./common/ReduxIntl.tsx";
-import ManagedAccountApp from "./components/ManagedAccountsApp.tsx";
+import { ManagedAccountApp } from "./components/ManagedAccountsApp.tsx";
 import "./index.css";
 import { managedAccountsStore } from "./init-app.ts";
-import { jwsRequest, scimHeaders, scimRequest, scimUrl, url } from "./ts_common.ts";
+import fetchJWSSlice from "./slices/fetchJWS.ts";
+import { scimHeaders, scimRequest, scimUrl } from "./ts_common.ts";
 
 function setTokenFromLocalStorage(token: any) {
   localStorage.setItem("JWSToken", token);
@@ -19,13 +23,22 @@ async function initApp() {
   let token = getTokenFromLocalStorage();
   if (!token) {
     try {
-      const response = await fetchTokenWithJws();
+      const response: any = await managedAccountsStore.dispatch(
+        fetchTokenWithJws()
+      );
+      if (fetchTokenWithJws.fulfilled.match(response)) {
+        managedAccountsStore.dispatch(fetchJWSSlice.actions.appLoaded());
+      }
       if (response?.access_token?.value) {
         token = response.access_token.value;
         setTokenFromLocalStorage(token);
-        const scimResponse = await fetchScimData(token);
-        if (scimResponse.status === 401) {
-          const refreshedToken = await fetchTokenWithJws();
+        const scimResponse = await managedAccountsStore.dispatch(
+          fetchScimData(token)
+        );
+        if (fetchScimData.rejected.match(scimResponse)) {
+          const refreshedToken = await managedAccountsStore.dispatch(
+            fetchTokenWithJws()
+          );
           if (refreshedToken) {
             setTokenFromLocalStorage(refreshedToken);
           } else {
@@ -43,34 +56,24 @@ async function initApp() {
   } else return await fetchScimData(token);
 }
 
-async function fetchTokenWithJws() {
-  const response = await fetch(url, jwsRequest);
-  if (response instanceof Error) {
-    throw response;
+export const fetchScimData = createAsyncThunk(
+  "auth/fetchScimData",
+  async (token: null | string, thunkAPI) => {
+    try {
+      if (token) {
+        const headers = scimHeaders(token);
+        const scimResponse = await fetch(scimUrl, { ...scimRequest, headers });
+        if (scimResponse.ok) {
+          return await scimResponse.json();
+        } else {
+          throw new Error("Failed to fetch SCIM data");
+        }
+      }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
   }
-  const response_json = await response.json()
-  console.log("jwsRequest", response_json)
-  
-  const redirect_url = response_json?.interact.redirect
-
-  window.location.href = redirect_url
-  
-  console.log("window.location.hash ", window.location.hash)
-  window.location.hash
-  
-  return "token";
-
-
-}
-
-async function fetchScimData(token: any) {
-  const headers = scimHeaders(token);
-  const scimResponse = await fetch(scimUrl, { ...scimRequest, headers });
-  if (scimResponse instanceof Error) {
-    throw scimResponse;
-  }
-  return await scimResponse.json();
-}
+);
 
 const initDomTarget = document.getElementById("root");
 
@@ -79,7 +82,9 @@ if (initDomTarget) {
   root.render(
     <React.StrictMode>
       <ReduxIntlProvider store={managedAccountsStore}>
-        <ManagedAccountApp />
+        <BrowserRouter>
+          <ManagedAccountApp />
+        </BrowserRouter>
       </ReduxIntlProvider>
     </React.StrictMode>
   );
