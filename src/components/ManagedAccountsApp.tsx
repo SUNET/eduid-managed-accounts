@@ -1,12 +1,16 @@
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import "../App.css";
+import { Hash } from "./Hash";
+import { Main } from "./Main";
 
-function ManagedAccountApp(): JSX.Element  {
-
+export function ManagedAccountApp(): JSX.Element {
   return (
-    <>
-     <p>Hello, Managed Account App</p>
-    </>
+    <React.StrictMode>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/hash" element={<Hash />} />
+      </Routes>
+    </React.StrictMode>
   );
 }
-
-export default ManagedAccountApp;
