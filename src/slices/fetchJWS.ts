@@ -6,8 +6,10 @@ interface FetchJWSState {
   start_session: {
     interact: {
       redirect?: string;
+      finish?: string;
     };
   };
+  nonce: string;
 }
 
 export const initialState: FetchJWSState = {
@@ -15,8 +17,10 @@ export const initialState: FetchJWSState = {
   start_session: {
     interact: {
       redirect: "",
+      finish: "",
     },
   },
+  nonce: "",
 };
 
 export const fetchJWSSlice = createSlice({
@@ -29,7 +33,8 @@ export const fetchJWSSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchTokenWithJws.fulfilled, (state, action) => {
-      state.start_session = action.payload;
+      state.start_session = action.payload.response_json;
+      state.nonce = action.payload.nonce;
     });
   },
 });

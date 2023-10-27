@@ -3,12 +3,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { fetchTokenWithJws } from "./apis/fetchTokenWithJws";
+import { scimHeaders, scimRequest, scimUrl } from "./apis/scim.ts";
 import { ReduxIntlProvider } from "./common/ReduxIntl.tsx";
 import { ManagedAccountApp } from "./components/ManagedAccountsApp.tsx";
 import "./index.css";
 import { managedAccountsStore } from "./init-app.ts";
 import fetchJWSSlice from "./slices/fetchJWS.ts";
-import { scimHeaders, scimRequest, scimUrl } from "./ts_common.ts";
 
 function setTokenFromLocalStorage(token: any) {
   localStorage.setItem("JWSToken", token);
