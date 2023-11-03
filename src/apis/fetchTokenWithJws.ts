@@ -1,5 +1,9 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CompactSign, exportJWK, generateKeyPair } from "jose";
+import {
+  CompactSign,
+  GenerateKeyPairOptions,
+  exportJWK,
+  generateKeyPair,
+} from "jose";
 import { generateNonce } from "../common/CryptoUtils";
 import {
   AccessTokenFlags,
@@ -20,11 +24,21 @@ const atr: AccessTokenRequest = {
 };
 
 const alg = "ES256";
-const { publicKey, privateKey } = await generateKeyPair(alg);
-console.log("PUBLIC KEY ", publicKey);
-console.log("PRIV KEY ", privateKey);
+const gpo: GenerateKeyPairOptions = {
+  crv: "25519",
+  extractable: true,
+};
+const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
+console.log("WE SAVE KEYS IN LOCALSTORAGE");
+
+const privateJwk = await exportJWK(privateKey);
+localStorage.setItem("privateKey", JSON.stringify(privateJwk));
+
+console.log("[[PUBLIC KEY]", publicKey);
+console.log("[[PRIV KEY]", privateKey);
 
 const publicJwk = await exportJWK(publicKey);
+localStorage.setItem("publicKey", JSON.stringify(publicJwk));
 console.log("publicJwk ", publicJwk);
 
 //const ecjwk:ECJWK = {...publicJwk, kid: "random_generated_id"}
@@ -36,7 +50,7 @@ const ecjwk: ECJWK = {
   y: publicJwk.y,
 };
 
-const nonce = generateNonce(24);
+export const nonce = generateNonce(24);
 
 const gr: GrantRequest = {
   access_token: atr,
@@ -68,25 +82,25 @@ const headers = {
   "Content-Type": "application/jose+json",
 };
 
-const jwsRequest: any = {
+export const jwsRequest: any = {
   headers: headers,
   body: jws,
   method: "POST",
 };
 
-export const fetchTokenWithJws = createAsyncThunk(
-  "auth/fetchTokenWithJws",
-  async (_, thunkAPI) => {
-    try {
-      const response = await fetch(url, jwsRequest);
-      if (response.ok) {
-        const response_json = await response.json();
-        return { response_json, nonce };
-      } else {
-        throw new Error("Failed to fetch token");
-      }
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
+// export const fetchTokenWithJws = createAsyncThunk(
+//   "auth/fetchTokenWithJws",
+//   async (_, thunkAPI) => {
+//     try {
+//       const response = await fetch(url, jwsRequest);
+//       if (response.ok) {
+//         const response_json = await response.json();
+//         return { response_json, nonce };
+//       } else {
+//         throw new Error("Failed to fetch token");
+//       }
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error);
+//     }
+//   }
+// );

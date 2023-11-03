@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchTokenWithJws } from "../apis/fetchTokenWithJws";
 
 interface FetchJWSState {
   is_loaded: boolean;
@@ -31,12 +30,12 @@ export const fetchJWSSlice = createSlice({
       state.is_loaded = true;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchTokenWithJws.fulfilled, (state, action) => {
-      state.start_session = action.payload.response_json;
-      state.nonce = action.payload.nonce;
-    });
-  },
+  // extraReducers: (builder) => {
+  //   builder.addCase(fetchTokenWithJws.fulfilled, (state, action) => {
+  //     state.start_session = action.payload.response_json;
+  //     state.nonce = action.payload.nonce;
+  //   });
+  // },
 });
 
 export const fetchJWSReducer = fetchJWSSlice.reducer;
