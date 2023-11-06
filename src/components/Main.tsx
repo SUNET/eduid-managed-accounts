@@ -1,4 +1,9 @@
-import { CompactSign, GenerateKeyPairOptions, exportJWK, generateKeyPair } from "jose";
+import {
+  CompactSign,
+  GenerateKeyPairOptions,
+  exportJWK,
+  generateKeyPair,
+} from "jose";
 import { useEffect } from "react";
 import { generateNonce } from "../common/CryptoUtils";
 import {
@@ -22,7 +27,11 @@ export function Main() {
       try {
         const tokenObject = JSON.parse(token);
 
-        if (tokenObject && tokenObject.interact && tokenObject.interact.redirect) {
+        if (
+          tokenObject &&
+          tokenObject.interact &&
+          tokenObject.interact.redirect
+        ) {
           window.location.href = tokenObject.interact.redirect;
         }
       } catch (error) {
@@ -38,6 +47,7 @@ export function Main() {
   }, []);
 
   async function initLocalStorage() {
+    localStorage.clear();
     const token = localStorage.getItem("JWSToken");
     if (token === null || Object.keys(token).length === 0) {
       try {
@@ -54,11 +64,11 @@ export function Main() {
         const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
 
         const privateJwk = await exportJWK(privateKey);
-        localStorage.setItem("[privateKey", JSON.stringify(privateJwk));
-        console.log("[privateKey", JSON.stringify(privateJwk));
+        localStorage.setItem("privateKey", JSON.stringify(privateJwk));
+        console.log("privateKey", JSON.stringify(privateJwk));
         const publicJwk = await exportJWK(publicKey);
-        localStorage.setItem("[publicKey", JSON.stringify(publicJwk));
-        console.log("[publicKey", JSON.stringify(publicJwk));
+        localStorage.setItem("publicKey", JSON.stringify(publicJwk));
+        console.log("publicKey", JSON.stringify(publicJwk));
 
         const ecjwk: ECJWK = {
           kid: "random_generated_id",
@@ -92,7 +102,9 @@ export function Main() {
           created: Date.now(),
         };
 
-        const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(gr)))
+        const jws = await new CompactSign(
+          new TextEncoder().encode(JSON.stringify(gr))
+        )
           .setProtectedHeader(jws_header)
           .sign(privateKey);
 
@@ -112,7 +124,9 @@ export function Main() {
           let now = new Date();
           const expires_in = response_json.interact.expires_in;
           const expires_in_milliseconds = expires_in * 1000;
-          const JWSTokenExpires = new Date(now.getTime() + expires_in_milliseconds).getTime();
+          const JWSTokenExpires = new Date(
+            now.getTime() + expires_in_milliseconds
+          ).getTime();
 
           localStorage.setItem("JWSToken", JSON.stringify(response_json));
           localStorage.setItem("Nonce", nonce);
