@@ -14,6 +14,22 @@ export function Main() {
 
   // for debugging/development
   function redirect() {
+    const token = localStorage.getItem("JWSToken");
+    if (token) {
+      try {
+        const tokenObject = JSON.parse(token);
+
+        if (tokenObject && tokenObject.interact && tokenObject.interact.redirect) {
+          // window.location.href = tokenObject.interact.redirect;
+          console.log("tokenObject", tokenObject.interact.redirect);
+        }
+      } catch (error) {
+        console.error("Error parsing token:", error);
+      }
+    } else {
+      console.error("Token is null or undefined");
+    }
+
     // if (is_loaded && start_session?.interact.redirect) {
     //   window.location.href = start_session?.interact.redirect;
     // } else {
@@ -26,37 +42,23 @@ export function Main() {
   }, []);
 
   async function initLocalStorage() {
-    // let JWSToken = getTokenFromLocalStorage();
-    // save JWSToken and Nonce in LocalStorage
     const token = localStorage.getItem("JWSToken");
-    if (!token) {
+    if (token === null || Object.keys(token).length === 0) {
       try {
         const response = await fetch(url, jwsRequest);
-        console.log("response", response);
-        // const response: any = await dispatch(fetchTokenWithJws());
-        // console.log("RESPONSE: ", response);
-        // if (fetchTokenWithJws.fulfilled.match(response)) {
-        //   dispatch(fetchJWSSlice.actions.appLoaded());
-        // }
-        console.log("Save LocalStorage");
-        // save in LocalStorage
-        const response_json = response.json();
-        console.log("[response_json]", response_json);
-        console.log(
-          "JSON.stringify(response_json)",
-          JSON.stringify(response_json)
-        );
-        // JWSTokenExpire
-        // let now = new Date();
-        // const expires_in = response_json.interact.expires_in; // seconds
-        // const expires_in_milliseconds = expires_in * 1000; // 10 seconds = 10000 milliseconds
-        // const JWSTokenExpires = new Date(
-        //   now.getTime() + expires_in_milliseconds
-        // ).getTime();
+        const response_json = await response.json();
+        if (response_json && Object.keys(response_json).length > 0) {
+          let now = new Date();
+          const expires_in = response_json.interact.expires_in;
+          const expires_in_milliseconds = expires_in * 1000;
+          const JWSTokenExpires = new Date(now.getTime() + expires_in_milliseconds).getTime();
 
-        localStorage.setItem("JWSToken", JSON.stringify(response_json));
-        localStorage.setItem("Nonce", nonce);
-        // localStorage.setItem("JWSTokenExpires", JWSTokenExpires.toString());
+          localStorage.setItem("JWSToken", JSON.stringify(response_json));
+          localStorage.setItem("Nonce", nonce);
+          localStorage.setItem("JWSTokenExpires", JWSTokenExpires.toString());
+        } else {
+          console.error("response_json is empty or null");
+        }
       } catch (error) {
         console.error("error:", error);
       }
