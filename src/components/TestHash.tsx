@@ -5,16 +5,10 @@ import { ContinueRequest } from "services/openapi";
 // https://stackoverflow.com/questions/59777670/how-can-i-hash-a-string-with-sha256-in-js
 const getSHA256Hash = async (input: string) => {
   // const textAsBuffer = new TextEncoder().encode(input);
-  const hashBuffer = await window.crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(input)
-  );
+  const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const base64String = btoa(String.fromCharCode(...hashArray));
-  const urlSafeBase64 = base64String
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/, "");
+  const urlSafeBase64 = base64String.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   console.log("urlSafeBase64", urlSafeBase64);
   // const hash = hashArray
   //   .map((item) => item.toString(16).padStart(2, "0"))
@@ -22,7 +16,7 @@ const getSHA256Hash = async (input: string) => {
   // return hash;
 };
 
-export async function TestHash() {
+export default async function TestHash() {
   console.log("COMPONENT: TestHash");
   // Get "finish" and "nonce" from LocalStorage
   const value = localStorage.getItem("JWSToken") || "";
@@ -131,9 +125,7 @@ export async function TestHash() {
     ath: "ath-test",
   };
 
-  const jws = await new CompactSign(
-    new TextEncoder().encode(JSON.stringify(continue_request))
-  )
+  const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(continue_request)))
     .setProtectedHeader(jws_header)
     .sign(privateKey);
 
