@@ -1,27 +1,29 @@
+import { CompactSign, GenerateKeyPairOptions, exportJWK, generateKeyPair } from "jose";
 import { useEffect } from "react";
-import { jwsRequest, nonce, url } from "../apis/fetchTokenWithJws";
-import { useAppDispatch } from "../hooks";
+import { generateNonce } from "../common/CryptoUtils";
+import {
+  AccessTokenFlags,
+  AccessTokenRequest,
+  ECJWK,
+  FinishInteractionMethod,
+  GrantRequest,
+  KeyType,
+  ProofMethod,
+  StartInteractionMethod,
+} from "../services/openapi";
+
+const url = "https://api.eduid.docker/auth/transaction";
 
 export function Main() {
-  console.log("COMPONENT: Main");
-
-  // -
-  // const is_loaded = useAppSelector((state) => state.fetchJWSToken.is_loaded);
-  // const start_session = useAppSelector(
-  //   (state) => state.fetchJWSToken.start_session
-  // );
-  const dispatch = useAppDispatch();
-
   // for debugging/development
-  function redirect() {
+  async function redirect() {
     const token = localStorage.getItem("JWSToken");
     if (token) {
       try {
         const tokenObject = JSON.parse(token);
 
         if (tokenObject && tokenObject.interact && tokenObject.interact.redirect) {
-          // window.location.href = tokenObject.interact.redirect;
-          console.log("tokenObject", tokenObject.interact.redirect);
+          window.location.href = tokenObject.interact.redirect;
         }
       } catch (error) {
         console.error("Error parsing token:", error);
@@ -29,14 +31,8 @@ export function Main() {
     } else {
       console.error("Token is null or undefined");
     }
-
-    // if (is_loaded && start_session?.interact.redirect) {
-    //   window.location.href = start_session?.interact.redirect;
-    // } else {
-    //   console.log("fetchJWSToken not has received an answer yet");
-    // }
   }
-  console.log("hi from Main!");
+
   useEffect(() => {
     initLocalStorage();
   }, []);
@@ -45,6 +41,71 @@ export function Main() {
     const token = localStorage.getItem("JWSToken");
     if (token === null || Object.keys(token).length === 0) {
       try {
+        const atr: AccessTokenRequest = {
+          access: [{ scope: "eduid.se", type: "scim-api" }],
+          flags: [AccessTokenFlags.BEARER],
+        };
+
+        const alg = "ES256";
+        const gpo: GenerateKeyPairOptions = {
+          crv: "25519",
+          extractable: true,
+        };
+        const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
+
+        const privateJwk = await exportJWK(privateKey);
+        localStorage.setItem("[privateKey", JSON.stringify(privateJwk));
+        console.log("[privateKey", JSON.stringify(privateJwk));
+        const publicJwk = await exportJWK(publicKey);
+        localStorage.setItem("[publicKey", JSON.stringify(publicJwk));
+        console.log("[publicKey", JSON.stringify(publicJwk));
+
+        const ecjwk: ECJWK = {
+          kid: "random_generated_id",
+          kty: publicJwk.kty as KeyType,
+          crv: publicJwk.crv,
+          x: publicJwk.x,
+          y: publicJwk.y,
+        };
+
+        const nonce = generateNonce(24);
+
+        const gr: GrantRequest = {
+          access_token: atr,
+          client: { key: { proof: { method: ProofMethod.JWS }, jwk: ecjwk } },
+          interact: {
+            start: [StartInteractionMethod.REDIRECT],
+            finish: {
+              method: FinishInteractionMethod.REDIRECT,
+              uri: "http://localhost:5173/hash", // redirect url, TO BE FIXED
+              nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
+            },
+          },
+        };
+
+        let jws_header = {
+          typ: "gnap-binding+jws",
+          alg: alg,
+          kid: "random_generated_id", // fix, coupled with publicKey, privateKey
+          htm: "POST",
+          uri: url,
+          created: Date.now(),
+        };
+
+        const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(gr)))
+          .setProtectedHeader(jws_header)
+          .sign(privateKey);
+
+        const headers = {
+          "Content-Type": "application/jose+json",
+        };
+
+        const jwsRequest = {
+          headers: headers,
+          body: jws,
+          method: "POST",
+        };
+
         const response = await fetch(url, jwsRequest);
         const response_json = await response.json();
         if (response_json && Object.keys(response_json).length > 0) {
@@ -71,10 +132,6 @@ export function Main() {
     <>
       <h1>Press the button to redirect</h1>
       {<button onClick={redirect}>Redirect</button>}
-      {/* {is_loaded && <button onClick={redirect}>Redirect</button>} */}
     </>
   );
 }
-// function getTokenFromLocalStorage() {
-//   throw new Error("Function not implemented.");
-// }
