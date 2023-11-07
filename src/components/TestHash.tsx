@@ -1,4 +1,5 @@
 import { CompactSign, importJWK } from "jose";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { ContinueRequest } from "services/openapi";
 
@@ -16,12 +17,7 @@ const getSHA256Hash = async (input: string) => {
   return urlSafeBase64;
 };
 
-export default async function TestHash() {
-  /**
-   * 1 - Test hash in url is the same than hash we calculate
-   * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-calculating-the-interaction
-   */
-  // Get "finish" and "nonce" from LocalStorage
+export default function TestHash() {
   const value = localStorage.getItem("JWSToken") || "";
   const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
   const finish = JWSToken.interact.finish;
@@ -32,11 +28,25 @@ export default async function TestHash() {
   const params = new URLSearchParams(location.search);
   const hash_url = params.get("hash");
   const interactRef = params.get("interact_ref") || undefined;
+  /**
+   * 1 - Test hash in url is the same than hash we calculate
+   * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-calculating-the-interaction
+   */
+  // Get "finish" and "nonce" from LocalStorage
 
-  const url = "https://api.eduid.docker/auth/transaction";
-  const hash_base_string = `${nonce}\n${finish}\n${interactRef}\n${url}`;
-
-  const hash_calculated = await getSHA256Hash(hash_base_string);
+  useEffect(() => {
+    async function testHash() {
+      try {
+        const url = "https://api.eduid.docker/auth/transaction";
+        const hash_base_string = `${nonce}\n${finish}\n${interactRef}\n${url}`;
+        const hash_calculated = await getSHA256Hash(hash_base_string);
+        if (hash_calculated === hash_url) {
+          await continueRequest();
+        }
+      } catch {}
+    }
+    testHash();
+  }, []);
 
   const continueRequest = async () => {
     const continue_url = JWSToken.continue.uri;
@@ -77,16 +87,7 @@ export default async function TestHash() {
 
     const response = await fetch(continue_url, config);
     const resp_json = await response.json();
-    console.log("RESPONSE CONTINUE: ", response);
-    console.log("RESPONSE CONTINUE JSON: ", resp_json);
   };
-
-  if (hash_calculated === hash_url) {
-    console.log("hash_calculated === hash_url TRUE");
-    continueRequest();
-  } else {
-    // Send an error
-  }
 
   /**
    * 2 -Continue Request Flow
@@ -106,7 +107,6 @@ export default async function TestHash() {
 
   return (
     <>
-      <h1>{hash_base_string}</h1>
       <br></br>
       <h1>Press the button to redirect</h1>
       {/* {is_loaded && <button onClick={redirect}>Redirect</button>} */}
