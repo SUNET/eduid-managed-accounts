@@ -1,6 +1,6 @@
 import { CompactSign, importJWK } from "jose";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { ContinueRequest } from "services/openapi";
 
 const getSHA256Hash = async (input: string) => {
@@ -18,8 +18,12 @@ const getSHA256Hash = async (input: string) => {
 };
 
 export default function TestHash() {
+  const [accessToken, setAccessToken] = useState("");
+
+  // Get "JWSToken" from LocalStorage
   const value = localStorage.getItem("JWSToken") || "";
   const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
+  // Get "finish" and "nonce" from LocalStorage
   const finish = JWSToken.interact.finish;
   const nonce = localStorage.getItem("Nonce");
 
@@ -28,12 +32,11 @@ export default function TestHash() {
   const params = new URLSearchParams(location.search);
   const hash_url = params.get("hash");
   const interactRef = params.get("interact_ref") || undefined;
+
   /**
    * 1 - Test hash in url is the same than hash we calculate
    * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-calculating-the-interaction
    */
-  // Get "finish" and "nonce" from LocalStorage
-
   useEffect(() => {
     async function testHash() {
       try {
@@ -48,6 +51,11 @@ export default function TestHash() {
     testHash();
   }, []);
 
+  /**
+   * 2 -Continue Request Flow
+   * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-continuing-a-grant-request
+   *
+   * */
   const continueRequest = async () => {
     const continue_url = JWSToken.continue.uri;
     const continue_access_token = JWSToken.continue.access_token.value;
@@ -87,29 +95,20 @@ export default function TestHash() {
 
     const response = await fetch(continue_url, config);
     const resp_json = await response.json();
+
+    if (response.status === 200 && resp_json?.access_token?.value) {
+      // TODO: localStorage.clear();
+      setAccessToken(resp_json.access_token.value);
+    }
   };
-
-  /**
-   * 2 -Continue Request Flow
-   * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-continuing-a-grant-request
-   *
-   * */
-
-  // for debugging/development
-  function redirect() {
-    window.location.href = window.location.href;
-    // if (is_loaded && start_session?.interact.redirect) {
-    //   window.location.href = start_session?.interact.redirect;
-    // } else {
-    //   console.log("fetchJWSToken not has received an answer yet");
-    // }
-  }
 
   return (
     <>
       <br></br>
       <h1>Press the button to redirect</h1>
-      {/* {is_loaded && <button onClick={redirect}>Redirect</button>} */}
+      <Link to="/scim" state={{ accessToken: accessToken }}>
+        Next Step
+      </Link>
     </>
   );
 }

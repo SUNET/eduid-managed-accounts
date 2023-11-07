@@ -2,19 +2,17 @@ import {
   CompactSign,
   GenerateKeyPairOptions,
   exportJWK,
-  generateKeyPair,
+  importJWK,
 } from "jose";
 import { useEffect } from "react";
 import { generateNonce } from "../common/CryptoUtils";
+import jwk_file from "../jwk.json";
 import {
   AccessTokenFlags,
   AccessTokenRequest,
   ECJWK,
-  FinishInteractionMethod,
   GrantRequest,
   KeyType,
-  ProofMethod,
-  StartInteractionMethod,
 } from "../services/openapi";
 
 const url = "https://api.eduid.docker/auth/transaction";
@@ -61,7 +59,24 @@ export function Main() {
           crv: "25519",
           extractable: true,
         };
-        const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
+        // const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
+
+        // use key i JWK
+        const jwk_private = { ...jwk_file, ext: true };
+        console.log("JWK FILE + ext:", jwk_private);
+        // const jwk_private = {
+        //   kty: "EC",
+        //   kid: "eduid_managed_accounts_1",
+        //   crv: "P-256",
+        //   x: "dCxVL9thTTc-ZtiL_CrPpMp1Vqo2p_gUVqiVBRwqjq8",
+        //   y: "P3dAvr2IYy7DQEf4vA5bPN8gCg41M1oA5993vHr9peE",
+        //   d: "i9hH9BeErxtI40b0_1P4XR6CXra4itKvg8ccLrxXrhQ",
+        //   ext: true,
+        // };
+
+        const privateKey = await importJWK(jwk_private, alg);
+        const publicKey = await importJWK(jwk_private, alg);
+        console.log("JWK PUBLIC/PRIVATE KEY", JSON.stringify(privateKey));
 
         const privateJwk = await exportJWK(privateKey);
         localStorage.setItem("privateKey", JSON.stringify(privateJwk));
@@ -71,7 +86,7 @@ export function Main() {
         console.log("publicKey", JSON.stringify(publicJwk));
 
         const ecjwk: ECJWK = {
-          kid: "random_generated_id",
+          kid: "eduid_managed_accounts_1",
           kty: publicJwk.kty as KeyType,
           crv: publicJwk.crv,
           x: publicJwk.x,
@@ -82,21 +97,22 @@ export function Main() {
 
         const gr: GrantRequest = {
           access_token: atr,
-          client: { key: { proof: { method: ProofMethod.JWS }, jwk: ecjwk } },
-          interact: {
-            start: [StartInteractionMethod.REDIRECT],
-            finish: {
-              method: FinishInteractionMethod.REDIRECT,
-              uri: "http://localhost:5173/hash", // redirect url, TO BE FIXED
-              nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
-            },
-          },
+          client: { key: "eduid_managed_accounts_1" },
+          // client: { key: { proof: { method: ProofMethod.JWS }, jwk: ecjwk } },
+          // interact: {
+          //   start: [StartInteractionMethod.REDIRECT],
+          //   finish: {
+          //     method: FinishInteractionMethod.REDIRECT,
+          //     uri: "http://localhost:5173/hash", // redirect url, TO BE FIXED
+          //     nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
+          //   },
+          // },
         };
 
         let jws_header = {
           typ: "gnap-binding+jws",
           alg: alg,
-          kid: "random_generated_id", // fix, coupled with publicKey, privateKey
+          kid: "eduid_managed_accounts_1", // fix, coupled with publicKey, privateKey
           htm: "POST",
           uri: url,
           created: Date.now(),
