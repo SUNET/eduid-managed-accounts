@@ -31,7 +31,6 @@ export default async function TestHash() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const hash_url = params.get("hash");
-  const hash_url_without_padding = hash_url?.replace(/=+$/, "");
   const interactRef = params.get("interact_ref") || undefined;
 
   const url = "https://api.eduid.docker/auth/transaction";
@@ -82,8 +81,8 @@ export default async function TestHash() {
     console.log("RESPONSE CONTINUE JSON: ", resp_json);
   };
 
-  if (hash_calculated === hash_url_without_padding) {
-    console.log("hash_calculated === hash_url_without_padding TRUE");
+  if (hash_calculated === hash_url) {
+    console.log("hash_calculated === hash_url TRUE");
     continueRequest();
   } else {
     // Send an error
