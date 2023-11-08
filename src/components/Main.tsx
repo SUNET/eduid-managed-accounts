@@ -118,6 +118,8 @@ export function Main() {
         };
 
         const response = await fetch(url, jwsRequest);
+        console.log("response:", response);
+
         const response_json = await response.json();
         if (response_json && Object.keys(response_json).length > 0) {
           let now = new Date();
