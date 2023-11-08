@@ -4,16 +4,10 @@ import { Link, useLocation } from "react-router-dom";
 import { ContinueRequest } from "services/openapi";
 
 const getSHA256Hash = async (input: string) => {
-  const hashBuffer = await window.crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(input)
-  );
+  const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const base64String = btoa(String.fromCharCode(...hashArray));
-  const urlSafeBase64 = base64String
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/, "");
+  const urlSafeBase64 = base64String.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   return urlSafeBase64;
 };
 
@@ -78,9 +72,7 @@ export default function TestHash() {
       ath: access_token_calculated,
     };
 
-    const jws = await new CompactSign(
-      new TextEncoder().encode(JSON.stringify(continue_request))
-    )
+    const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(continue_request)))
       .setProtectedHeader(jws_header)
       .sign(privateKey);
 
