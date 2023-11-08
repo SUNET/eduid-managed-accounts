@@ -7,7 +7,7 @@ const Footer = (): JSX.Element => {
         <a href="https://www.sunet.se/" aria-label="Sunet.se" title="Sunet.se">
           <div className="sunet-logo" />
         </a>
-        <span>&copy; copyright</span>
+        <span>&copy; 2013-2023</span>
       </div>
 
       <nav>

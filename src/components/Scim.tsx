@@ -176,8 +176,11 @@ export default function Scim() {
           </>
         )}
         <form onSubmit={(e) => getGroupsSearch(e)}>
-          <input name="filter_string" />
-          <button type="submit">Get Groups Search</button>
+          <input className="form-control" name="filter_string" />
+
+          <button className="btn btn-primary" type="submit">
+            Get Groups Search
+          </button>
         </form>
         {/* <form onSubmit={(e) => getGroupDetails(e)}>
         <input name="group_id" />
@@ -197,7 +200,9 @@ export default function Scim() {
             <input name="given_name" />
           </div>
 
-          <button type="submit">create user</button>
+          <button className="btn btn-primary" type="submit">
+            create user
+          </button>
         </form>
       </div>
     </>

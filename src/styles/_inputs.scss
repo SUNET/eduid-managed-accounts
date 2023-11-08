@@ -80,6 +80,23 @@ input[type="radio"]:checked.error {
   flex: 1;
 }
 
+input {
+  display: flex;
+  background-color: #fff;
+  font-family: "Inter-Regular", "Arial", "Helvetica", "sans-serif";
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #161616;
+  box-shadow: none;
+  border-radius: 0;
+  border: none;
+  border-bottom: solid 2px #161616;
+  width: 100%;
+  padding: 1.25rem 0.5rem;
+  height: 3rem;
+  margin-bottom: 2rem;
+}
+
 .form-control::placeholder,
 input::placeholder {
   font-family: $inter-regular;

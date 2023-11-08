@@ -25,6 +25,7 @@ export function ManagedAccountApp(): JSX.Element {
             <Route path="/" element={<Main />} />
             <Route path="/hash" element={<TestHash />} />
             <Route path="/scim" element={<Scim />} />
+            {/* <Route path="/app" element={<App />} /> */}
           </Routes>
         </section>
       </main>

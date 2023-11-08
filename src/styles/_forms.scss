@@ -7,6 +7,15 @@ form {
   margin-top: 1.25rem;
 }
 
+label {
+  display: flex;
+  font-size: 1rem;
+  font-family: "Inter-SemiBold", "Arial", "Helvetica", "sans-serif" !important;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  margin: 0 5px 5px 0;
+}
+
 .element-pair,
 .button-pair {
   display: flex;
