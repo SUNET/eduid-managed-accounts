@@ -15,7 +15,7 @@ export default function TestHash() {
   const [accessToken, setAccessToken] = useState("");
 
   // Get "JWSToken" from LocalStorage
-  const value = localStorage.getItem("JWSToken") || "";
+  const value = localStorage.getItem("JWSToken") ?? "";
   const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
   // Get "finish" and "nonce" from LocalStorage
   const finish = JWSToken.interact.finish;
@@ -25,7 +25,7 @@ export default function TestHash() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const hash_url = params.get("hash");
-  const interactRef = params.get("interact_ref") || undefined;
+  const interactRef = params.get("interact_ref") ?? undefined;
 
   /**
    * 1 - Test hash in url is the same than hash we calculate
@@ -59,7 +59,7 @@ export default function TestHash() {
       interact_ref: interactRef,
     };
     const alg = "ES256";
-    const privateJwk = JSON.parse(localStorage.getItem("privateKey") || "");
+    const privateJwk = JSON.parse(localStorage.getItem("privateKey") ?? "");
     const privateKey = await importJWK(privateJwk, alg);
 
     let jws_header = {
