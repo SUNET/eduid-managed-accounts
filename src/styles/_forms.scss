@@ -1,0 +1,133 @@
+/* Form */
+
+// top margin here assumes that text above has bottom margin of 1rem
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.25rem;
+}
+
+.element-pair,
+.button-pair {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.element-pair {
+  margin-top: 1rem;
+  align-items: unset;
+}
+
+// single input and button on a row
+.single-input-form {
+  flex-direction: row;
+
+  button {
+    margin: auto 0 0.5rem 1rem;
+  }
+
+  @media (max-width: $bp-sm) {
+    flex-direction: column;
+
+    button {
+      margin: 0;
+    }
+  }
+}
+
+#reset-password-email-form {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transparent-input-error {
+  background-color: transparent;
+  color: transparent;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+  border-bottom: none;
+  color: $txt-gray;
+}
+
+input.form-control,
+input.form-control.is-valid,
+input.form-control.is-invalid,
+input.form-control:focus,
+input.form-control.is-valid:focus,
+input.form-control.is-invalid:focus {
+  border-color: initial;
+  background-image: none;
+}
+
+input.form-control:focus,
+input.form-control.is-valid:focus,
+input.form-control.is-invalid:focus {
+  box-shadow: 0 0 0 0.2rem $border-gray;
+}
+
+// Possible not used due to react-select
+select {
+  padding: 5px;
+  border-radius: 3px;
+  width: 100%;
+  background-color: $white;
+  height: 40px;
+  margin-top: 3px;
+}
+
+fieldset {
+  width: 100%;
+  position: relative;
+
+  border: none;
+  > div {
+    margin-bottom: 1rem;
+  }
+
+  &:not(:empty) {
+    margin-bottom: 1.25em;
+  }
+
+  legend {
+    @extend label !optional;
+  }
+
+  legend.required::after {
+    content: " *";
+    color: $txt-orange;
+  }
+}
+
+/* smallish grayish additional info underneath corresponding form elements */
+.help-text {
+  margin: 0.5rem 0 0;
+  line-height: 1.2;
+  color: $txt-gray;
+  font-size: 14px;
+
+  .btn + & {
+    @media (max-width: $bp-md) {
+      text-align: center;
+    }
+
+    @media (max-width: $bp-xs) {
+      margin: 0 0 0.75rem;
+    }
+  }
+}
+
+@media (max-width: $bp-sm) {
+  #reset-password-email-form {
+    flex-direction: column;
+    align-items: unset;
+
+    button {
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+}
