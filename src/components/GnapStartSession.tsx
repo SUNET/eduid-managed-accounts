@@ -15,6 +15,8 @@ import {
 import { generateNonce } from "../common/CryptoUtils";
 import jwk_file from "../jwk.json";
 
+// TODO: Gnap TypeScript Client could be used here
+
 const url = "https://api.eduid.docker/auth/transaction";
 
 export function GnapStartSession() {

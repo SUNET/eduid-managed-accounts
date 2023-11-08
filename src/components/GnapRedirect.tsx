@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getSHA256Hash } from "../common/CryptoUtils";
 
+// TODO: Gnap TypeScript Client could be used here
+
 export default function GnapRedirect() {
   const [accessToken, setAccessToken] = useState("");
 
