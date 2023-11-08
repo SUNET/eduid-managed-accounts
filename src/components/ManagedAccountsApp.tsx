@@ -10,10 +10,10 @@ import "../styles/_inputs.scss";
 import "../styles/_reset.scss";
 import "../styles/_typography.scss";
 import Footer from "./Footer";
+import GnapRedirect from "./GnapRedirect";
+import { GnapStartSession } from "./GnapStartSession";
 import { Header } from "./Header";
-import { Main } from "./Main";
 import Scim from "./Scim";
-import TestHash from "./TestHash";
 
 export function ManagedAccountApp(): JSX.Element {
   return (
@@ -22,8 +22,8 @@ export function ManagedAccountApp(): JSX.Element {
       <main id="panel" className="panel">
         <section id="content" className="horizontal-content-margin content">
           <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/hash" element={<TestHash />} />
+            <Route path="/" element={<GnapStartSession />} />
+            <Route path="/redirect" element={<GnapRedirect />} />
             <Route path="/scim" element={<Scim />} />
             {/* <Route path="/app" element={<App />} /> */}
           </Routes>

@@ -8,29 +8,6 @@ export default function Scim() {
   const accessTokenTest =
     "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTQ1MDk2NywiaWF0IjoxNjk5NDQ3MzY3LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5NDQ3MzY3LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.4LWC4c4I25IiCNKei-h0Y1iOruPffjo9M1RvFAM90_eJ_n95qSNa381Px8Pk4MfJL737rsX6xg_8bwfij9NKgw";
 
-  // useEffect(() => {
-  //   const fetchScimTest = async () => {
-  //     const url = "https://api.eduid.docker/scim/Groups";
-  //     const config = {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/scim+json",
-  //         // Authorization: `Bearer ${accessToken}`,
-  //         Authorization: `Bearer ${accessTokenTest}`,
-  //       },
-  //     };
-
-  //     try {
-  //       const response = await fetch(url, config);
-  //       if (response.ok) {
-  //         const resp_json = await response.json();
-  //         console.log("[resp_json]", resp_json);
-  //       }
-  //     } catch {}
-  //   };
-  //   fetchScimTest();
-  // }, []);
-
   const baseURL = "https://api.eduid.docker/scim/";
 
   async function getGroups() {
@@ -172,7 +149,9 @@ export default function Scim() {
             <p>
               Group: {group.id} {group.displayName}
             </p>
-            <button onClick={() => getGroupDetails(group.id)}>Get Group Details</button>
+            <button onClick={() => getGroupDetails(group.id)}>
+              Get Group Details
+            </button>
           </>
         )}
         <form onSubmit={(e) => getGroupsSearch(e)}>

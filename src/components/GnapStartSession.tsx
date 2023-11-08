@@ -1,12 +1,23 @@
-import { CompactSign, GenerateKeyPairOptions, exportJWK, importJWK } from "jose";
+import {
+  CompactSign,
+  GenerateKeyPairOptions,
+  exportJWK,
+  importJWK,
+} from "jose";
 import { useEffect } from "react";
+import {
+  AccessTokenFlags,
+  AccessTokenRequest,
+  ECJWK,
+  GrantRequest,
+  KeyType,
+} from "../apis/TypeScript-Clients/gnap";
 import { generateNonce } from "../common/CryptoUtils";
 import jwk_file from "../jwk.json";
-import { AccessTokenFlags, AccessTokenRequest, ECJWK, GrantRequest, KeyType } from "../services/openapi";
 
 const url = "https://api.eduid.docker/auth/transaction";
 
-export function Main() {
+export function GnapStartSession() {
   // for debugging/development
   async function redirect() {
     const token = localStorage.getItem("JWSToken");
@@ -14,7 +25,11 @@ export function Main() {
       try {
         const tokenObject = JSON.parse(token);
 
-        if (tokenObject && tokenObject.interact && tokenObject.interact.redirect) {
+        if (
+          tokenObject &&
+          tokenObject.interact &&
+          tokenObject.interact.redirect
+        ) {
           window.location.href = tokenObject.interact.redirect;
         }
       } catch (error) {
@@ -32,7 +47,11 @@ export function Main() {
   async function initLocalStorage() {
     // localStorage.clear();
     const token = localStorage.getItem("JWSToken");
-    if (token === null || Object.keys(token).length === 0 || token === undefined) {
+    if (
+      token === null ||
+      Object.keys(token).length === 0 ||
+      token === undefined
+    ) {
       try {
         const atr: AccessTokenRequest = {
           access: [{ scope: "eduid.se", type: "scim-api" }],
@@ -49,15 +68,6 @@ export function Main() {
         // use key i JWK
         const jwk_private = { ...jwk_file, ext: true };
         console.log("JWK FILE + ext:", jwk_private);
-        // const jwk_private = {
-        //   kty: "EC",
-        //   kid: "eduid_managed_accounts_1",
-        //   crv: "P-256",
-        //   x: "dCxVL9thTTc-ZtiL_CrPpMp1Vqo2p_gUVqiVBRwqjq8",
-        //   y: "P3dAvr2IYy7DQEf4vA5bPN8gCg41M1oA5993vHr9peE",
-        //   d: "i9hH9BeErxtI40b0_1P4XR6CXra4itKvg8ccLrxXrhQ",
-        //   ext: true,
-        // };
 
         const privateKey = await importJWK(jwk_private, alg);
         const publicKey = await importJWK(jwk_private, alg);
@@ -88,7 +98,7 @@ export function Main() {
           //   start: [StartInteractionMethod.REDIRECT],
           //   finish: {
           //     method: FinishInteractionMethod.REDIRECT,
-          //     uri: "http://localhost:5173/hash", // redirect url, TO BE FIXED
+          //     uri: "http://localhost:5173/redirect", // redirect url, TO BE FIXED
           //     nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
           //   },
           // },
@@ -103,7 +113,9 @@ export function Main() {
           created: Date.now(),
         };
 
-        const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(gr)))
+        const jws = await new CompactSign(
+          new TextEncoder().encode(JSON.stringify(gr))
+        )
           .setProtectedHeader(jws_header)
           .sign(privateKey);
 
@@ -125,7 +137,9 @@ export function Main() {
           let now = new Date();
           const expires_in = response_json.interact.expires_in;
           const expires_in_milliseconds = expires_in * 1000;
-          const JWSTokenExpires = new Date(now.getTime() + expires_in_milliseconds).getTime();
+          const JWSTokenExpires = new Date(
+            now.getTime() + expires_in_milliseconds
+          ).getTime();
 
           localStorage.setItem("JWSToken", JSON.stringify(response_json));
           localStorage.setItem("Nonce", nonce);
