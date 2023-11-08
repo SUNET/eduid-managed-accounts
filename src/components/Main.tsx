@@ -1,19 +1,8 @@
-import {
-  CompactSign,
-  GenerateKeyPairOptions,
-  exportJWK,
-  importJWK,
-} from "jose";
+import { CompactSign, GenerateKeyPairOptions, exportJWK, importJWK } from "jose";
 import { useEffect } from "react";
 import { generateNonce } from "../common/CryptoUtils";
 import jwk_file from "../jwk.json";
-import {
-  AccessTokenFlags,
-  AccessTokenRequest,
-  ECJWK,
-  GrantRequest,
-  KeyType,
-} from "../services/openapi";
+import { AccessTokenFlags, AccessTokenRequest, ECJWK, GrantRequest, KeyType } from "../services/openapi";
 
 const url = "https://api.eduid.docker/auth/transaction";
 
@@ -25,11 +14,7 @@ export function Main() {
       try {
         const tokenObject = JSON.parse(token);
 
-        if (
-          tokenObject &&
-          tokenObject.interact &&
-          tokenObject.interact.redirect
-        ) {
+        if (tokenObject && tokenObject.interact && tokenObject.interact.redirect) {
           window.location.href = tokenObject.interact.redirect;
         }
       } catch (error) {
@@ -45,9 +30,9 @@ export function Main() {
   }, []);
 
   async function initLocalStorage() {
-    localStorage.clear();
+    // localStorage.clear();
     const token = localStorage.getItem("JWSToken");
-    if (token === null || Object.keys(token).length === 0) {
+    if (token === null || Object.keys(token).length === 0 || token === undefined) {
       try {
         const atr: AccessTokenRequest = {
           access: [{ scope: "eduid.se", type: "scim-api" }],
@@ -118,9 +103,7 @@ export function Main() {
           created: Date.now(),
         };
 
-        const jws = await new CompactSign(
-          new TextEncoder().encode(JSON.stringify(gr))
-        )
+        const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(gr)))
           .setProtectedHeader(jws_header)
           .sign(privateKey);
 
@@ -140,9 +123,7 @@ export function Main() {
           let now = new Date();
           const expires_in = response_json.interact.expires_in;
           const expires_in_milliseconds = expires_in * 1000;
-          const JWSTokenExpires = new Date(
-            now.getTime() + expires_in_milliseconds
-          ).getTime();
+          const JWSTokenExpires = new Date(now.getTime() + expires_in_milliseconds).getTime();
 
           localStorage.setItem("JWSToken", JSON.stringify(response_json));
           localStorage.setItem("Nonce", nonce);
