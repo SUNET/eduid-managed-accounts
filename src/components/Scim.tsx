@@ -1,31 +1,5 @@
 import { useState } from "react";
 
-const containerStyle = {
-  border: "1px solid orange",
-  borderRadius: "10px",
-  padding: "20px",
-  margin: "10px",
-};
-
-const buttonStyle = {
-  backgroundColor: "orange",
-  color: "white",
-  border: "none",
-  padding: "10px 20px",
-  borderRadius: "5px",
-  cursor: "pointer",
-  marginLeft: "20px",
-};
-
-const inputStyle = {
-  padding: "10px",
-  fontSize: "14px",
-  border: "1px solid #ccc",
-  borderRadius: "5px",
-  width: "80%",
-  marginBottom: "0",
-};
-
 export default function Scim() {
   // const location = useLocation();
   // const { accessToken } = location.state;
@@ -174,35 +148,19 @@ export default function Scim() {
   return (
     <>
       <h1>Scim Page</h1>
-      <div style={containerStyle}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div>
+        <div>
           <h2>Get All Groups</h2>
-          <button style={buttonStyle} onClick={() => getGroups()}>
-            Get Groups
-          </button>
+          <button onClick={() => getGroups()}>Get Groups</button>
         </div>
 
         {groups?.map((group: any) => (
-          <table
-            key={group.id}
-            style={{
-              margin: "10px",
-              width: "100%",
-              border: "2px solid gray",
-
-              borderCollapse: "collapse",
-            }}
-          >
+          <table key={group.id}>
             <tbody>
               <tr>
-                <td style={{ borderBottom: "1px solid black", padding: "10px" }}>{group.displayName}</td>
-                <td style={{ borderBottom: "1px solid black", padding: "10px" }}>
-                  <button
-                    style={{ ...buttonStyle, fontSize: "12px", padding: "5px 10px" }}
-                    onClick={() => setGroup(group)}
-                  >
-                    Choose Group
-                  </button>
+                <td>{group.displayName}</td>
+                <td>
+                  <button onClick={() => setGroup(group)}>Choose Group</button>
                 </td>
               </tr>
             </tbody>
@@ -218,36 +176,28 @@ export default function Scim() {
           </>
         )}
         <form onSubmit={(e) => getGroupsSearch(e)}>
-          <input style={inputStyle} name="filter_string" />
-          <button style={{ ...buttonStyle, fontSize: "12px", padding: "5px 10px" }} type="submit">
-            Get Groups Search
-          </button>
+          <input name="filter_string" />
+          <button type="submit">Get Groups Search</button>
         </form>
         {/* <form onSubmit={(e) => getGroupDetails(e)}>
         <input name="group_id" />
         <button type="submit">Get Group Details</button>
       </form> */}
       </div>
-      <div style={containerStyle}>
+      <div>
         <h2> Users</h2>
         <form onSubmit={(e) => createUser(e)} style={{ display: "flex" }}>
-          <div style={{ display: "flex", marginBottom: "10px" }}>
-            <label
-              style={{ flex: 1, marginRight: "10px", display: "flex", flexDirection: "column", marginBottom: "0" }}
-            >
-              Family name
-            </label>
-            <input style={inputStyle} name="family_name" />
+          <div>
+            <label>Family name</label>
+            <input name="family_name" />
           </div>
 
-          <div style={{ display: "flex", marginBottom: "10px" }}>
-            <label style={{ flex: 1, display: "flex", flexDirection: "column", marginBottom: "0" }}>Given name</label>
-            <input style={inputStyle} name="given_name" />
+          <div>
+            <label>Given name</label>
+            <input name="given_name" />
           </div>
 
-          <button style={{ ...buttonStyle, fontSize: "12px", padding: "5px 10px" }} type="submit">
-            create user
-          </button>
+          <button type="submit">create user</button>
         </form>
       </div>
     </>
