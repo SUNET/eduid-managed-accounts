@@ -66,7 +66,7 @@ export default function TestHash() {
     let jws_header = {
       typ: "gnap-binding+jws",
       alg: alg,
-      kid: "random_generated_id", // fix, coupled with publicKey, privateKey
+      kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
       htm: "POST",
       uri: continue_url,
       created: Date.now(),

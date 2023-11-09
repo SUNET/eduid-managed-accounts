@@ -1,203 +1,86 @@
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+import { fetchGroups, getGroupDetails, getGroupsSearch, postUser } from "../apis/scim";
+import { useAppDispatch, useAppSelector } from "../hooks";
 
 export default function Scim() {
-  // const location = useLocation();
-  // const { accessToken } = location.state;
-  const [groups, setGroups] = useState<any>();
-  const [group, setGroup] = useState<any>();
-  const accessTokenTest =
-    "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTQ1MDk2NywiaWF0IjoxNjk5NDQ3MzY3LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5NDQ3MzY3LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.4LWC4c4I25IiCNKei-h0Y1iOruPffjo9M1RvFAM90_eJ_n95qSNa381Px8Pk4MfJL737rsX6xg_8bwfij9NKgw";
+  const dispatch = useAppDispatch();
+  const groupsData = useAppSelector((state) => state.groups.groups);
+  const members = useAppSelector((state) => state.groups.members);
+  const familyNameRef = useRef<HTMLInputElement | null>(null);
+  const givenNameRef = useRef<HTMLInputElement | null>(null);
 
-  // useEffect(() => {
-  //   const fetchScimTest = async () => {
-  //     const url = "https://api.eduid.docker/scim/Groups";
-  //     const config = {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/scim+json",
-  //         // Authorization: `Bearer ${accessToken}`,
-  //         Authorization: `Bearer ${accessTokenTest}`,
-  //       },
-  //     };
-
-  //     try {
-  //       const response = await fetch(url, config);
-  //       if (response.ok) {
-  //         const resp_json = await response.json();
-  //         console.log("[resp_json]", resp_json);
-  //       }
-  //     } catch {}
-  //   };
-  //   fetchScimTest();
-  // }, []);
-
-  const baseURL = "https://api.eduid.docker/scim/";
-
-  async function getGroups() {
-    const url = baseURL + "Groups/";
-    const config = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/scim+json",
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer ${accessTokenTest}`,
-      },
+  useEffect(() => {
+    const fetchScimTest = async () => {
+      dispatch(fetchGroups());
     };
+    fetchScimTest();
+  }, []);
 
-    try {
-      const response = await fetch(url, config);
-      if (response.ok) {
-        const resp_json = await response.json();
-        console.log("[resp_json]", resp_json);
-        setGroups(resp_json.Resources);
-      }
-    } catch {}
-  }
-
-  async function getGroupsSearch(e: any) {
+  function getGroupsSearch1(e: any) {
     e.preventDefault();
     const form = e.target;
-    const input = form.querySelector('input[name="filter_string"]');
-    const url = baseURL + "Groups/.search";
-    let payload = {};
-    if (input) {
-      payload = {
-        schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
-        filter: `displayName eq "${input.value}"`,
-        //startIndex: 1,
-        //count: 100,
-        //attributes: ["string"],
-      };
+    const input = form.querySelector('input[name="filter_string"]').value;
+    dispatch(getGroupsSearch({ searchFilter: input }));
+  }
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    const familyNameValue = familyNameRef?.current?.value;
+    const givenNameValue = givenNameRef?.current?.value;
+    if (familyNameValue && givenNameValue) {
+      dispatch(
+        postUser({
+          familyName: familyNameValue,
+          givenName: givenNameValue,
+        })
+      );
     }
-    const config = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/scim+json",
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer ${accessTokenTest}`,
-      },
-      body: JSON.stringify(payload),
-    };
-
-    try {
-      const response = await fetch(url, config);
-      if (response.ok) {
-        const resp_json = await response.json();
-        console.log("[resp_json]", resp_json);
-      }
-    } catch {}
-  }
-
-  async function getGroupDetails(id: string) {
-    // e.preventDefault();
-    // const form = e.target;
-    // const input = form.querySelector('input[name="group_id"]');
-    // const url = baseURL + "Groups/" + input.value;
-    const url = baseURL + "Groups/" + id;
-    const config = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/scim+json",
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer ${accessTokenTest}`,
-      },
-    };
-
-    try {
-      const response = await fetch(url, config);
-      if (response.ok) {
-        const resp_json = await response.json();
-      }
-    } catch {}
-  }
-
-  async function createUser(e: any) {
-    e.preventDefault();
-    const form = e.target;
-    const familyName = form.querySelector('input[name="family_name"]').value;
-    const givenName = form.querySelector('input[name="given_name"]').value;
-    const url = baseURL + "Users";
-    const payload = {
-      schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
-      externalId: givenName,
-      name: {
-        familyName: familyName,
-        givenName: givenName,
-      },
-    };
-    const config = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/scim+json",
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer ${accessTokenTest}`,
-      },
-      body: JSON.stringify(payload),
-    };
-
-    try {
-      const response = await fetch(url, config);
-      if (response.ok) {
-        const resp_json = await response.json();
-        console.log("[resp_json]", resp_json);
-      }
-    } catch {}
-  }
+  };
 
   return (
     <>
       <div>
         <div>
-          <h2>Get All Groups</h2>
-          <button className="btn btn-primary" onClick={() => getGroups()}>
-            Get Groups
-          </button>
+          <h1>Welcome, </h1>
         </div>
-
-        {groups?.map((group: any) => (
-          <table key={group.id}>
-            <tbody>
-              <tr>
+        <table>
+          <tbody>
+            {groupsData?.map((group: any) => (
+              <tr key={group.id}>
                 <td>{group.displayName}</td>
                 <td>
-                  <button onClick={() => setGroup(group)}>Choose Group</button>
+                  <button className="btn-link btn-sm" onClick={() => dispatch(getGroupDetails({ id: group.id }))}>
+                    see members
+                  </button>
                 </td>
               </tr>
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
+
+        {members?.map((member: any) => (
+          <li key={member.value}>{member.display}</li>
         ))}
-        <h3>State (choosen)</h3>
-        {group !== undefined && (
-          <>
-            <p>
-              Group: {group.id} {group.displayName}
-            </p>
-            <button onClick={() => getGroupDetails(group.id)}>Get Group Details</button>
-          </>
-        )}
-        <form onSubmit={(e) => getGroupsSearch(e)}>
+
+        <form onSubmit={(e) => getGroupsSearch1(e)}>
           <input className="form-control" name="filter_string" />
 
           <button className="btn btn-primary" type="submit">
             Get Groups Search
           </button>
         </form>
-        {/* <form onSubmit={(e) => getGroupDetails(e)}>
-        <input name="group_id" />
-        <button type="submit">Get Group Details</button>
-      </form> */}
       </div>
       <div>
         <h2> Users</h2>
-        <form onSubmit={(e) => createUser(e)} style={{ display: "flex" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex" }}>
           <div>
             <label>Family name</label>
-            <input name="family_name" />
+            <input name="family_name" ref={familyNameRef} />
           </div>
 
           <div>
             <label>Given name</label>
-            <input name="given_name" />
+            <input name="given_name" ref={givenNameRef} />
           </div>
 
           <button className="btn btn-primary" type="submit">
