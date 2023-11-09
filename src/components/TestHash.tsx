@@ -2,6 +2,7 @@ import { CompactSign, importJWK } from "jose";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ContinueRequest } from "services/openapi";
+import { JWS_TOKEN, NONCE } from "./../main";
 
 const getSHA256Hash = async (input: string) => {
   const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
@@ -15,11 +16,11 @@ export default function TestHash() {
   const [accessToken, setAccessToken] = useState("");
 
   // Get "JWSToken" from LocalStorage
-  const value = localStorage.getItem("JWSToken") ?? "";
+  const value = localStorage.getItem(JWS_TOKEN) ?? "";
   const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
   // Get "finish" and "nonce" from LocalStorage
   const finish = JWSToken.interact.finish;
-  const nonce = localStorage.getItem("Nonce");
+  const nonce = localStorage.getItem(NONCE);
 
   // Get "hash" and "interact_ref" from URL query parameters
   const location = useLocation();
