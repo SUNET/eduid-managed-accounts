@@ -144,7 +144,9 @@ export function Main() {
   return (
     <>
       <h1>Press the button to redirect</h1>
-      {<button onClick={redirect}>Redirect</button>}
+      <button className="btn btn-primary" onClick={redirect}>
+        Redirect
+      </button>
     </>
   );
 }
