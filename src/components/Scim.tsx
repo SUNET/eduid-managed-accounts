@@ -149,7 +149,9 @@ export default function Scim() {
       <div>
         <div>
           <h2>Get All Groups</h2>
-          <button onClick={() => getGroups()}>Get Groups</button>
+          <button className="btn btn-primary" onClick={() => getGroups()}>
+            Get Groups
+          </button>
         </div>
 
         {groups?.map((group: any) => (
