@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { fetchGroups, getGroupDetails, getGroupsSearch, postUser } from "../apis/scim";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import Splash from "./Splash";
 
 export default function Scim() {
   const dispatch = useAppDispatch();
@@ -8,6 +9,7 @@ export default function Scim() {
   const members = useAppSelector((state) => state.groups.members);
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
+  const filterString = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchScimTest = async () => {
@@ -18,9 +20,10 @@ export default function Scim() {
 
   function getGroupsSearch1(e: any) {
     e.preventDefault();
-    const form = e.target;
-    const input = form.querySelector('input[name="filter_string"]').value;
-    dispatch(getGroupsSearch({ searchFilter: input }));
+    const filterStringValue = filterString?.current?.value;
+    if (filterStringValue) {
+      dispatch(getGroupsSearch({ searchFilter: filterStringValue }));
+    }
   }
 
   const handleSubmit = (e: any) => {
@@ -38,7 +41,7 @@ export default function Scim() {
   };
 
   return (
-    <>
+    <Splash showChildren={groupsData}>
       <div>
         <div>
           <h1>Welcome, </h1>
@@ -63,7 +66,7 @@ export default function Scim() {
         ))}
 
         <form onSubmit={(e) => getGroupsSearch1(e)}>
-          <input className="form-control" name="filter_string" />
+          <input className="form-control" name="filter_string" ref={filterString} />
 
           <button className="btn btn-primary" type="submit">
             Get Groups Search
@@ -88,6 +91,6 @@ export default function Scim() {
           </button>
         </form>
       </div>
-    </>
+    </Splash>
   );
 }

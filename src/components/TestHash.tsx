@@ -2,7 +2,7 @@ import { CompactSign, importJWK } from "jose";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ContinueRequest } from "services/openapi";
-import { JWS_TOKEN, NONCE } from "./../main";
+import { JWS_TOKEN, NONCE } from "./../initLocalStorage";
 
 const getSHA256Hash = async (input: string) => {
   const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
