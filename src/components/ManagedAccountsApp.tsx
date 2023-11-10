@@ -2,9 +2,9 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import "../App.css";
 import Footer from "./Footer";
+import GroupManagement from "./GroupManagement";
 import { Header } from "./Header";
 import { Main } from "./ManagedAccountsMain";
-import Scim from "./Scim";
 import TestHash from "./TestHash";
 
 export function ManagedAccountApp(): JSX.Element {
@@ -16,7 +16,7 @@ export function ManagedAccountApp(): JSX.Element {
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/redirect" element={<TestHash />} />
-            <Route path="/scim" element={<Scim />} />
+            <Route path="/scim" element={<GroupManagement />} />
           </Routes>
         </section>
       </main>
