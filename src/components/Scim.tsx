@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { fetchGroups, getGroupDetails, getGroupsSearch, postUser } from "../apis/scim";
+import { fetchGroups, getGroupDetails, getGroupsSearch, postUser } from "../apis/scimRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Splash from "./Splash";
 

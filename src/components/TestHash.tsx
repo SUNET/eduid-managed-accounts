@@ -1,10 +1,10 @@
-import { CompactSign, importJWK } from "jose";
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { ContinueRequest } from "services/openapi";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { postContinueRequest } from "../apis/continueRequest";
+import { useAppDispatch } from "../hooks";
 import { JWS_TOKEN, NONCE } from "./../initLocalStorage";
 
-const getSHA256Hash = async (input: string) => {
+export const getSHA256Hash = async (input: string) => {
   const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const base64String = btoa(String.fromCharCode(...hashArray));
@@ -13,7 +13,7 @@ const getSHA256Hash = async (input: string) => {
 };
 
 export default function TestHash() {
-  const [accessToken, setAccessToken] = useState("");
+  const dispatch = useAppDispatch();
 
   // Get "JWSToken" from LocalStorage
   const value = localStorage.getItem(JWS_TOKEN) ?? "";
@@ -52,46 +52,8 @@ export default function TestHash() {
    *
    * */
   const continueRequest = async () => {
-    const continue_url = JWSToken.continue.uri;
-    const continue_access_token = JWSToken.continue.access_token.value;
-    const access_token_calculated = await getSHA256Hash(continue_access_token);
-
-    const continue_request: ContinueRequest = {
-      interact_ref: interactRef,
-    };
-    const alg = "ES256";
-    const privateJwk = JSON.parse(localStorage.getItem("privateKey") ?? "");
-    const privateKey = await importJWK(privateJwk, alg);
-
-    let jws_header = {
-      typ: "gnap-binding+jws",
-      alg: alg,
-      kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
-      htm: "POST",
-      uri: continue_url,
-      created: Date.now(),
-      ath: access_token_calculated,
-    };
-
-    const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(continue_request)))
-      .setProtectedHeader(jws_header)
-      .sign(privateKey);
-
-    const config = {
-      method: "POST",
-      headers: {
-        Authorization: `GNAP ${continue_access_token}`,
-        "Content-Type": "application/jose+json",
-      },
-      body: jws,
-    };
-
-    const response = await fetch(continue_url, config);
-    const resp_json = await response.json();
-
-    if (response.status === 200 && resp_json?.access_token?.value) {
-      // TODO: localStorage.clear();
-      setAccessToken(resp_json.access_token.value);
+    if (JWSToken && interactRef) {
+      dispatch(postContinueRequest({ JWSToken: JWSToken, interactRef: interactRef }));
     }
   };
 
@@ -99,9 +61,9 @@ export default function TestHash() {
     <>
       <br></br>
       <h1>Press the button to redirect</h1>
-      <Link to="/scim" state={{ accessToken: accessToken }}>
+      {/* <Link to="/scim" state={{ accessToken: accessToken }}>
         Next Step
-      </Link>
+      </Link> */}
     </>
   );
 }
