@@ -21,8 +21,10 @@ function createScimRequest(body?: string) {
   return scimRequest;
 }
 
+interface fetchGroupsResponse {}
+
 export const fetchGroups = createAsyncThunk<
-  any, // return type
+  fetchGroupsResponse, // return type
   undefined, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/fetchGroups", async (args, thunkAPI) => {
@@ -42,8 +44,10 @@ export const fetchGroups = createAsyncThunk<
   }
 });
 
+interface getGroupsSearchResponse {}
+
 export const getGroupsSearch = createAsyncThunk<
-  any, // return type
+  getGroupsSearchResponse, // return type
   { searchFilter: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
@@ -74,8 +78,10 @@ export const getGroupsSearch = createAsyncThunk<
   }
 });
 
+interface getGroupDetailsResponse {}
+
 export const getGroupDetails = createAsyncThunk<
-  any, // return type
+  getGroupDetailsResponse, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupDetails", async (args, thunkAPI) => {
@@ -99,8 +105,10 @@ export const getGroupDetails = createAsyncThunk<
   }
 });
 
+interface postUserResponse {}
+
 export const postUser = createAsyncThunk<
-  any, // return type
+  postUserResponse, // return type
   { familyName: string; givenName: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/postUser", async (args, thunkAPI) => {

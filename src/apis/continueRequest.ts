@@ -4,8 +4,10 @@ import { CompactSign, importJWK } from "jose";
 import { ContinueRequest } from "services/openapi";
 import { getSHA256Hash } from "../components/TestHash";
 
+interface postContinueRequestResponse {}
+
 export const postContinueRequest = createAsyncThunk<
-  any, // return type
+  postContinueRequestResponse, // return type
   { JWSToken: any; interactRef: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {
@@ -19,7 +21,7 @@ export const postContinueRequest = createAsyncThunk<
       const privateJwk = JSON.parse(localStorage.getItem("privateKey") ?? "");
       const privateKey = await importJWK(privateJwk, alg);
 
-      let jwsHeader = {
+      const jwsHeader = {
         typ: "gnap-binding+jws",
         alg: alg,
         kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
