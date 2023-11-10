@@ -25,8 +25,9 @@ export default function TestHash() {
   // Get "hash" and "interact_ref" from URL query parameters
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const hash_url = params.get("hash");
+  const hashURL = params.get("hash");
   const interactRef = params.get("interact_ref") ?? undefined;
+  const url = "https://api.eduid.docker/auth/transaction";
 
   /**
    * 1 - Test hash in url is the same than hash we calculate
@@ -35,10 +36,9 @@ export default function TestHash() {
   useEffect(() => {
     async function testHash() {
       try {
-        const url = "https://api.eduid.docker/auth/transaction";
-        const hash_base_string = `${nonce}\n${finish}\n${interactRef}\n${url}`;
-        const hash_calculated = await getSHA256Hash(hash_base_string);
-        if (hash_calculated === hash_url) {
+        const hashBaseString = `${nonce}\n${finish}\n${interactRef}\n${url}`;
+        const hashCalculated = await getSHA256Hash(hashBaseString);
+        if (hashCalculated === hashURL) {
           await continueRequest();
         }
       } catch {}
