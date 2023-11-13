@@ -11,7 +11,7 @@ import {
   ECJWK,
   GrantRequest,
   KeyType,
-} from "../apis/TypeScript-Clients/gnap";
+} from "../TypeScript-Clients/gnap";
 import { generateNonce } from "../common/CryptoUtils";
 import jwk_file from "../jwk.json";
 
@@ -19,20 +19,25 @@ import jwk_file from "../jwk.json";
 
 const url = "https://api.eduid.docker/auth/transaction";
 
-export function GnapStartSession() {
+/**
+ * Implement Redirect-based Interaction flow
+ *
+ * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-redirect-based-interaction
+ */
+export function StartSession() {
   // for debugging/development
   async function redirect() {
-    const token = localStorage.getItem("JWSToken");
-    if (token) {
+    const interactionLocalStorage = localStorage.getItem("InteractionResponse");
+    if (interactionLocalStorage) {
       try {
-        const tokenObject = JSON.parse(token);
+        const interactionResponse = JSON.parse(interactionLocalStorage);
 
         if (
-          tokenObject &&
-          tokenObject.interact &&
-          tokenObject.interact.redirect
+          interactionResponse &&
+          interactionResponse.interact &&
+          interactionResponse.interact.redirect
         ) {
-          window.location.href = tokenObject.interact.redirect;
+          window.location.href = interactionResponse.interact.redirect;
         }
       } catch (error) {
         console.error("Error parsing token:", error);
@@ -48,11 +53,11 @@ export function GnapStartSession() {
 
   async function initLocalStorage() {
     // localStorage.clear();
-    const token = localStorage.getItem("JWSToken");
+    const interactionLocalStorage = localStorage.getItem("InteractionResponse");
     if (
-      token === null ||
-      Object.keys(token).length === 0 ||
-      token === undefined
+      interactionLocalStorage === null ||
+      Object.keys(interactionLocalStorage).length === 0 ||
+      interactionLocalStorage === undefined
     ) {
       try {
         const atr: AccessTokenRequest = {
@@ -76,10 +81,11 @@ export function GnapStartSession() {
         console.log("JWK PUBLIC/PRIVATE KEY", JSON.stringify(privateKey));
 
         const privateJwk = await exportJWK(privateKey);
-        localStorage.setItem("privateKey", JSON.stringify(privateJwk));
+        // store keys only if received a successful response
+        // localStorage.setItem("privateKey", JSON.stringify(privateJwk));
         console.log("privateKey", JSON.stringify(privateJwk));
         const publicJwk = await exportJWK(publicKey);
-        localStorage.setItem("publicKey", JSON.stringify(publicJwk));
+        // localStorage.setItem("publicKey", JSON.stringify(publicJwk));
         console.log("publicKey", JSON.stringify(publicJwk));
 
         const ecjwk: ECJWK = {
@@ -100,7 +106,7 @@ export function GnapStartSession() {
           //   start: [StartInteractionMethod.REDIRECT],
           //   finish: {
           //     method: FinishInteractionMethod.REDIRECT,
-          //     uri: "http://localhost:5173/redirect", // redirect url, TO BE FIXED
+          //     uri: "http://localhost:5173/callback", // redirect url, TO BE FIXED
           //     nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
           //   },
           // },
@@ -109,7 +115,7 @@ export function GnapStartSession() {
         let jws_header = {
           typ: "gnap-binding+jws",
           alg: alg,
-          kid: "eduid_managed_accounts_1", // fix, coupled with publicKey, privateKey
+          kid: "eduid_managed_accounts_1", // TODO: couple "kid" with publicKey, privateKey
           htm: "POST",
           uri: url,
           created: Date.now(),
@@ -125,27 +131,42 @@ export function GnapStartSession() {
           "Content-Type": "application/jose+json",
         };
 
-        const jwsRequest = {
+        const InteractionRequest = {
           headers: headers,
           body: jws,
           method: "POST",
         };
 
-        const response = await fetch(url, jwsRequest);
+        const response = await fetch(url, InteractionRequest);
         console.log("response:", response);
 
         const response_json = await response.json();
+        // if successful response
         if (response_json && Object.keys(response_json).length > 0) {
+          // save InteractionResponse
+          localStorage.setItem(
+            "InteractionResponse",
+            JSON.stringify(response_json)
+          );
+
+          // save nonce
+          localStorage.setItem("Nonce", nonce);
+
+          // save publicKey and privateKey
+          localStorage.setItem("publicKey", JSON.stringify(publicJwk));
+          localStorage.setItem("privateKey", JSON.stringify(privateJwk));
+
+          // calculate and store when the response expires
           let now = new Date();
           const expires_in = response_json.interact.expires_in;
           const expires_in_milliseconds = expires_in * 1000;
-          const JWSTokenExpires = new Date(
+          const InteractionResponseExpires = new Date(
             now.getTime() + expires_in_milliseconds
           ).getTime();
-
-          localStorage.setItem("JWSToken", JSON.stringify(response_json));
-          localStorage.setItem("Nonce", nonce);
-          localStorage.setItem("JWSTokenExpires", JWSTokenExpires.toString());
+          localStorage.setItem(
+            "InteractionResponseExpires",
+            InteractionResponseExpires.toString()
+          );
         } else {
           console.error("response_json is empty or null");
         }

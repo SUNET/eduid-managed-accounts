@@ -1,4 +1,4 @@
-import { ContinueRequest } from "apis/TypeScript-Clients/gnap";
+import { ContinueRequest } from "TypeScript-Clients/gnap";
 import { CompactSign, importJWK } from "jose";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -6,14 +6,14 @@ import { getSHA256Hash } from "../common/CryptoUtils";
 
 // TODO: Gnap TypeScript Client could be used here
 
-export default function GnapRedirect() {
+export default function Callback() {
   const [accessToken, setAccessToken] = useState("");
 
-  // Get "JWSToken" from LocalStorage
-  const value = localStorage.getItem("JWSToken") ?? "";
-  const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
+  // Get "InteractionResponse" from LocalStorage
+  const value = localStorage.getItem("InteractionResponse") ?? "";
+  const InteractionResponse = JSON.parse(value) ? JSON.parse(value) : {};
   // Get "finish" and "nonce" from LocalStorage
-  const finish = JWSToken.interact.finish;
+  const finish = InteractionResponse.interact.finish;
   const nonce = localStorage.getItem("Nonce");
 
   // Get "hash" and "interact_ref" from URL query parameters
@@ -46,8 +46,9 @@ export default function GnapRedirect() {
    *
    * */
   const continueRequest = async () => {
-    const continue_url = JWSToken.continue.uri;
-    const continue_access_token = JWSToken.continue.access_token.value;
+    const continue_url = InteractionResponse.continue.uri;
+    const continue_access_token =
+      InteractionResponse.continue.access_token.value;
     const access_token_calculated = await getSHA256Hash(continue_access_token);
 
     const continue_request: ContinueRequest = {
@@ -60,7 +61,7 @@ export default function GnapRedirect() {
     let jws_header = {
       typ: "gnap-binding+jws",
       alg: alg,
-      kid: "random_generated_id", // fix, coupled with publicKey, privateKey
+      kid: "random_generated_id", // TODO: couple "kid" with publicKey, privateKey
       htm: "POST",
       uri: continue_url,
       created: Date.now(),
