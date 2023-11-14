@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface FetchJWSState {
+interface FetchInteractionState {
   is_loaded: boolean;
   start_session: {
     interact: {
@@ -11,7 +11,7 @@ interface FetchJWSState {
   nonce: string;
 }
 
-export const initialState: FetchJWSState = {
+export const initialState: FetchInteractionState = {
   is_loaded: false,
   start_session: {
     interact: {
@@ -22,8 +22,8 @@ export const initialState: FetchJWSState = {
   nonce: "",
 };
 
-export const fetchJWSSlice = createSlice({
-  name: "fetchJWS",
+export const fetchInteractionSlice = createSlice({
+  name: "fetchInteraction",
   initialState,
   reducers: {
     appLoaded: (state) => {
@@ -38,5 +38,5 @@ export const fetchJWSSlice = createSlice({
   // },
 });
 
-export const fetchJWSReducer = fetchJWSSlice.reducer;
-export default fetchJWSSlice;
+export const fetchJWSReducer = fetchInteractionSlice.reducer;
+export default fetchInteractionSlice;

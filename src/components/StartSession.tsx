@@ -25,34 +25,12 @@ const url = "https://api.eduid.docker/auth/transaction";
  * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-redirect-based-interaction
  */
 export function StartSession() {
-  // for debugging/development
-  async function redirect() {
-    const interactionLocalStorage = localStorage.getItem("InteractionResponse");
-    if (interactionLocalStorage) {
-      try {
-        const interactionResponse = JSON.parse(interactionLocalStorage);
-
-        if (
-          interactionResponse &&
-          interactionResponse.interact &&
-          interactionResponse.interact.redirect
-        ) {
-          window.location.href = interactionResponse.interact.redirect;
-        }
-      } catch (error) {
-        console.error("Error parsing token:", error);
-      }
-    } else {
-      console.error("Token is null or undefined");
-    }
-  }
-
   useEffect(() => {
     initLocalStorage();
   }, []);
 
   async function initLocalStorage() {
-    // localStorage.clear();
+    // TODO: localStorage.clear();
     const interactionLocalStorage = localStorage.getItem("InteractionResponse");
     if (
       interactionLocalStorage === null ||
@@ -81,15 +59,14 @@ export function StartSession() {
         console.log("JWK PUBLIC/PRIVATE KEY", JSON.stringify(privateKey));
 
         const privateJwk = await exportJWK(privateKey);
-        // store keys only if received a successful response
-        // localStorage.setItem("privateKey", JSON.stringify(privateJwk));
         console.log("privateKey", JSON.stringify(privateJwk));
         const publicJwk = await exportJWK(publicKey);
-        // localStorage.setItem("publicKey", JSON.stringify(publicJwk));
         console.log("publicKey", JSON.stringify(publicJwk));
 
+        const kid = "eduid_managed_accounts_1";
+
         const ecjwk: ECJWK = {
-          kid: "eduid_managed_accounts_1",
+          kid: kid,
           kty: publicJwk.kty as KeyType,
           crv: publicJwk.crv,
           x: publicJwk.x,
@@ -100,7 +77,7 @@ export function StartSession() {
 
         const gr: GrantRequest = {
           access_token: atr,
-          client: { key: "eduid_managed_accounts_1" },
+          client: { key: kid },
           // client: { key: { proof: { method: ProofMethod.JWS }, jwk: ecjwk } },
           // interact: {
           //   start: [StartInteractionMethod.REDIRECT],
@@ -115,7 +92,7 @@ export function StartSession() {
         let jws_header = {
           typ: "gnap-binding+jws",
           alg: alg,
-          kid: "eduid_managed_accounts_1", // TODO: couple "kid" with publicKey, privateKey
+          kid: kid, // TODO: couple "kid" with publicKey, privateKey
           htm: "POST",
           uri: url,
           created: Date.now(),
@@ -131,17 +108,17 @@ export function StartSession() {
           "Content-Type": "application/jose+json",
         };
 
-        const InteractionRequest = {
+        const interactionRequestConfig = {
           headers: headers,
           body: jws,
           method: "POST",
         };
 
-        const response = await fetch(url, InteractionRequest);
+        const response = await fetch(url, interactionRequestConfig);
         console.log("response:", response);
 
         const response_json = await response.json();
-        // if successful response
+        // if successful response save in localStorage
         if (response_json && Object.keys(response_json).length > 0) {
           // save InteractionResponse
           localStorage.setItem(
@@ -175,6 +152,28 @@ export function StartSession() {
       }
     } else {
       console.log("LOCAL STORAGE ALREADY SAVED");
+    }
+  }
+
+  // for debugging/development
+  async function redirect() {
+    const value = localStorage.getItem("InteractionResponse");
+    if (value) {
+      try {
+        const interactionResponse = JSON.parse(value);
+
+        if (
+          interactionResponse &&
+          interactionResponse.interact &&
+          interactionResponse.interact.redirect
+        ) {
+          window.location.href = interactionResponse.interact.redirect;
+        }
+      } catch (error) {
+        console.error("Error parsing token:", error);
+      }
+    } else {
+      console.error("Token is null or undefined");
     }
   }
 
