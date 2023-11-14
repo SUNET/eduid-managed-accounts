@@ -4,10 +4,10 @@ import { CompactSign, importJWK } from "jose";
 import { ContinueRequest } from "services/openapi";
 import { getSHA256Hash } from "../components/TestHash";
 
-interface postContinueRequestResponse {}
+interface PostContinueRequestResponse {}
 
 export const postContinueRequest = createAsyncThunk<
-  postContinueRequestResponse, // return type
+  PostContinueRequestResponse, // return type
   { JWSToken: any; interactRef: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {
@@ -44,7 +44,6 @@ export const postContinueRequest = createAsyncThunk<
         body: jws,
       };
       const response = await fetch(args.JWSToken.continue_url, { ...request });
-      console.log("response", response);
       if (response.ok) {
         return await response.json();
       } else {

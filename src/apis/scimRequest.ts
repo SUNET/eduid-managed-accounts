@@ -4,8 +4,7 @@ import { AppDispatch, AppRootState } from "init-app";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "JhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTk1MTk4MCwiaWF0IjoxNjk5OTQ4MzgwLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5OTQ4MzgwLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.hfSgsiUKS6QV5ioYHACSFey9CbTAA7F18qoo2vVkv0ODinea3SzkPBQJqCvZI9SPGIZf40VVY57AuIiwyw9pDA";
-
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTk2OTExNCwiaWF0IjoxNjk5OTY1NTE0LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5OTY1NTE0LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.HJviBf00pPDx4CG9Fqg85_6i7AWPPCL9z7h-76eJz6d_KvbIDtvQ7-KpaEMJI8ig71TpqKdAQIDNorHgsQNEhw";
 const scimHeaders = (token: string) => {
   return {
     "Content-Type": "application/scim+json",
@@ -21,10 +20,17 @@ function createScimRequest(body?: string) {
   return scimRequest;
 }
 
-interface fetchGroupsResponse {}
+export interface Group {
+  id: string;
+  displayName: string;
+}
+
+export interface FetchGroupsResponse {
+  groups: Group[];
+}
 
 export const fetchGroups = createAsyncThunk<
-  fetchGroupsResponse, // return type
+  FetchGroupsResponse, // return type
   undefined, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/fetchGroups", async (args, thunkAPI) => {
@@ -33,6 +39,7 @@ export const fetchGroups = createAsyncThunk<
       const headers = scimHeaders(accessTokenTest);
       const scimRequest = createScimRequest();
       const scimResponse = await fetch(baseURL + "Groups/", { ...scimRequest, headers });
+
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
@@ -44,10 +51,10 @@ export const fetchGroups = createAsyncThunk<
   }
 });
 
-interface getGroupsSearchResponse {}
+interface GetGroupsSearchResponse {}
 
 export const getGroupsSearch = createAsyncThunk<
-  getGroupsSearchResponse, // return type
+  GetGroupsSearchResponse, // return type
   { searchFilter: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
@@ -78,14 +85,13 @@ export const getGroupsSearch = createAsyncThunk<
   }
 });
 
-interface getGroupDetailsResponse {}
+interface GetGroupDetailsResponse {}
 
 export const getGroupDetails = createAsyncThunk<
-  getGroupDetailsResponse, // return type
+  GetGroupDetailsResponse, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupDetails", async (args, thunkAPI) => {
-  console.log("getGroupDetails", args.id);
   try {
     if (accessTokenTest) {
       const headers = scimHeaders(accessTokenTest);
@@ -105,10 +111,10 @@ export const getGroupDetails = createAsyncThunk<
   }
 });
 
-interface postUserResponse {}
+interface PostUserResponse {}
 
 export const postUser = createAsyncThunk<
-  postUserResponse, // return type
+  PostUserResponse, // return type
   { familyName: string; givenName: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/postUser", async (args, thunkAPI) => {
