@@ -1,47 +1,28 @@
 import { useState } from "react";
 
+// TODO: Scim TypeScript Client could be used here
+
 export default function Scim() {
   // const location = useLocation();
   // const { accessToken } = location.state;
   const [groups, setGroups] = useState<any>();
   const [group, setGroup] = useState<any>();
   const accessTokenTest =
-    "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTQ1MDk2NywiaWF0IjoxNjk5NDQ3MzY3LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5NDQ3MzY3LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.4LWC4c4I25IiCNKei-h0Y1iOruPffjo9M1RvFAM90_eJ_n95qSNa381Px8Pk4MfJL737rsX6xg_8bwfij9NKgw";
-
-  // useEffect(() => {
-  //   const fetchScimTest = async () => {
-  //     const url = "https://api.eduid.docker/scim/Groups";
-  //     const config = {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/scim+json",
-  //         // Authorization: `Bearer ${accessToken}`,
-  //         Authorization: `Bearer ${accessTokenTest}`,
-  //       },
-  //     };
-
-  //     try {
-  //       const response = await fetch(url, config);
-  //       if (response.ok) {
-  //         const resp_json = await response.json();
-  //         console.log("[resp_json]", resp_json);
-  //       }
-  //     } catch {}
-  //   };
-  //   fetchScimTest();
-  // }, []);
+    "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTg5NDA0MiwiaWF0IjoxNjk5ODkwNDQyLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5ODkwNDQyLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.GAjg8Q3EMBaLxsdipyQTq4_3gG1T840RkDKLrLQDanRsflvAORHdI-9QB5ueVHWSrkpQqjAMa0AiMCpJYw7s4g";
 
   const baseURL = "https://api.eduid.docker/scim/";
+
+  const headers = {
+    "Content-Type": "application/scim+json",
+    // Authorization: `Bearer ${accessToken}`,
+    Authorization: `Bearer ${accessTokenTest}`,
+  };
 
   async function getGroups() {
     const url = baseURL + "Groups/";
     const config = {
       method: "GET",
-      headers: {
-        "Content-Type": "application/scim+json",
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer ${accessTokenTest}`,
-      },
+      headers: headers,
     };
 
     try {
@@ -64,18 +45,11 @@ export default function Scim() {
       payload = {
         schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
         filter: `displayName eq "${input.value}"`,
-        //startIndex: 1,
-        //count: 100,
-        //attributes: ["string"],
       };
     }
     const config = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/scim+json",
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer ${accessTokenTest}`,
-      },
+      headers: headers,
       body: JSON.stringify(payload),
     };
 
@@ -96,11 +70,7 @@ export default function Scim() {
     const url = baseURL + "Groups/" + id;
     const config = {
       method: "GET",
-      headers: {
-        "Content-Type": "application/scim+json",
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer ${accessTokenTest}`,
-      },
+      headers: headers,
     };
 
     try {
@@ -127,11 +97,7 @@ export default function Scim() {
     };
     const config = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/scim+json",
-        // Authorization: `Bearer ${accessToken}`,
-        Authorization: `Bearer ${accessTokenTest}`,
-      },
+      headers: headers,
       body: JSON.stringify(payload),
     };
 
@@ -172,7 +138,9 @@ export default function Scim() {
             <p>
               Group: {group.id} {group.displayName}
             </p>
-            <button onClick={() => getGroupDetails(group.id)}>Get Group Details</button>
+            <button onClick={() => getGroupDetails(group.id)}>
+              Get Group Details
+            </button>
           </>
         )}
         <form onSubmit={(e) => getGroupsSearch(e)}>

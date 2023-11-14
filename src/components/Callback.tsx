@@ -1,24 +1,19 @@
 import { CompactSign, importJWK } from "jose";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ContinueRequest } from "services/openapi";
+import { ContinueRequest } from "typescript-clients/gnap";
+import { getSHA256Hash } from "../common/CryptoUtils";
 
-const getSHA256Hash = async (input: string) => {
-  const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const base64String = btoa(String.fromCharCode(...hashArray));
-  const urlSafeBase64 = base64String.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-  return urlSafeBase64;
-};
+// TODO: Gnap TypeScript Client could be used here
 
-export default function TestHash() {
+export default function Callback() {
   const [accessToken, setAccessToken] = useState("");
 
-  // Get "JWSToken" from LocalStorage
-  const value = localStorage.getItem("JWSToken") ?? "";
-  const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
+  // Get "InteractionResponse" from LocalStorage
+  const value = localStorage.getItem("InteractionResponse") ?? "";
+  const InteractionResponse = JSON.parse(value) ? JSON.parse(value) : {};
   // Get "finish" and "nonce" from LocalStorage
-  const finish = JWSToken.interact.finish;
+  const finish = InteractionResponse.interact.finish;
   const nonce = localStorage.getItem("Nonce");
 
   // Get "hash" and "interact_ref" from URL query parameters
@@ -51,8 +46,9 @@ export default function TestHash() {
    *
    * */
   const continueRequest = async () => {
-    const continue_url = JWSToken.continue.uri;
-    const continue_access_token = JWSToken.continue.access_token.value;
+    const continue_url = InteractionResponse.continue.uri;
+    const continue_access_token =
+      InteractionResponse.continue.access_token.value;
     const access_token_calculated = await getSHA256Hash(continue_access_token);
 
     const continue_request: ContinueRequest = {
@@ -65,14 +61,16 @@ export default function TestHash() {
     let jws_header = {
       typ: "gnap-binding+jws",
       alg: alg,
-      kid: "random_generated_id", // fix, coupled with publicKey, privateKey
+      kid: "random_generated_id", // TODO: couple "kid" with publicKey, privateKey
       htm: "POST",
       uri: continue_url,
       created: Date.now(),
       ath: access_token_calculated,
     };
 
-    const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(continue_request)))
+    const jws = await new CompactSign(
+      new TextEncoder().encode(JSON.stringify(continue_request))
+    )
       .setProtectedHeader(jws_header)
       .sign(privateKey);
 

@@ -3,7 +3,7 @@ import { intlReducer } from "./slices/Internationalisation";
 
 const managedAccountsApp = combineReducers({
   intl: intlReducer,
-  // fetchJWSToken: fetchJWSReducer,
+  // fetchInteractionResponse: fetchInteractionResponseReducer,
 });
 
 export default managedAccountsApp;

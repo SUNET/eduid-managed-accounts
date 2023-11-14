@@ -8,3 +8,17 @@ export function generateNonce(len: number) {
   const result = Array.from(arr, dec2hex).join("");
   return result;
 }
+
+export const getSHA256Hash = async (input: string) => {
+  const hashBuffer = await window.crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(input)
+  );
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const base64String = btoa(String.fromCharCode(...hashArray));
+  const urlSafeBase64 = base64String
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+  return urlSafeBase64;
+};
