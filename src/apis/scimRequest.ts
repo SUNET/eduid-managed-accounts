@@ -8,7 +8,7 @@ export const accessTokenTest =
 const scimHeaders = (token: string) => {
   return {
     "Content-Type": "application/scim+json",
-    Authorization: "Bearer " + token,
+    Authorization: `Bearer ${token}`,
   };
 };
 
@@ -25,12 +25,18 @@ export interface Group {
   displayName: string;
 }
 
-export interface FetchGroupsResponse {
+export interface GroupsResponse {
   groups: Group[];
 }
 
+export interface ErrorResponse {
+  status: string;
+  detail: string;
+  message: string;
+}
+
 export const fetchGroups = createAsyncThunk<
-  FetchGroupsResponse, // return type
+  GroupsResponse, // return type
   undefined, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/fetchGroups", async (args, thunkAPI) => {
@@ -43,7 +49,8 @@ export const fetchGroups = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        await handleErrorResponse(scimResponse);
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -51,10 +58,8 @@ export const fetchGroups = createAsyncThunk<
   }
 });
 
-interface GetGroupsSearchResponse {}
-
 export const getGroupsSearch = createAsyncThunk<
-  GetGroupsSearchResponse, // return type
+  GroupsResponse, // return type
   { searchFilter: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
@@ -77,7 +82,8 @@ export const getGroupsSearch = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        await handleErrorResponse(scimResponse);
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -103,7 +109,8 @@ export const getGroupDetails = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        await handleErrorResponse(scimResponse);
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -138,7 +145,8 @@ export const postUser = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        await handleErrorResponse(scimResponse);
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -146,8 +154,7 @@ export const postUser = createAsyncThunk<
   }
 });
 
-const handleErrorResponse = async (response: any) => {
-  const errorResponse = await response.json();
-  const errorMessage = `Failed with status ${errorResponse.status}: ${errorResponse.message || errorResponse.detail}`;
+const handleErrorResponse = async (response: ErrorResponse) => {
+  const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
   throw new Error(errorMessage);
 };
