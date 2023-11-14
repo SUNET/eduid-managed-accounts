@@ -1,9 +1,6 @@
 import { useEffect } from "react";
-import { initLocalStorage } from "../initLocalStorage";
-
-// TODO: Gnap TypeScript Client could be used here
-
-const url = "https://api.eduid.docker/auth/transaction";
+import { initLocalStorage, INTERACTION_RESPONSE } from "../initLocalStorage";
+import Splash from "./Splash";
 
 /**
  * Implement Redirect-based Interaction flow
@@ -11,19 +8,15 @@ const url = "https://api.eduid.docker/auth/transaction";
  * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-redirect-based-interaction
  */
 export function StartSession() {
-  useEffect(() => {
-    initLocalStorage();
-  }, []);
-
   // for debugging/development
+  const token = localStorage.getItem(INTERACTION_RESPONSE);
   async function redirect() {
-    const value = localStorage.getItem("InteractionResponse");
-    if (value) {
+    if (token) {
       try {
-        const interactionResponse = JSON.parse(value);
+        const tokenObject = JSON.parse(token);
 
-        if (interactionResponse && interactionResponse.interact && interactionResponse.interact.redirect) {
-          window.location.href = interactionResponse.interact.redirect;
+        if (tokenObject?.interact?.redirect) {
+          window.location.href = tokenObject.interact.redirect;
         }
       } catch (error) {
         console.error("Error parsing token:", error);
@@ -33,12 +26,16 @@ export function StartSession() {
     }
   }
 
+  useEffect(() => {
+    initLocalStorage();
+  }, []);
+
   return (
-    <>
+    <Splash showChildren={token !== null}>
       <h1>Press the button to redirect</h1>
       <button className="btn btn-primary" onClick={redirect}>
         Redirect
       </button>
-    </>
+    </Splash>
   );
 }
