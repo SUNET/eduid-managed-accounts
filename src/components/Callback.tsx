@@ -1,7 +1,7 @@
-import { ContinueRequest } from "TypeScript-Clients/gnap";
 import { CompactSign, importJWK } from "jose";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { ContinueRequest } from "typescript-clients/gnap";
 import { getSHA256Hash } from "../common/CryptoUtils";
 
 // TODO: Gnap TypeScript Client could be used here

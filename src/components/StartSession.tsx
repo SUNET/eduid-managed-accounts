@@ -5,15 +5,15 @@ import {
   importJWK,
 } from "jose";
 import { useEffect } from "react";
+import { generateNonce } from "../common/CryptoUtils";
+import jwk_file from "../jwk.json";
 import {
   AccessTokenFlags,
   AccessTokenRequest,
   ECJWK,
   GrantRequest,
   KeyType,
-} from "../TypeScript-Clients/gnap";
-import { generateNonce } from "../common/CryptoUtils";
-import jwk_file from "../jwk.json";
+} from "../typescript-clients/gnap";
 
 // TODO: Gnap TypeScript Client could be used here
 
