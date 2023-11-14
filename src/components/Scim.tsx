@@ -77,7 +77,6 @@ export default function Scim() {
       const response = await fetch(url, config);
       if (response.ok) {
         const resp_json = await response.json();
-        console.log("[resp_json]", resp_json);
       }
     } catch {}
   }
@@ -113,11 +112,12 @@ export default function Scim() {
 
   return (
     <>
-      <h1>Scim Page</h1>
       <div>
         <div>
           <h2>Get All Groups</h2>
-          <button onClick={() => getGroups()}>Get Groups</button>
+          <button className="btn btn-primary" onClick={() => getGroups()}>
+            Get Groups
+          </button>
         </div>
 
         {groups?.map((group: any) => (

@@ -1,15 +1,15 @@
 import React from "react";
-import "./App.css";
-import "./styles/_anti-bootstrap.scss";
-import "./styles/_base.scss";
-import "./styles/_buttons.scss";
-import "./styles/_fonts.scss";
-import "./styles/_footer.scss";
-import "./styles/_forms.scss";
-import "./styles/_header.scss";
-import "./styles/_inputs.scss";
-import "./styles/_reset.scss";
-import "./styles/_typography.scss";
+// import "./App.css";
+// import "./styles/_anti-bootstrap.scss";
+// import "./styles/_base.scss";
+// import "./styles/_buttons.scss";
+// import "./styles/_fonts.scss";
+// import "./styles/_footer.scss";
+// import "./styles/_forms.scss";
+// import "./styles/_header.scss";
+// import "./styles/_inputs.scss";
+// import "./styles/_reset.scss";
+// import "./styles/_typography.scss";
 
 function App() {
   return (
