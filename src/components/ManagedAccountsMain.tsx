@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { initLocalStorage } from "../initLocalStorage";
+import { initLocalStorage, INTERACTION_RESPONSE } from "../initLocalStorage";
 import Splash from "./Splash";
 
-export function Main() {
+export function StartSession() {
   // for debugging/development
-  const token = localStorage.getItem("JWSToken");
+  const token = localStorage.getItem(INTERACTION_RESPONSE);
   async function redirect() {
     if (token) {
       try {

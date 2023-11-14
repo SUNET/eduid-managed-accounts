@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { postContinueRequest } from "../apis/continueRequest";
 import { useAppDispatch } from "../hooks";
-import { JWS_TOKEN, NONCE } from "./../initLocalStorage";
+import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
 
 export const getSHA256Hash = async (input: string) => {
   const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
@@ -12,11 +12,11 @@ export const getSHA256Hash = async (input: string) => {
   return urlSafeBase64;
 };
 
-export default function TestHash() {
+export default function Callback() {
   const dispatch = useAppDispatch();
 
   // Get "JWSToken" from LocalStorage
-  const value = localStorage.getItem(JWS_TOKEN) ?? "";
+  const value = localStorage.getItem(INTERACTION_RESPONSE) ?? "";
   const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
   // Get "finish" and "nonce" from LocalStorage
   const finish = JWSToken.interact.finish;

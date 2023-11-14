@@ -1,16 +1,16 @@
 import { CompactSign, GenerateKeyPairOptions, exportJWK, importJWK } from "jose";
 import { generateNonce } from "./common/CryptoUtils";
 import jwk_file from "./jwk.json";
-import { AccessTokenFlags, AccessTokenRequest, ECJWK, GrantRequest, KeyType } from "./services/openapi";
+import { AccessTokenFlags, AccessTokenRequest, ECJWK, GrantRequest, KeyType } from "./typescript-clients/gnap";
 
 const url = "https://api.eduid.docker/auth/transaction";
-export const JWS_TOKEN = "JWSToken";
+export const INTERACTION_RESPONSE = "InteractionResponse";
 export const JWS_TOKEN_EXPIRES = "JWSTokenExpires";
 export const NONCE = "Nonce";
 
 export async function initLocalStorage() {
   localStorage.clear();
-  const token = localStorage.getItem(JWS_TOKEN);
+  const token = localStorage.getItem(INTERACTION_RESPONSE);
   if (token === null || Object.keys(token).length === 0 || token === undefined) {
     try {
       const atr: AccessTokenRequest = {
@@ -103,7 +103,7 @@ export async function initLocalStorage() {
         const expiresIn = responseJson.interact.expires_in;
         const expiresInMilliseconds = expiresIn * 1000;
         const JWSTokenExpires = new Date(now.getTime() + expiresInMilliseconds).getTime();
-        localStorage.setItem(JWS_TOKEN, JSON.stringify(responseJson));
+        localStorage.setItem(INTERACTION_RESPONSE, JSON.stringify(responseJson));
         localStorage.setItem(NONCE, nonce);
         localStorage.setItem(JWS_TOKEN_EXPIRES, JWSTokenExpires.toString());
       } else {
