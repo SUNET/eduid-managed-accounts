@@ -4,7 +4,7 @@ import { AppDispatch, AppRootState } from "init-app";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTYzMTE2NSwiaWF0IjoxNjk5NjI3NTY1LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5NjI3NTY1LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.KyJzwXna-VC1Yv39bXO54zlRiwPixlZwER6zI-_VD0Cv4yxjf244MLML5IaIgsSA77lupBu20R68jZOvxeKnyA";
+  "JhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTk1MTk4MCwiaWF0IjoxNjk5OTQ4MzgwLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5OTQ4MzgwLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.hfSgsiUKS6QV5ioYHACSFey9CbTAA7F18qoo2vVkv0ODinea3SzkPBQJqCvZI9SPGIZf40VVY57AuIiwyw9pDA";
 
 const scimHeaders = (token: string) => {
   return {
@@ -36,7 +36,7 @@ export const fetchGroups = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        throw new Error("Failed to fetch SCIM data");
+        await handleErrorResponse(scimResponse);
       }
     }
   } catch (error) {
@@ -70,7 +70,7 @@ export const getGroupsSearch = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        throw new Error("Failed to fetch SCIM data");
+        await handleErrorResponse(scimResponse);
       }
     }
   } catch (error) {
@@ -97,7 +97,7 @@ export const getGroupDetails = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        throw new Error("Failed to fetch SCIM data");
+        await handleErrorResponse(scimResponse);
       }
     }
   } catch (error) {
@@ -132,10 +132,16 @@ export const postUser = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        throw new Error("Failed to fetch SCIM data");
+        await handleErrorResponse(scimResponse);
       }
     }
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
 });
+
+const handleErrorResponse = async (response: any) => {
+  const errorResponse = await response.json();
+  const errorMessage = `Failed with status ${errorResponse.status}: ${errorResponse.message || errorResponse.detail}`;
+  throw new Error(errorMessage);
+};
