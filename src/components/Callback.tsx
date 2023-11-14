@@ -1,21 +1,14 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { postContinueRequest } from "../apis/continueRequest";
+import { getSHA256Hash } from "../common/CryptoUtils";
 import { useAppDispatch } from "../hooks";
 import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
-
-export const getSHA256Hash = async (input: string) => {
-  const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const base64String = btoa(String.fromCharCode(...hashArray));
-  const urlSafeBase64 = base64String.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-  return urlSafeBase64;
-};
 
 export default function Callback() {
   const dispatch = useAppDispatch();
 
-  // Get "JWSToken" from LocalStorage
+  // Get "InteractionResponse" from LocalStorage
   const value = localStorage.getItem(INTERACTION_RESPONSE) ?? "";
   const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
   // Get "finish" and "nonce" from LocalStorage

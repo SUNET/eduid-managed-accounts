@@ -1,15 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import "../App.css";
-import "../styles/_base.scss";
-import "../styles/_buttons.scss";
-import "../styles/_fonts.scss";
-import "../styles/_footer.scss";
-import "../styles/_forms.scss";
-import "../styles/_header.scss";
-import "../styles/_inputs.scss";
-import "../styles/_reset.scss";
-import "../styles/_typography.scss";
 import Callback from "./Callback";
 import Footer from "./Footer";
 import GroupManagement from "./GroupManagement";
