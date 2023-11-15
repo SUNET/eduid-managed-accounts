@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { CompactSign, importJWK } from "jose";
-import { getSHA256Hash } from "../components/Callback";
+import { getSHA256Hash } from "../common/CryptoUtils";
 import { ContinueRequest } from "../typescript-clients/gnap";
 
 interface postContinueRequestResponse {}
