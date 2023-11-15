@@ -7,6 +7,8 @@ const url = "https://api.eduid.docker/auth/transaction";
 export const INTERACTION_RESPONSE = "InteractionResponse";
 export const INTERACTION_EXPIRES = "InteractionExpires";
 export const NONCE = "Nonce";
+const PRIVATE_KEY = "privateKey";
+const PUBLIC_KEY = "publicKey";
 
 export async function initLocalStorage() {
   localStorage.clear();
@@ -42,11 +44,8 @@ export async function initLocalStorage() {
       const publicKey = await importJWK(jwk_private, alg);
 
       const privateJwk = await exportJWK(privateKey);
-      localStorage.setItem("privateKey", JSON.stringify(privateJwk));
       console.log("privateKey", JSON.stringify(privateJwk));
-
       const publicJwk = await exportJWK(publicKey);
-      localStorage.setItem("publicKey", JSON.stringify(publicJwk));
 
       const EllipticCurveJSONWebKey: ECJWK = {
         kid: "eduid_managed_accounts_1",
@@ -106,6 +105,8 @@ export async function initLocalStorage() {
         localStorage.setItem(INTERACTION_RESPONSE, JSON.stringify(responseJson));
         localStorage.setItem(NONCE, nonce);
         localStorage.setItem(INTERACTION_EXPIRES, InteractionExpires.toString());
+        localStorage.setItem(PRIVATE_KEY, JSON.stringify(privateJwk));
+        localStorage.setItem(PUBLIC_KEY, JSON.stringify(publicJwk));
       } else {
         console.error("response_json is empty or null");
       }
