@@ -4,10 +4,10 @@ import { CompactSign, importJWK } from "jose";
 import { getSHA256Hash } from "../common/CryptoUtils";
 import { ContinueRequest } from "../typescript-clients/gnap";
 
-interface postContinueRequestResponse {}
+interface PostContinueRequestResponse {}
 
 export const postContinueRequest = createAsyncThunk<
-  postContinueRequestResponse, // return type
+  PostContinueRequestResponse, // return type
   { interactions: any; interactRef: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {

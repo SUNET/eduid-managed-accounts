@@ -1,0 +1,48 @@
+@import "variables";
+
+// Top notification bar
+.notifications-area {
+  width: 100%;
+}
+
+.alert.alert-dismissible {
+  position: relative;
+  margin: 0;
+  padding: 1rem 0;
+  border-radius: 0;
+
+  &.alert-danger,
+  &.alert-success {
+    color: $error-red;
+    background-color: $bg-orange;
+    border: none;
+  }
+
+  span {
+    padding-right: 0.5rem;
+
+    @media (max-width: $bp-sm) {
+      margin: 0;
+    }
+  }
+
+  .close {
+    position: absolute;
+    height: 1.5rem;
+    right: 1rem;
+    top: 1rem;
+    padding: 0;
+
+    &:hover {
+      color: $bright-orange;
+    }
+
+    @media (max-width: $bp-sm) {
+      font-size: $txt-xs;
+    }
+  }
+
+  @media (max-width: $bp-sm) {
+    padding: 1rem;
+  }
+}

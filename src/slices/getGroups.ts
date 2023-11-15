@@ -1,8 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { fetchGroups, getGroupDetails, getGroupsSearch } from "../apis/scimRequest";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { Group, fetchGroups, fetchGroupsResponse, getGroupDetails, getGroupsSearch } from "../apis/scimRequest";
 
 interface GetGroupsState {
-  groups: any;
+  groups: Group[];
   searchedGroups: any;
   members: any;
 }
@@ -18,14 +18,14 @@ export const getGroupsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchGroups.fulfilled, (state, action) => {
-      state.groups = action.payload.Resources;
+    builder.addCase(fetchGroups.fulfilled, (state, action: PayloadAction<fetchGroupsResponse>) => {
+      state.groups = action.payload?.Resources;
     });
     builder.addCase(getGroupsSearch.fulfilled, (state, action) => {
-      state.searchedGroups = action.payload.Resources;
+      state.searchedGroups = action.payload?.Resources;
     });
     builder.addCase(getGroupDetails.fulfilled, (state, action) => {
-      state.members = action.payload.members;
+      state.members = action.payload?.members;
     });
   },
 });

@@ -5,7 +5,7 @@ import Callback from "./Callback";
 import Footer from "./Footer";
 import GroupManagement from "./GroupManagement";
 import { Header } from "./Header";
-
+import { Notifications } from "./Notifications";
 import { StartSession } from "./StartSession";
 
 export function ManagedAccountApp(): JSX.Element {
@@ -13,6 +13,7 @@ export function ManagedAccountApp(): JSX.Element {
     <React.Fragment>
       <Header />
       <main id="panel" className="panel">
+        <Notifications />
         <section id="content" className="horizontal-content-margin content">
           <Routes>
             <Route path="/" element={<StartSession />} />

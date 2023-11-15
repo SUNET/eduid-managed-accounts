@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import logger from "redux-logger";
+import notifyAndDispatch from "./notify-middleware";
 import managedAccountsApp from "./store";
 
 /* setup to run the combined sagas */
-const middlewares = [logger];
+const middlewares = [notifyAndDispatch, logger];
 
 export const managedAccountsStore = configureStore({
   reducer: managedAccountsApp,

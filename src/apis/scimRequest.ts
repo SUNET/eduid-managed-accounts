@@ -9,7 +9,7 @@ export const accessTokenTest =
 const scimHeaders = (token: string) => {
   return {
     "Content-Type": "application/scim+json",
-    Authorization: "Bearer " + token,
+    Authorization: `Bearer ${token}`,
   };
 };
 
@@ -21,10 +21,23 @@ function createScimRequest(body?: string) {
   return scimRequest;
 }
 
-interface fetchGroupsResponse {}
+export interface Group {
+  id: string;
+  displayName: string;
+}
+
+export interface GroupsResponse {
+  groups: Group[];
+}
+
+export interface ErrorResponse {
+  status: string;
+  detail: string;
+  message: string;
+}
 
 export const fetchGroups = createAsyncThunk<
-  fetchGroupsResponse, // return type
+  GroupsResponse, // return type
   undefined, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/fetchGroups", async (args, thunkAPI) => {
@@ -33,10 +46,12 @@ export const fetchGroups = createAsyncThunk<
       const headers = scimHeaders(accessTokenTest);
       const scimRequest = createScimRequest();
       const scimResponse = await fetch(baseURL + "Groups/", { ...scimRequest, headers });
+
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        throw new Error("Failed to fetch SCIM data");
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -44,10 +59,8 @@ export const fetchGroups = createAsyncThunk<
   }
 });
 
-interface getGroupsSearchResponse {}
-
 export const getGroupsSearch = createAsyncThunk<
-  getGroupsSearchResponse, // return type
+  GroupsResponse, // return type
   { searchFilter: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
@@ -70,7 +83,8 @@ export const getGroupsSearch = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        throw new Error("Failed to fetch SCIM data");
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -78,14 +92,13 @@ export const getGroupsSearch = createAsyncThunk<
   }
 });
 
-interface getGroupDetailsResponse {}
+interface GetGroupDetailsResponse {}
 
 export const getGroupDetails = createAsyncThunk<
-  getGroupDetailsResponse, // return type
+  GetGroupDetailsResponse, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupDetails", async (args, thunkAPI) => {
-  console.log("getGroupDetails", args.id);
   try {
     if (accessTokenTest) {
       const headers = scimHeaders(accessTokenTest);
@@ -97,7 +110,8 @@ export const getGroupDetails = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        throw new Error("Failed to fetch SCIM data");
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -105,10 +119,10 @@ export const getGroupDetails = createAsyncThunk<
   }
 });
 
-interface postUserResponse {}
+interface PostUserResponse {}
 
 export const postUser = createAsyncThunk<
-  postUserResponse, // return type
+  PostUserResponse, // return type
   { familyName: string; givenName: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/postUser", async (args, thunkAPI) => {
@@ -132,10 +146,16 @@ export const postUser = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        throw new Error("Failed to fetch SCIM data");
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
       }
     }
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
 });
+
+const handleErrorResponse = async (response: ErrorResponse) => {
+  const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
+  throw new Error(errorMessage);
+};
