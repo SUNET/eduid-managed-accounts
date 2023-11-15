@@ -8,6 +8,7 @@ const initDomTarget = document.getElementById("root");
 
 if (initDomTarget) {
   const root = ReactDOM.createRoot(initDomTarget);
+
   root.render(
     <ReduxIntlProvider store={managedAccountsStore}>
       <BrowserRouter>
