@@ -53,7 +53,7 @@ export default function GroupManagement() {
   };
 
   return (
-    <Splash showChildren={groupsData.length}>
+    <Splash showChildren={groupsData.length > 0}>
       <section className="intro">
         <h1>Welcome</h1>
         <div className="lead">

@@ -19,7 +19,6 @@ export const notificationsSlice = createSlice({
   initialState,
   reducers: {
     showNotification: (state, action: PayloadAction<eduidNotification>) => {
-      console.log("[action]", action.payload);
       state.error = action.payload;
     },
     clearNotifications: (state) => {
@@ -33,7 +32,5 @@ export const notificationsSlice = createSlice({
   },
 });
 
-// since all old code use imports like these
 export const showNotification = notificationsSlice.actions.showNotification;
 export const clearNotifications = notificationsSlice.actions.clearNotifications;
-//export const intlReducer = intlSlice.reducer;
