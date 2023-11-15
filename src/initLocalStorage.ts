@@ -1,16 +1,18 @@
 import { CompactSign, GenerateKeyPairOptions, exportJWK, importJWK } from "jose";
 import { generateNonce } from "./common/CryptoUtils";
 import jwk_file from "./jwk.json";
-import { AccessTokenFlags, AccessTokenRequest, ECJWK, GrantRequest, KeyType } from "./services/openapi";
+import { AccessTokenFlags, AccessTokenRequest, ECJWK, GrantRequest, KeyType } from "./typescript-clients/gnap";
 
 const url = "https://api.eduid.docker/auth/transaction";
-export const JWS_TOKEN = "JWSToken";
-export const JWS_TOKEN_EXPIRES = "JWSTokenExpires";
+export const INTERACTION_RESPONSE = "InteractionResponse";
+export const INTERACTION_EXPIRES = "InteractionExpires";
 export const NONCE = "Nonce";
+const PRIVATE_KEY = "privateKey";
+const PUBLIC_KEY = "publicKey";
 
 export async function initLocalStorage() {
   localStorage.clear();
-  const token = localStorage.getItem(JWS_TOKEN);
+  const token = localStorage.getItem(INTERACTION_RESPONSE);
   if (token === null || Object.keys(token).length === 0 || token === undefined) {
     try {
       const atr: AccessTokenRequest = {
@@ -42,11 +44,8 @@ export async function initLocalStorage() {
       const publicKey = await importJWK(jwk_private, alg);
 
       const privateJwk = await exportJWK(privateKey);
-      localStorage.setItem("privateKey", JSON.stringify(privateJwk));
       console.log("privateKey", JSON.stringify(privateJwk));
-
       const publicJwk = await exportJWK(publicKey);
-      localStorage.setItem("publicKey", JSON.stringify(publicJwk));
 
       const EllipticCurveJSONWebKey: ECJWK = {
         kid: "eduid_managed_accounts_1",
@@ -102,10 +101,12 @@ export async function initLocalStorage() {
         let now = new Date();
         const expiresIn = responseJson.interact.expires_in;
         const expiresInMilliseconds = expiresIn * 1000;
-        const JWSTokenExpires = new Date(now.getTime() + expiresInMilliseconds).getTime();
-        localStorage.setItem(JWS_TOKEN, JSON.stringify(responseJson));
+        const InteractionExpires = new Date(now.getTime() + expiresInMilliseconds).getTime();
+        localStorage.setItem(INTERACTION_RESPONSE, JSON.stringify(responseJson));
         localStorage.setItem(NONCE, nonce);
-        localStorage.setItem(JWS_TOKEN_EXPIRES, JWSTokenExpires.toString());
+        localStorage.setItem(INTERACTION_EXPIRES, InteractionExpires.toString());
+        localStorage.setItem(PRIVATE_KEY, JSON.stringify(privateJwk));
+        localStorage.setItem(PUBLIC_KEY, JSON.stringify(publicJwk));
       } else {
         console.error("response_json is empty or null");
       }

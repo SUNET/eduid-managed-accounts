@@ -7,6 +7,7 @@ const managedAccountsApp = combineReducers({
   intl: intlReducer,
   groups: getGroupsReducer,
   notifications: notificationsSlice.reducer,
+  // fetchInteractionResponse: fetchInteractionResponseReducer,
 });
 
 export default managedAccountsApp;

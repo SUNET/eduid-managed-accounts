@@ -1,10 +1,15 @@
 import { useEffect } from "react";
-import { initLocalStorage } from "../initLocalStorage";
+import { initLocalStorage, INTERACTION_RESPONSE } from "../initLocalStorage";
 import Splash from "./Splash";
 
-export function Main() {
+/**
+ * Implement Redirect-based Interaction flow
+ *
+ * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-redirect-based-interaction
+ */
+export function StartSession() {
   // for debugging/development
-  const token = localStorage.getItem("JWSToken");
+  const token = localStorage.getItem(INTERACTION_RESPONSE);
   async function redirect() {
     if (token) {
       try {
