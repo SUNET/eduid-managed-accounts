@@ -10,9 +10,9 @@ export default function Callback() {
 
   // Get "InteractionResponse" from LocalStorage
   const value = localStorage.getItem(INTERACTION_RESPONSE) ?? "";
-  const JWSToken = JSON.parse(value) ? JSON.parse(value) : {};
+  const interactions = JSON.parse(value) ? JSON.parse(value) : {};
   // Get "finish" and "nonce" from LocalStorage
-  const finish = JWSToken.interact.finish;
+  const finish = interactions.interact.finish;
   const nonce = localStorage.getItem(NONCE);
 
   // Get "hash" and "interact_ref" from URL query parameters
@@ -45,8 +45,8 @@ export default function Callback() {
    *
    * */
   const continueRequest = async () => {
-    if (JWSToken && interactRef) {
-      dispatch(postContinueRequest({ JWSToken: JWSToken, interactRef: interactRef }));
+    if (interactions && interactRef) {
+      dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
     }
   };
 

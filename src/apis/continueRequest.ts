@@ -8,12 +8,12 @@ interface postContinueRequestResponse {}
 
 export const postContinueRequest = createAsyncThunk<
   postContinueRequestResponse, // return type
-  { JWSToken: any; interactRef: string }, // args type
+  { interactions: any; interactRef: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {
   try {
-    if (args.JWSToken) {
-      const access_token_calculated = await getSHA256Hash(args.JWSToken.continue_access_token);
+    if (args.interactions) {
+      const access_token_calculated = await getSHA256Hash(args.interactions.continue_access_token);
       const continue_request: ContinueRequest = {
         interact_ref: args.interactRef,
       };
@@ -26,7 +26,7 @@ export const postContinueRequest = createAsyncThunk<
         alg: alg,
         kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
         htm: "POST",
-        uri: args.JWSToken.continue_url,
+        uri: args.interactions.continue_url,
         created: Date.now(),
         ath: access_token_calculated,
       };
@@ -38,12 +38,12 @@ export const postContinueRequest = createAsyncThunk<
       const request = {
         method: "POST",
         headers: {
-          Authorization: `GNAP ${args.JWSToken.continue_access_token}`,
+          Authorization: `GNAP ${args.interactions.continue_access_token}`,
           "Content-Type": "application/jose+json",
         },
         body: jws,
       };
-      const response = await fetch(args.JWSToken.continue_url, { ...request });
+      const response = await fetch(args.interactions.continue_url, { ...request });
       console.log("response", response);
       if (response.ok) {
         return await response.json();

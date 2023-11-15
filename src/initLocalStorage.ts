@@ -5,7 +5,7 @@ import { AccessTokenFlags, AccessTokenRequest, ECJWK, GrantRequest, KeyType } fr
 
 const url = "https://api.eduid.docker/auth/transaction";
 export const INTERACTION_RESPONSE = "InteractionResponse";
-export const JWS_TOKEN_EXPIRES = "JWSTokenExpires";
+export const INTERACTION_EXPIRES = "InteractionExpires";
 export const NONCE = "Nonce";
 
 export async function initLocalStorage() {
@@ -102,10 +102,10 @@ export async function initLocalStorage() {
         let now = new Date();
         const expiresIn = responseJson.interact.expires_in;
         const expiresInMilliseconds = expiresIn * 1000;
-        const JWSTokenExpires = new Date(now.getTime() + expiresInMilliseconds).getTime();
+        const InteractionExpires = new Date(now.getTime() + expiresInMilliseconds).getTime();
         localStorage.setItem(INTERACTION_RESPONSE, JSON.stringify(responseJson));
         localStorage.setItem(NONCE, nonce);
-        localStorage.setItem(JWS_TOKEN_EXPIRES, JWSTokenExpires.toString());
+        localStorage.setItem(INTERACTION_EXPIRES, InteractionExpires.toString());
       } else {
         console.error("response_json is empty or null");
       }
