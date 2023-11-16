@@ -1,10 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
+import { generateNonce } from "../common/CryptoUtils";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTY5OTk3OTQ2MiwiaWF0IjoxNjk5OTc1ODYyLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNjk5OTc1ODYyLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.4_BDThJlSdM67dV_FL9kZlYWHbimADY7VgtiKfwaR82X7yKLNsccjUcV2DVM98Fujh8KjfOLclIngNtrLj4wsw";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDE1MTYyMiwiaWF0IjoxNzAwMTQ4MDIyLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwMTQ4MDIyLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.QliA3up_yAvt9fCIiD_TtbHBrwfhYqE5m-Wx3S7kzqaWaVDNA8q7DykKlmzx8g1dMJcHTkrzOOWRbh_FTwFWVA";
 
 const scimHeaders = (token: string) => {
   return {
@@ -17,6 +18,14 @@ function createScimRequest(body?: string) {
   const scimRequest = {
     headers: scimHeaders,
     method: body ? "POST" : "GET",
+  };
+  return scimRequest;
+}
+
+function putRequest() {
+  const scimRequest = {
+    headers: scimHeaders,
+    method: "PUT",
   };
   return scimRequest;
 }
@@ -123,7 +132,10 @@ interface PostUserResponse {}
 
 export const postUser = createAsyncThunk<
   PostUserResponse, // return type
-  { familyName: string; givenName: string }, // args type
+  {
+    familyName: string;
+    givenName: string;
+  }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/postUser", async (args, thunkAPI) => {
   try {
@@ -132,7 +144,7 @@ export const postUser = createAsyncThunk<
       const scimRequest = createScimRequest(args.familyName);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
-        externalId: args.givenName,
+        externalId: generateNonce(12),
         name: {
           familyName: args.familyName,
           givenName: args.givenName,
@@ -144,7 +156,41 @@ export const postUser = createAsyncThunk<
         body: JSON.stringify(payload),
       });
       if (scimResponse.ok) {
-        return await scimResponse.json();
+        await scimResponse.json();
+      } else {
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
+      }
+    }
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+interface PutGroupResponse {}
+
+export const putGroup = createAsyncThunk<
+  PutGroupResponse, // return type
+  { result: any }, // args type
+  { dispatch: AppDispatch; state: AppRootState }
+>("auth/putGroup", async (args, thunkAPI) => {
+  try {
+    if (accessTokenTest) {
+      const headers = scimHeaders(accessTokenTest);
+      const scimRequest = putRequest();
+      delete args.result.meta;
+      delete args.result.schemas;
+      const payload = {
+        ...args.result,
+        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
+      };
+      const scimResponse = await fetch(baseURL + "Groups/" + "16bda7c5-b7f7-470a-b44a-0a7a32b4876c", {
+        ...scimRequest,
+        headers,
+        body: JSON.stringify(payload),
+      });
+      if (scimResponse.ok) {
+        await scimResponse.json();
       } else {
         const result = await scimResponse.json();
         await handleErrorResponse(result);

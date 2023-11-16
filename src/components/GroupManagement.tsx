@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { fetchGroups, getGroupDetails, getGroupsSearch, postUser } from "../apis/scimRequest";
+import { fetchGroups, getGroupDetails, getGroupsSearch, postUser, putGroup } from "../apis/scimRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Splash from "./Splash";
 
@@ -10,6 +10,8 @@ export default function GroupManagement() {
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
+
+  console.log("groupsData", groupsData);
 
   useEffect(() => {
     const fetchScimTest = async () => {
@@ -26,20 +28,6 @@ export default function GroupManagement() {
     }
   }
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    const familyNameValue = familyNameRef?.current?.value;
-    const givenNameValue = givenNameRef?.current?.value;
-    if (familyNameValue && givenNameValue) {
-      dispatch(
-        postUser({
-          familyName: familyNameValue,
-          givenName: givenNameValue,
-        })
-      );
-    }
-  };
-
   const renderHeader = () => {
     let headerElement = ["Group name", ""];
 
@@ -52,6 +40,31 @@ export default function GroupManagement() {
     });
   };
 
+  const saveUser = async (e: any) => {
+    e.preventDefault();
+    // TODO
+    const givenName = document.querySelector('[name="givenName"]') as HTMLInputElement;
+    const middleName = document.querySelector('[name="middleName"]') as HTMLInputElement;
+    const familyName = document.querySelector('[name="familyName"]') as HTMLInputElement;
+    //POST USER
+    if (givenName.value && familyName.value) {
+      const response = await dispatch(
+        postUser({
+          familyName: familyName.value,
+          givenName: givenName.value,
+        })
+      );
+
+      if (postUser.fulfilled.match(response)) {
+        const result = await dispatch(getGroupDetails({ id: "16bda7c5-b7f7-470a-b44a-0a7a32b4876c" }));
+        if (getGroupDetails.fulfilled.match(result)) {
+          console.log("result", result.payload);
+          dispatch(putGroup({ result: result.payload }));
+        }
+      }
+    }
+  };
+
   return (
     <Splash showChildren={groupsData.length > 0}>
       <section className="intro">
@@ -60,7 +73,52 @@ export default function GroupManagement() {
           <p>You can search through your groups here and provide detailed information.</p>
         </div>
       </section>
-      <article className="intro">
+      <section>
+        <form onSubmit={saveUser}>
+          <fieldset>
+            <label>Given name</label>
+            <input type="text" name="givenName"></input>
+          </fieldset>
+          <fieldset>
+            <label>Middle name (optional)</label>
+            <input type="text" name="middleName"></input>
+          </fieldset>
+          <fieldset>
+            <label>Surname</label>
+            <input type="text" name="familyName"></input>
+          </fieldset>
+          <div className="buttons">
+            <button className="btn-primary">Create</button>
+          </div>
+          <br />
+          <table>
+            <thead>
+              <tr>
+                <th>Given name*</th>
+                <th>Middle name</th>
+                <th>Surname*</th>
+                <th>EPPN</th>
+                <th>Password</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <button>Remove</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </section>
+      {/* hämtar användaren */}
+      {/* <article className="intro">
         <form onSubmit={(e) => getGroupsSearch1(e)}>
           <label>Search groups</label>
           <input className="form-control" name="filter_string" ref={filterString} />
@@ -97,7 +155,7 @@ export default function GroupManagement() {
         ))}
 
         <br />
-      </article>
+      </article> */}
       {/* <div>
         <h2> Users</h2>
         <form onSubmit={handleSubmit} style={{ display: "flex" }}>

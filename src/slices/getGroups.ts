@@ -1,5 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Group, fetchGroups, fetchGroupsResponse, getGroupDetails, getGroupsSearch } from "../apis/scimRequest";
+import {
+  Group,
+  fetchGroups,
+  fetchGroupsResponse,
+  getGroupDetails,
+  getGroupsSearch,
+  postUser,
+} from "../apis/scimRequest";
 
 interface GetGroupsState {
   groups: Group[];
@@ -26,6 +33,9 @@ export const getGroupsSlice = createSlice({
     });
     builder.addCase(getGroupDetails.fulfilled, (state, action) => {
       state.members = action.payload?.members;
+    });
+    builder.addCase(postUser.fulfilled, (state, action) => {
+      console.log("action", action);
     });
   },
 });
