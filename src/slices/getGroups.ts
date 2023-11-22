@@ -12,12 +12,14 @@ interface GetGroupsState {
   groups: Group[];
   searchedGroups: any;
   members: any;
+  version: string;
 }
 
 export const initialState: GetGroupsState = {
   groups: [],
   searchedGroups: [],
   members: [],
+  version: "",
 };
 
 export const getGroupsSlice = createSlice({
@@ -32,10 +34,12 @@ export const getGroupsSlice = createSlice({
       state.searchedGroups = action.payload?.Resources;
     });
     builder.addCase(getGroupDetails.fulfilled, (state, action) => {
+      console.log("action.payload", action.payload);
+      state.version = action.payload.meta.version;
       state.members = action.payload?.members;
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
-      console.log("action", action);
+      console.log("postUser action", action.payload);
     });
   },
 });

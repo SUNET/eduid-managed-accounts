@@ -5,7 +5,7 @@ import { generateNonce } from "../common/CryptoUtils";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDE1MTYyMiwiaWF0IjoxNzAwMTQ4MDIyLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwMTQ4MDIyLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.QliA3up_yAvt9fCIiD_TtbHBrwfhYqE5m-Wx3S7kzqaWaVDNA8q7DykKlmzx8g1dMJcHTkrzOOWRbh_FTwFWVA";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDY1MzUyNSwiaWF0IjoxNzAwNjQ5OTI1LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwNjQ5OTI1LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.aiX9jOggaHfHqcLIPDuLRNb-wP4R3Wekq-MtDEW_CZTxg2Zs2C7OczPXqmHXbrkP-7BvbZt3It3JJH4usWCo7w";
 
 const scimHeaders = (token: string) => {
   return {
@@ -101,10 +101,12 @@ export const getGroupsSearch = createAsyncThunk<
   }
 });
 
-interface GetGroupDetailsResponse {}
+// interface GetGroupDetailsResponse {
+
+// }
 
 export const getGroupDetails = createAsyncThunk<
-  GetGroupDetailsResponse, // return type
+  any, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupDetails", async (args, thunkAPI) => {
@@ -116,6 +118,7 @@ export const getGroupDetails = createAsyncThunk<
         ...scimRequest,
         headers,
       });
+
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
@@ -131,7 +134,7 @@ export const getGroupDetails = createAsyncThunk<
 interface PostUserResponse {}
 
 export const postUser = createAsyncThunk<
-  PostUserResponse, // return type
+  any, // return type
   {
     familyName: string;
     givenName: string;
@@ -155,8 +158,9 @@ export const postUser = createAsyncThunk<
         headers,
         body: JSON.stringify(payload),
       });
+
       if (scimResponse.ok) {
-        await scimResponse.json();
+        return await scimResponse.json();
       } else {
         const result = await scimResponse.json();
         await handleErrorResponse(result);
@@ -167,16 +171,22 @@ export const postUser = createAsyncThunk<
   }
 });
 
-interface PutGroupResponse {}
+// interface PutGroupResponse {}
 
 export const putGroup = createAsyncThunk<
-  PutGroupResponse, // return type
+  any, // return type
   { result: any }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
+  console.log("result", args.result);
+  const state = thunkAPI.getState();
   try {
     if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
+      const headers = {
+        "Content-Type": "application/scim+json",
+        Authorization: `Bearer ${accessTokenTest}`,
+        "If-Match": state.groups.version,
+      };
       const scimRequest = putRequest();
       delete args.result.meta;
       delete args.result.schemas;

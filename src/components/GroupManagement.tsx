@@ -41,11 +41,12 @@ export default function GroupManagement() {
   };
 
   const saveUser = async (e: any) => {
+    console.log("e", e);
     e.preventDefault();
     // TODO
-    const givenName = document.querySelector('[name="givenName"]') as HTMLInputElement;
+    const givenName = document.querySelector('[name="given_name"]') as HTMLInputElement;
     const middleName = document.querySelector('[name="middleName"]') as HTMLInputElement;
-    const familyName = document.querySelector('[name="familyName"]') as HTMLInputElement;
+    const familyName = document.querySelector('[name="family_name"]') as HTMLInputElement;
     //POST USER
     if (givenName.value && familyName.value) {
       const response = await dispatch(
@@ -54,12 +55,29 @@ export default function GroupManagement() {
           givenName: givenName.value,
         })
       );
-
       if (postUser.fulfilled.match(response)) {
         const result = await dispatch(getGroupDetails({ id: "16bda7c5-b7f7-470a-b44a-0a7a32b4876c" }));
+        console.log("1...result", result);
         if (getGroupDetails.fulfilled.match(result)) {
-          console.log("result", result.payload);
-          dispatch(putGroup({ result: result.payload }));
+          const addedUserResult = await dispatch(
+            putGroup({
+              result: {
+                ...result.payload,
+                members: [
+                  ...result.payload.members,
+                  {
+                    $ref: response.payload.meta?.location,
+                    value: response.payload.id,
+                    display: response.payload.name.familyName + "" + response.payload.name.givenName,
+                  },
+                ],
+              },
+            })
+          );
+
+          if (putGroup.fulfilled.match(addedUserResult)) {
+            dispatch(fetchGroups());
+          }
         }
       }
     }
@@ -74,7 +92,7 @@ export default function GroupManagement() {
         </div>
       </section>
       <section>
-        <form onSubmit={saveUser}>
+        <form onSubmit={(e) => saveUser(e)}>
           <fieldset>
             <label>Given name</label>
             <input type="text" name="givenName"></input>
@@ -118,7 +136,7 @@ export default function GroupManagement() {
         </form>
       </section>
       {/* hämtar användaren */}
-      {/* <article className="intro">
+      <article className="intro">
         <form onSubmit={(e) => getGroupsSearch1(e)}>
           <label>Search groups</label>
           <input className="form-control" name="filter_string" ref={filterString} />
@@ -155,10 +173,10 @@ export default function GroupManagement() {
         ))}
 
         <br />
-      </article> */}
-      {/* <div>
+      </article>
+      <div>
         <h2> Users</h2>
-        <form onSubmit={handleSubmit} style={{ display: "flex" }}>
+        <form onSubmit={saveUser} style={{ display: "flex" }}>
           <div>
             <label>Family name</label>
             <input name="family_name" ref={familyNameRef} />
@@ -173,7 +191,7 @@ export default function GroupManagement() {
             create user
           </button>
         </form>
-      </div> */}
+      </div>
     </Splash>
   );
 }
