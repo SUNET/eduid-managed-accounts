@@ -11,6 +11,8 @@ import {
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Splash from "./Splash";
 
+export const MANAGED_ACCOUNTS_GROUP_ID = "4bddc35f-dac2-4d65-8d05-d0666fef1447";
+
 export default function GroupManagement() {
   const dispatch = useAppDispatch();
   const userVersion = useAppSelector((state) => state.groups.userVersion);
@@ -50,8 +52,12 @@ export default function GroupManagement() {
   const saveUser = async (e: any) => {
     e.preventDefault();
     // TODO
-    const givenName = document.querySelector('[name="given_name"]') as HTMLInputElement;
-    const familyName = document.querySelector('[name="family_name"]') as HTMLInputElement;
+    const givenName = document.querySelector(
+      '[name="given_name"]'
+    ) as HTMLInputElement;
+    const familyName = document.querySelector(
+      '[name="family_name"]'
+    ) as HTMLInputElement;
     //POST USER
     if (givenName.value && familyName.value) {
       const response = await dispatch(
@@ -61,7 +67,9 @@ export default function GroupManagement() {
         })
       );
       if (postUser.fulfilled.match(response)) {
-        const result = await dispatch(getGroupDetails({ id: "16bda7c5-b7f7-470a-b44a-0a7a32b4876c" }));
+        const result = await dispatch(
+          getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID })
+        );
         if (getGroupDetails.fulfilled.match(result)) {
           const addedUserResult = await dispatch(
             putGroup({
@@ -72,7 +80,10 @@ export default function GroupManagement() {
                   {
                     $ref: response.payload.meta?.location,
                     value: response.payload.id,
-                    display: response.payload.name.familyName + " " + response.payload.name.givenName,
+                    display:
+                      response.payload.name.familyName +
+                      " " +
+                      response.payload.name.givenName,
                   },
                 ],
               },
@@ -93,14 +104,16 @@ export default function GroupManagement() {
 
     const result = await dispatch(getGroupDetails({ id: groupID }));
 
-    const filteredUser = result.payload.members.filter((user: any) => user.value !== id);
+    const filteredUser = result.payload.members.filter(
+      (user: any) => user.value !== id
+    );
     // 2. tar bort user from group  -> put group
     if (getGroupDetails.fulfilled.match(result)) {
       const putFilteredUserResult = await dispatch(
         putGroup({
           result: {
             ...result.payload,
-            members: [filteredUser],
+            members: filteredUser,
           },
         })
       );
@@ -127,7 +140,10 @@ export default function GroupManagement() {
       <section className="intro">
         <h1>Welcome</h1>
         <div className="lead">
-          <p>You can search through your groups here and provide detailed information.</p>
+          <p>
+            You can search through your groups here and provide detailed
+            information.
+          </p>
         </div>
       </section>
       <section>
@@ -178,7 +194,11 @@ export default function GroupManagement() {
       <article className="intro">
         <form onSubmit={(e) => getGroupsSearch1(e)}>
           <label>Search groups</label>
-          <input className="form-control" name="filter_string" ref={filterString} />
+          <input
+            className="form-control"
+            name="filter_string"
+            ref={filterString}
+          />
           <div className="buttons">
             <button className="btn btn-primary" type="submit">
               Search
@@ -198,7 +218,10 @@ export default function GroupManagement() {
               <tr key={group.id}>
                 <td>{group.displayName}</td>
                 <td>
-                  <button className="btn-link btn-sm" onClick={() => dispatch(getGroupDetails({ id: group.id }))}>
+                  <button
+                    className="btn-link btn-sm"
+                    onClick={() => dispatch(getGroupDetails({ id: group.id }))}
+                  >
                     see more
                   </button>
                 </td>
@@ -210,7 +233,10 @@ export default function GroupManagement() {
         {members?.map((member: any) => (
           <React.Fragment key={member.value}>
             <li>{member.display}</li>
-            <button className="btn btn-primary" onClick={() => removeUser(member.value)}>
+            <button
+              className="btn btn-primary"
+              onClick={() => removeUser(member.value)}
+            >
               remove
             </button>
           </React.Fragment>

@@ -1,11 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { generateNonce } from "../common/CryptoUtils";
+import { MANAGED_ACCOUNTS_GROUP_ID } from "../components/GroupManagement";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDY2NTQwNSwiaWF0IjoxNzAwNjYxODA1LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwNjYxODA1LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.rklEQRqp3S4wADv5IoftcnasooJVNJfGfzIpY6BrDfms87WuCHKIL0DAJQ7x0R8V5cStCvFDp68vVA2YJxfL8A";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDY2Nzg1MSwiaWF0IjoxNzAwNjY0MjUxLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwNjY0MjUxLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.XKqyi7yobZlW2_QnWFUaO807rXhJZmERplmmR-DoktKH_UFScQ8r3h4oWFSJKpXuT8D9QOyUOzEDNOblsopDzQ";
 
 const scimHeaders = (token: string) => {
   return {
@@ -54,7 +55,10 @@ export const fetchGroups = createAsyncThunk<
     if (accessTokenTest) {
       const headers = scimHeaders(accessTokenTest);
       const scimRequest = createScimRequest();
-      const scimResponse = await fetch(baseURL + "Groups/", { ...scimRequest, headers });
+      const scimResponse = await fetch(baseURL + "Groups/", {
+        ...scimRequest,
+        headers,
+      });
 
       if (scimResponse.ok) {
         return await scimResponse.json();
@@ -194,11 +198,14 @@ export const putGroup = createAsyncThunk<
         ...args.result,
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
       };
-      const scimResponse = await fetch(baseURL + "Groups/" + "16bda7c5-b7f7-470a-b44a-0a7a32b4876c", {
-        ...scimRequest,
-        headers,
-        body: JSON.stringify(payload),
-      });
+      const scimResponse = await fetch(
+        baseURL + "Groups/" + MANAGED_ACCOUNTS_GROUP_ID,
+        {
+          ...scimRequest,
+          headers,
+          body: JSON.stringify(payload),
+        }
+      );
       if (scimResponse.ok) {
         await scimResponse.json();
       } else {
@@ -271,6 +278,8 @@ export const deleteUser = createAsyncThunk<
 });
 
 const handleErrorResponse = async (response: ErrorResponse) => {
-  const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
+  const errorMessage = `Failed with status ${response.status}: ${
+    response.message || response.detail
+  }`;
   throw new Error(errorMessage);
 };
