@@ -1,0 +1,34 @@
+@import "variables";
+
+a,
+.text-link {
+  color: $txt-orange;
+  font-family: $akkurat;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border-bottom: none;
+
+  &:hover {
+    color: $txt-orange;
+    border-bottom: none;
+    text-decoration: underline;
+  }
+
+  // hiding opt in beta link
+  &#stable-link.hidden {
+    display: none;
+  }
+}
+
+a .disabled,
+a.disabled,
+.text-link.disabled {
+  color: $txt-gray;
+  text-decoration: none;
+  pointer-events: none;
+
+  &:hover {
+    cursor: not-allowed;
+  }
+}

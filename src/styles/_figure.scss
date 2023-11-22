@@ -1,0 +1,35 @@
+/* white plate to highlight content, use .figure if not semantically a "figure" */
+@import "variables";
+
+figure,
+.figure {
+  background: $white;
+  text-align: center;
+  margin: 1em 0;
+  padding: 1em;
+
+  figcaption,
+  .figcaption {
+    font-size: $txt-sm;
+    font-weight: bold;
+    font-family: $akkurat;
+    color: $txt-black;
+  }
+
+  &.identity-summary {
+    padding: 1em 0.5em;
+    margin-bottom: 3em;
+
+    @media (max-width: $bp-md) {
+      padding: 0.5em;
+    }
+  }
+}
+
+.captcha-responsive {
+  width: 70%;
+
+  @media (max-width: $bp-md) {
+    width: 100%;
+  }
+}
