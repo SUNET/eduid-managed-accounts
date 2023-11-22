@@ -1,17 +1,24 @@
-import { useEffect, useRef } from "react";
-import { fetchGroups, getGroupDetails, getGroupsSearch, postUser, putGroup } from "../apis/scimRequest";
+import React, { useEffect, useRef } from "react";
+import {
+  deleteUser,
+  fetchGroups,
+  getGroupDetails,
+  getGroupsSearch,
+  getUserDetails,
+  postUser,
+  putGroup,
+} from "../apis/scimRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Splash from "./Splash";
 
 export default function GroupManagement() {
   const dispatch = useAppDispatch();
+  const userVersion = useAppSelector((state) => state.groups.userVersion);
   const groupsData = useAppSelector((state) => state.groups.groups);
   const members = useAppSelector((state) => state.groups.members);
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
-
-  console.log("groupsData", groupsData);
 
   useEffect(() => {
     const fetchScimTest = async () => {
@@ -41,11 +48,9 @@ export default function GroupManagement() {
   };
 
   const saveUser = async (e: any) => {
-    console.log("e", e);
     e.preventDefault();
     // TODO
     const givenName = document.querySelector('[name="given_name"]') as HTMLInputElement;
-    const middleName = document.querySelector('[name="middleName"]') as HTMLInputElement;
     const familyName = document.querySelector('[name="family_name"]') as HTMLInputElement;
     //POST USER
     if (givenName.value && familyName.value) {
@@ -57,7 +62,6 @@ export default function GroupManagement() {
       );
       if (postUser.fulfilled.match(response)) {
         const result = await dispatch(getGroupDetails({ id: "16bda7c5-b7f7-470a-b44a-0a7a32b4876c" }));
-        console.log("1...result", result);
         if (getGroupDetails.fulfilled.match(result)) {
           const addedUserResult = await dispatch(
             putGroup({
@@ -68,7 +72,7 @@ export default function GroupManagement() {
                   {
                     $ref: response.payload.meta?.location,
                     value: response.payload.id,
-                    display: response.payload.name.familyName + "" + response.payload.name.givenName,
+                    display: response.payload.name.familyName + " " + response.payload.name.givenName,
                   },
                 ],
               },
@@ -80,6 +84,41 @@ export default function GroupManagement() {
           }
         }
       }
+    }
+  };
+
+  const removeUser = async (id: any) => {
+    // 1. get group details -> payload group version
+    const groupID = groupsData[0].id;
+
+    const result = await dispatch(getGroupDetails({ id: groupID }));
+
+    const filteredUser = result.payload.members.filter((user: any) => user.value !== id);
+    // 2. tar bort user from group  -> put group
+    if (getGroupDetails.fulfilled.match(result)) {
+      const putFilteredUserResult = await dispatch(
+        putGroup({
+          result: {
+            ...result.payload,
+            members: [filteredUser],
+          },
+        })
+      );
+
+      if (putGroup.fulfilled.match(putFilteredUserResult)) {
+        const userDetailsResult = await dispatch(getUserDetails({ id: id }));
+        console.log("userDetailsResult", userDetailsResult);
+      }
+    }
+
+    //4. DELETE user
+    if (getGroupDetails.fulfilled.match(result) && userVersion) {
+      const user = {
+        id: id,
+        version: userVersion,
+      };
+
+      dispatch(deleteUser({ user }));
     }
   };
 
@@ -169,7 +208,12 @@ export default function GroupManagement() {
         </table>
 
         {members?.map((member: any) => (
-          <li key={member.value}>{member.display}</li>
+          <React.Fragment key={member.value}>
+            <li>{member.display}</li>
+            <button className="btn btn-primary" onClick={() => removeUser(member.value)}>
+              remove
+            </button>
+          </React.Fragment>
         ))}
 
         <br />

@@ -5,7 +5,7 @@ import { generateNonce } from "../common/CryptoUtils";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDY1MzUyNSwiaWF0IjoxNzAwNjQ5OTI1LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwNjQ5OTI1LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.aiX9jOggaHfHqcLIPDuLRNb-wP4R3Wekq-MtDEW_CZTxg2Zs2C7OczPXqmHXbrkP-7BvbZt3It3JJH4usWCo7w";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDY2NTQwNSwiaWF0IjoxNzAwNjYxODA1LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwNjYxODA1LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.rklEQRqp3S4wADv5IoftcnasooJVNJfGfzIpY6BrDfms87WuCHKIL0DAJQ7x0R8V5cStCvFDp68vVA2YJxfL8A";
 
 const scimHeaders = (token: string) => {
   return {
@@ -201,6 +201,65 @@ export const putGroup = createAsyncThunk<
       });
       if (scimResponse.ok) {
         await scimResponse.json();
+      } else {
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
+      }
+    }
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const getUserDetails = createAsyncThunk<
+  any, // return type
+  { id: string }, // args type
+  { dispatch: AppDispatch; state: AppRootState }
+>("auth/getUserDetails", async (args, thunkAPI) => {
+  try {
+    if (accessTokenTest) {
+      const headers = scimHeaders(accessTokenTest);
+      const scimRequest = createScimRequest();
+      const scimResponse = await fetch(baseURL + "Users/" + args.id, {
+        ...scimRequest,
+        headers,
+      });
+
+      if (scimResponse.ok) {
+        return await scimResponse.json();
+      } else {
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
+      }
+    }
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+export const deleteUser = createAsyncThunk<
+  any, // return type
+  { user: { id: string; version: string } }, // args type
+  { dispatch: AppDispatch; state: AppRootState }
+>("auth/deleteUser", async (args, thunkAPI) => {
+  try {
+    if (accessTokenTest) {
+      const headers = {
+        "Content-Type": "application/scim+json",
+        Authorization: `Bearer ${accessTokenTest}`,
+        "If-Match": args.user.version,
+      };
+      const scimRequest = {
+        headers: scimHeaders,
+        method: "DELETE",
+      };
+
+      const scimResponse = await fetch(baseURL + "Users/" + args.user.id, {
+        ...scimRequest,
+        headers,
+      });
+      if (scimResponse.ok) {
+        console.log("Successfully deleted user");
       } else {
         const result = await scimResponse.json();
         await handleErrorResponse(result);

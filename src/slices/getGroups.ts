@@ -5,6 +5,7 @@ import {
   fetchGroupsResponse,
   getGroupDetails,
   getGroupsSearch,
+  getUserDetails,
   postUser,
 } from "../apis/scimRequest";
 
@@ -13,6 +14,7 @@ interface GetGroupsState {
   searchedGroups: any;
   members: any;
   version: string;
+  userVersion: string;
 }
 
 export const initialState: GetGroupsState = {
@@ -40,6 +42,9 @@ export const getGroupsSlice = createSlice({
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
       console.log("postUser action", action.payload);
+    });
+    builder.addCase(getUserDetails.fulfilled, (state, action) => {
+      state.userVersion = action.payload.meta.version;
     });
   },
 });
