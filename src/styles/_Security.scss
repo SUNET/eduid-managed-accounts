@@ -1,0 +1,16 @@
+td .passwords {
+  background-color: $white;
+}
+
+#security-container {
+  table {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: $bp-xs) {
+  #security-webauthn-button {
+    justify-content: center;
+    font-size: 14px;
+  }
+}
