@@ -11,17 +11,35 @@ import {
 
 interface GetGroupsState {
   groups: Group[];
-  searchedGroups: any;
+  searchedGroups: object[];
   members: any;
   version: string;
   userVersion: string;
+
+  managedAccounts: {
+    id: string;
+    version: string;
+    displayName: string;
+    members: [
+      {
+        version: string;
+        value: string;
+        $ref: string;
+        familyName: string;
+        givenName: string;
+        eppn: string;
+        password: string;
+      }
+    ];
+  };
 }
 
 export const initialState: GetGroupsState = {
   groups: [],
-  searchedGroups: [],
+  searchedGroups: [], // TODO: Should it be in its own slice?
   members: [],
   version: "",
+  userVersion: "", // TODO: Should it be in its own slice?
 };
 
 export const getGroupsSlice = createSlice({
@@ -29,9 +47,12 @@ export const getGroupsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchGroups.fulfilled, (state, action: PayloadAction<fetchGroupsResponse>) => {
-      state.groups = action.payload?.Resources;
-    });
+    builder.addCase(
+      fetchGroups.fulfilled,
+      (state, action: PayloadAction<fetchGroupsResponse>) => {
+        state.groups = action.payload?.Resources;
+      }
+    );
     builder.addCase(getGroupsSearch.fulfilled, (state, action) => {
       state.searchedGroups = action.payload?.Resources;
     });

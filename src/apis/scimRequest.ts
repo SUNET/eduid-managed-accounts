@@ -6,7 +6,7 @@ import { MANAGED_ACCOUNTS_GROUP_ID } from "../components/GroupManagement";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDY3MDAzNCwiaWF0IjoxNzAwNjY2NDM0LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwNjY2NDM0LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.cClPWOmZhsQg6mrBG-yQ2KG-aXrqRxI29lmg0MQOflJtfxvLjTVhhTfvEkB_nzEnnRLzT0tnrHH8EXdWQJonXw";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDg0MDcwMiwiaWF0IjoxNzAwODM3MTAyLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwODM3MTAyLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.sFPEZGuI5_8XPMHdwDknCYWGwmnj4TPgHQDkCcNpUdpWYAhVEWlhMg5IJysTpAGNMYtNshTuzc4XndSpMh-fDA";
 
 const scimHeaders = (token: string) => {
   return {
@@ -40,11 +40,20 @@ export interface GroupsResponse {
   groups: Group[];
 }
 
+export interface GroupsSearchResponse {
+  totalResults: number;
+  Resources: object[];
+}
+
 export interface ErrorResponse {
   status: string;
   detail: string;
   message: string;
 }
+
+/**
+ * Groups API
+ */
 
 export const fetchGroups = createAsyncThunk<
   GroupsResponse, // return type
@@ -73,7 +82,7 @@ export const fetchGroups = createAsyncThunk<
 });
 
 export const getGroupsSearch = createAsyncThunk<
-  GroupsResponse, // return type
+  GroupsSearchResponse, // return type
   { searchFilter: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
@@ -84,9 +93,6 @@ export const getGroupsSearch = createAsyncThunk<
       const payload = {
         schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
         filter: `displayName eq "${args.searchFilter}"`,
-        // startIndex: 1,
-        // count: 100,
-        // attributes: ["string"],
       };
       const scimResponse = await fetch(baseURL + "Groups/.search", {
         ...scimRequest,
@@ -94,7 +100,9 @@ export const getGroupsSearch = createAsyncThunk<
         body: JSON.stringify(payload),
       });
       if (scimResponse.ok) {
-        return await scimResponse.json();
+        const scimResponseJSON = await scimResponse.json();
+        console.log("SEARCH GROUPS RESPONSE: ", scimResponseJSON);
+        return scimResponseJSON;
       } else {
         const result = await scimResponse.json();
         await handleErrorResponse(result);
@@ -133,36 +141,36 @@ export const getGroupDetails = createAsyncThunk<
   }
 });
 
-interface PostUserResponse {}
+interface PostGroupResponse {}
 
-export const postUser = createAsyncThunk<
-  any, // return type
-  {
-    familyName: string;
-    givenName: string;
-  }, // args type
+export const postGroup = createAsyncThunk<
+  PostGroupResponse, // return type
+  { displayName: any }, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/postUser", async (args, thunkAPI) => {
+>("auth/postGroup", async (args, thunkAPI) => {
+  const state = thunkAPI.getState();
   try {
     if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
-      const scimRequest = createScimRequest(args.familyName);
-      const payload = {
-        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
-        externalId: generateNonce(12),
-        name: {
-          familyName: args.familyName,
-          givenName: args.givenName,
-        },
+      const headers = {
+        "Content-Type": "application/scim+json",
+        Authorization: `Bearer ${accessTokenTest}`,
       };
-      const scimResponse = await fetch(baseURL + "Users", {
+      const scimRequest = {
+        headers: scimHeaders,
+        method: "POST",
+      };
+      const payload = {
+        schemas: ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+        displayName: args.displayName,
+        members: [],
+      };
+      const scimResponse = await fetch(baseURL + "Groups/", {
         ...scimRequest,
         headers,
         body: JSON.stringify(payload),
       });
-
       if (scimResponse.ok) {
-        return await scimResponse.json();
+        await scimResponse.json();
       } else {
         const result = await scimResponse.json();
         await handleErrorResponse(result);
@@ -196,13 +204,60 @@ export const putGroup = createAsyncThunk<
         ...args.result,
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
       };
-      const scimResponse = await fetch(baseURL + "Groups/" + MANAGED_ACCOUNTS_GROUP_ID, {
+      const scimResponse = await fetch(
+        baseURL + "Groups/" + MANAGED_ACCOUNTS_GROUP_ID,
+        {
+          ...scimRequest,
+          headers,
+          body: JSON.stringify(payload),
+        }
+      );
+      if (scimResponse.ok) {
+        await scimResponse.json();
+      } else {
+        const result = await scimResponse.json();
+        await handleErrorResponse(result);
+      }
+    }
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
+/**
+ * Users API
+ */
+
+interface PostUserResponse {}
+
+export const postUser = createAsyncThunk<
+  any, // return type
+  {
+    familyName: string;
+    givenName: string;
+  }, // args type
+  { dispatch: AppDispatch; state: AppRootState }
+>("auth/postUser", async (args, thunkAPI) => {
+  try {
+    if (accessTokenTest) {
+      const headers = scimHeaders(accessTokenTest);
+      const scimRequest = createScimRequest(args.familyName);
+      const payload = {
+        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
+        externalId: generateNonce(12),
+        name: {
+          familyName: args.familyName,
+          givenName: args.givenName,
+        },
+      };
+      const scimResponse = await fetch(baseURL + "Users", {
         ...scimRequest,
         headers,
         body: JSON.stringify(payload),
       });
+
       if (scimResponse.ok) {
-        await scimResponse.json();
+        return await scimResponse.json();
       } else {
         const result = await scimResponse.json();
         await handleErrorResponse(result);
@@ -273,7 +328,9 @@ export const deleteUser = createAsyncThunk<
 });
 
 const handleErrorResponse = async (response: ErrorResponse) => {
-  const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
+  const errorMessage = `Failed with status ${response.status}: ${
+    response.message || response.detail
+  }`;
   throw new Error(errorMessage);
 };
 
