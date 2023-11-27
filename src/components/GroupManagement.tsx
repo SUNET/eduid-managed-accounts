@@ -4,7 +4,7 @@ import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Splash from "./Splash";
 
-export const MANAGED_ACCOUNTS_GROUP_ID = "16bda7c5-b7f7-470a-b44a-0a7a32b4876c";
+export const MANAGED_ACCOUNTS_GROUP_ID = "9ccc1331-fd60-4715-8728-962c35034f33";
 //TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
 
@@ -52,7 +52,7 @@ export default function GroupManagement() {
     const findManagedAccountsGroup = async () => {
       const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
       if (getGroupsSearch.fulfilled.match(result)) {
-        if (result.payload.Resources?.length === 0) {
+        if (!result.payload.Resources?.length) {
           // create a new Group "managed-accounts" and set the Group ID in the state
           // dispatch(createGroup({ groupName: GROUP_NAME }))
         } else if (result.payload.Resources?.length === 1) {

@@ -40,6 +40,11 @@ export const initialState: GetGroupsState = {
     displayName: "",
     members: [
       {
+        //   {
+        //     "value": "2496714d-700f-4791-a6b0-f82a390d7035",
+        //     "$ref": "https://api.eduid.docker/scim/Users/2496714d-700f-4791-a6b0-f82a390d7035",
+        //     "display": "ss s"
+        // }
         version: "",
         value: "",
         $ref: "",
@@ -64,8 +69,9 @@ export const getGroupsSlice = createSlice({
       state.searchedGroups = action.payload?.Resources;
     });
     builder.addCase(getGroupDetails.fulfilled, (state, action) => {
-      state.version = action.payload.meta.version;
-      state.members = action.payload?.members;
+      console.log("action", action);
+      state.managedAccounts.version = action.payload.meta.version;
+      state.managedAccounts.members = action.payload?.members;
     });
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
       state.userVersion = action.payload.meta.version;
