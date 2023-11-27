@@ -1,13 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchGroups, getGroupDetails, putGroup } from "../apis/scimGroupsRequest";
-import { GroupResponse } from "../typescript-clients/scim";
+import {
+  fetchGroups,
+  getGroupDetails,
+  putGroup,
+} from "../apis/scimGroupsRequest";
+import { GroupResponse, SCIMResourceType } from "../typescript-clients/scim";
 
 interface GetGroupsState {
   managedAccounts: GroupResponse;
 }
 
 export const initialState: GetGroupsState = {
-  managedAccounts: {},
+  managedAccounts: {
+    id: "",
+    meta: {
+      location: "",
+      lastModified: "",
+      resourceType: SCIMResourceType.GROUP,
+      created: "",
+      version: null,
+    },
+    schemas: [],
+    displayName: "",
+    members: [],
+  },
 };
 
 export const getGroupsSlice = createSlice({

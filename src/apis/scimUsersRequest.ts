@@ -1,7 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { generateNonce } from "../common/CryptoUtils";
-import { accessTokenTest, baseURL, createScimRequest, handleErrorResponse, scimHeaders } from "./scimGroupsRequest";
+import {
+  accessTokenTest,
+  baseURL,
+  createScimRequest,
+  handleErrorResponse,
+  scimHeaders,
+} from "./scimGroupsRequest";
 
 interface PostUserResponse {}
 
@@ -92,6 +98,7 @@ export const deleteUser = createAsyncThunk<
       });
       if (scimResponse.ok) {
         console.log("Successfully deleted user");
+        return args.user;
       } else {
         const result = await scimResponse.json();
         await handleErrorResponse(result);
