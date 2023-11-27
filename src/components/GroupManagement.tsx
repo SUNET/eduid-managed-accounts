@@ -12,34 +12,34 @@ export default function GroupManagement() {
   const dispatch = useAppDispatch();
 
   const groupsData = useAppSelector((state) => state.groups.groups);
-  // const members = useAppSelector((state) => state.groups.members);
+  const members = useAppSelector((state) => state.groups.members);
   const searchedGroups = useAppSelector((state) => state.groups.searchedGroups);
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
   // TODO: only for carinas test
-  const members = [
-    {
-      value: "d8b7003c-312a-4edb-ab71-a1481dc914af",
-      $ref: "https://api.eduid.docker/scim/Users/d8b7003c-312a-4edb-ab71-a1481dc914af",
-      display: "mouse donald",
-    },
-    {
-      value: "423bc5d8-43ff-4fda-b6f0-1215a2e96331",
-      $ref: "https://api.eduid.docker/scim/Users/423bc5d8-43ff-4fda-b6f0-1215a2e96331",
-      display: "mouse micke",
-    },
-    {
-      value: "3f8c6a39-2568-4741-bada-a6e2a700c673",
-      $ref: "https://api.eduid.docker/scim/Users/3f8c6a39-2568-4741-bada-a6e2a700c673",
-      display: "eunju  Huss",
-    },
-    {
-      value: "c81fc19a-dd38-4d97-a757-58a544b3ec7c",
-      $ref: "https://api.eduid.docker/scim/Users/c81fc19a-dd38-4d97-a757-58a544b3ec7c",
-      display: "anka kalle",
-    },
-  ];
+  // const members = [
+  //   {
+  //     value: "d8b7003c-312a-4edb-ab71-a1481dc914af",
+  //     $ref: "https://api.eduid.docker/scim/Users/d8b7003c-312a-4edb-ab71-a1481dc914af",
+  //     display: "mouse donald",
+  //   },
+  //   {
+  //     value: "423bc5d8-43ff-4fda-b6f0-1215a2e96331",
+  //     $ref: "https://api.eduid.docker/scim/Users/423bc5d8-43ff-4fda-b6f0-1215a2e96331",
+  //     display: "mouse micke",
+  //   },
+  //   {
+  //     value: "3f8c6a39-2568-4741-bada-a6e2a700c673",
+  //     $ref: "https://api.eduid.docker/scim/Users/3f8c6a39-2568-4741-bada-a6e2a700c673",
+  //     display: "eunju  Huss",
+  //   },
+  //   {
+  //     value: "c81fc19a-dd38-4d97-a757-58a544b3ec7c",
+  //     $ref: "https://api.eduid.docker/scim/Users/c81fc19a-dd38-4d97-a757-58a544b3ec7c",
+  //     display: "anka kalle",
+  //   },
+  // ];
 
   /**
    * Without user interaction
@@ -109,6 +109,7 @@ export default function GroupManagement() {
         })
       );
       if (postUser.fulfilled.match(response)) {
+        e.target.reset();
         // update "version" for ManagedAccountsGroup before PUT
         const result = await dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }));
         if (getGroupDetails.fulfilled.match(result)) {
@@ -159,6 +160,7 @@ export default function GroupManagement() {
 
       if (putGroup.fulfilled.match(putFilteredUserResult)) {
         const userDetailsResult = await dispatch(getUserDetails({ id: id }));
+
         //4. DELETE user
         if (getGroupDetails.fulfilled.match(result)) {
           const user = {
@@ -166,7 +168,10 @@ export default function GroupManagement() {
             version: userDetailsResult.payload.meta.version,
           };
 
-          dispatch(deleteUser({ user }));
+          const response = await dispatch(deleteUser({ user }));
+          if (deleteUser.fulfilled.match(response)) {
+            dispatch(getGroupDetails({ id: groupID }));
+          }
         }
       }
     }
@@ -181,7 +186,13 @@ export default function GroupManagement() {
         </div>
       </section>
       <section>
-        <form onSubmit={(e) => saveUser(e)}>
+        <button
+          className="btn-link btn-sm"
+          onClick={() => dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }))}
+        >
+          Managed accounts Group Members - see more
+        </button>
+        <form name="create-user-form" onSubmit={(e) => saveUser(e)}>
           <fieldset>
             <label>Given name</label>
             <input type="text" ref={givenNameRef} name="given_name"></input>
@@ -194,12 +205,12 @@ export default function GroupManagement() {
             <button className="btn-primary">Create</button>
           </div>
           {/* only for test */}
-          <button
+          {/* <button
             className="btn-link btn-sm"
             onClick={() => dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }))}
           >
             Managed accounts Group Members - see more
-          </button>
+          </button> */}
 
           <table>
             <thead>
