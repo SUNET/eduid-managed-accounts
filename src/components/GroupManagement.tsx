@@ -175,37 +175,65 @@ export default function GroupManagement() {
   return (
     <Splash showChildren={groupsData.length > 0}>
       <section className="intro">
-        <h1>Welcome</h1>
+        <h1>Welcome to Managing Accounts using eduID</h1>
         <div className="lead">
-          <p>You can search through your groups here and provide detailed information.</p>
+          <p>
+            In the form below you can manage your group by adding students as members, to create the unique identifier -
+            EPPN - and the password that they will need to be able to perform the Digital National Exam. <br />
+            You can also view the existing group and remove members.
+          </p>
         </div>
       </section>
       <section>
-        <form onSubmit={(e) => saveUser(e)}>
-          <fieldset>
-            <label>Given name</label>
-            <input type="text" ref={givenNameRef} name="given_name"></input>
-          </fieldset>
-          <fieldset>
-            <label>Surname</label>
-            <input type="text" ref={familyNameRef} name="family_name"></input>
-          </fieldset>
-          <div className="buttons">
-            <button className="btn-primary">Create</button>
-          </div>
-          {/* only for test */}
-          <button
-            className="btn-link btn-sm"
-            onClick={() => dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }))}
-          >
-            Managed accounts Group Members - see more
-          </button>
+        <h2>Add member to group</h2>
+        <ol className="listed-steps">
+          <li>Add the given name and surname to manage each member, complete one at a time.</li>
+          <li>When you click "ADD" the member will be added to the group as shown in the table below.</li>
+          <li>
+            <strong>Note the corresponding EPPN and password which appears in the members table</strong>, transfer it to
+            whatever external system of your choice, as you will not be able to retrieve it afterwards.
+          </li>
+        </ol>
+        <p>
+          <em>
+            Write the name so that you can distinguish the identity of the person even if there are several students
+            with identical names e.g. by adding an initial.
+          </em>
+        </p>
 
-          <table>
+        <form onSubmit={(e) => saveUser(e)}>
+          <div className="flex-between">
+            <fieldset>
+              <label>Given name*</label>
+              <input type="text" ref={givenNameRef} name="given_name"></input>
+            </fieldset>
+            <fieldset>
+              <label>Surname*</label>
+              <input type="text" ref={familyNameRef} name="family_name"></input>
+            </fieldset>
+            <div className="buttons">
+              <button className="btn-primary">Add</button>
+            </div>
+          </div>
+
+          <h2>Manage members in group</h2>
+          <p>
+            The table shows members of this group. It is not possible to edit the already added member, nor retrieve a
+            password once the session in which the member was created is ended, but by clicking "REMOVE" you can remove
+            the member and if needed create it again -<strong> with a new EPPN and password</strong>.
+          </p>
+          <table className="group-management">
+            <caption>
+              {/* only for test */}
+              <button className="btn-link" onClick={() => dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }))}>
+                View Managed accounts Group Members
+              </button>
+            </caption>
             <thead>
               <tr>
-                <th>Given name*</th>
-                <th>Surname*</th>
+                <th>No.</th>
+                <th>Given name</th>
+                <th>Surname</th>
                 <th>EPPN</th>
                 <th>Password</th>
                 <th></th>
@@ -214,12 +242,13 @@ export default function GroupManagement() {
             <tbody>
               {members?.map((member: any) => (
                 <tr key={member.value}>
+                  <td> </td>
                   <td>{member.display}</td>
                   <td>{member.display}</td>
                   <td> </td>
                   <td> </td>
                   <td>
-                    <button className="btn btn-primary" onClick={() => removeUser(member.value)}>
+                    <button className="btn btn-link btn-sm" onClick={() => removeUser(member.value)}>
                       remove
                     </button>
                   </td>
