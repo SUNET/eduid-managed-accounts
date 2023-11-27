@@ -11,9 +11,8 @@ export const GROUP_NAME = "Test Group 1";
 export default function GroupManagement() {
   const dispatch = useAppDispatch();
 
-  const groupsData = useAppSelector((state) => state.groups.groups);
-  const members = useAppSelector((state) => state.groups.members);
-  const searchedGroups = useAppSelector((state) => state.groups.searchedGroups);
+  const groupsData = useAppSelector((state) => state.groups.managedAccounts);
+  const members = useAppSelector((state) => state.groups.managedAccounts.members);
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
@@ -59,7 +58,6 @@ export default function GroupManagement() {
           // normal case
           //setManagedAccountsGroup(result.payload.Resources[0]);
           console.log("setManagedAccountsGroup: ", result.payload.Resources[0]);
-          console.log("searchedGroups: ", searchedGroups);
         } else {
           // if more groups are found, show message to contact eduID support
         }
@@ -69,12 +67,12 @@ export default function GroupManagement() {
     findManagedAccountsGroup();
   }, []);
 
-  useEffect(() => {
-    const fetchScimTest = async () => {
-      dispatch(fetchGroups());
-    };
-    fetchScimTest();
-  }, []);
+  // useEffect(() => {
+  //   const fetchScimTest = async () => {
+  //     dispatch(fetchGroups());
+  //   };
+  //   fetchScimTest();
+  // }, []);
 
   function getGroupsSearch1(e: any) {
     e.preventDefault();
@@ -142,7 +140,7 @@ export default function GroupManagement() {
 
   const removeUser = async (id: any) => {
     // 1. get group details -> payload group version
-    const groupID = groupsData[0].id;
+    const groupID = groupsData.id;
 
     const result = await dispatch(getGroupDetails({ id: groupID }));
 
@@ -178,7 +176,7 @@ export default function GroupManagement() {
   };
 
   return (
-    <Splash showChildren={groupsData.length > 0}>
+    <Splash showChildren={groupsData.id !== undefined}>
       <section className="intro">
         <h1>Welcome</h1>
         <div className="lead">
