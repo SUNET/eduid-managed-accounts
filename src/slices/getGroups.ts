@@ -1,13 +1,6 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import {
-  Group,
-  fetchGroups,
-  fetchGroupsResponse,
-  getGroupDetails,
-  getGroupsSearch,
-  getUserDetails,
-  postUser,
-} from "../apis/scimRequest";
+import { createSlice } from "@reduxjs/toolkit";
+import { Group, fetchGroups, getGroupDetails, getGroupsSearch } from "../apis/scimGroupsRequest";
+import { getUserDetails } from "../apis/scimUsersRequest";
 
 interface GetGroupsState {
   groups: Group[];
@@ -40,6 +33,23 @@ export const initialState: GetGroupsState = {
   members: [],
   version: "",
   userVersion: "", // TODO: Should it be in its own slice?
+
+  managedAccounts: {
+    id: "",
+    version: "",
+    displayName: "",
+    members: [
+      {
+        version: "",
+        value: "",
+        $ref: "",
+        familyName: "",
+        givenName: "",
+        eppn: "",
+        password: "",
+      },
+    ],
+  },
 };
 
 export const getGroupsSlice = createSlice({
@@ -47,22 +57,15 @@ export const getGroupsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(
-      fetchGroups.fulfilled,
-      (state, action: PayloadAction<fetchGroupsResponse>) => {
-        state.groups = action.payload?.Resources;
-      }
-    );
+    builder.addCase(fetchGroups.fulfilled, (state, action) => {
+      state.groups = action.payload?.Resources;
+    });
     builder.addCase(getGroupsSearch.fulfilled, (state, action) => {
       state.searchedGroups = action.payload?.Resources;
     });
     builder.addCase(getGroupDetails.fulfilled, (state, action) => {
-      console.log("action.payload", action.payload);
       state.version = action.payload.meta.version;
       state.members = action.payload?.members;
-    });
-    builder.addCase(postUser.fulfilled, (state, action) => {
-      console.log("postUser action", action.payload);
     });
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
       state.userVersion = action.payload.meta.version;

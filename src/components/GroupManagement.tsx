@@ -1,18 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import {
-  deleteUser,
-  fetchGroups,
-  getGroupDetails,
-  getGroupsSearch,
-  getUserDetails,
-  postUser,
-  putGroup,
-} from "../apis/scimRequest";
+import { fetchGroups, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
+import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Splash from "./Splash";
 
 export const MANAGED_ACCOUNTS_GROUP_ID = "16bda7c5-b7f7-470a-b44a-0a7a32b4876c";
-//export const GROUP_NAME = "managed-accounts";
+//TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
 
 export default function GroupManagement() {
@@ -34,9 +27,7 @@ export default function GroupManagement() {
   useEffect(() => {
     console.log("FIRST ACTION");
     const findManagedAccountsGroup = async () => {
-      const result: any = await dispatch(
-        getGroupsSearch({ searchFilter: GROUP_NAME })
-      );
+      const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
       if (getGroupsSearch.fulfilled.match(result)) {
         if (result.payload.Resources?.length === 0) {
           // create a new Group "managed-accounts" and set the Group ID in the state
@@ -46,31 +37,11 @@ export default function GroupManagement() {
           //setManagedAccountsGroup(result.payload.Resources[0]);
           console.log("setManagedAccountsGroup: ", result.payload.Resources[0]);
           console.log("searchedGroups: ", searchedGroups);
-          // console.log("managedAccountsGroup: ", managedAccountsGroup);
         } else {
           // if more groups are found, show message to contact eduID support
         }
         console.log("LAST ACTION");
       }
-
-      // .unwrap()
-      // .then((result) => {
-      //   console.log("searchedGroups RESULT 0", result);
-      //   console.log("searchedGroups RESULT 1", searchedGroups);
-      //   if (result.Resources.length === 0) {
-      //     // create a new Group "managed-accounts" and set the Group ID in the state
-      //     // dispatch(createGroup({ groupName: GROUP_NAME }))
-      //   } else if (result.Resources.length === 1) {
-      //     // normal case
-      //     setManagedAccountsGroup(result.Resources[0]);
-      //     console.log("setManagedAccountsGroup: ", result.Resources[0]);
-      //     console.log("managedAccountsGroup: ", managedAccountsGroup);
-      //   } else {
-      //     // if more groups are found, show message to contact eduID support
-      //   }
-      //   console.log("searchedGroups RESULT 2", searchedGroups);
-      //   console.log("LAST ACTION");
-      // });
     };
     findManagedAccountsGroup();
   }, []);
@@ -105,12 +76,8 @@ export default function GroupManagement() {
   const saveUser = async (e: any) => {
     e.preventDefault();
     // TODO
-    const givenName = document.querySelector(
-      '[name="given_name"]'
-    ) as HTMLInputElement;
-    const familyName = document.querySelector(
-      '[name="family_name"]'
-    ) as HTMLInputElement;
+    const givenName = document.querySelector('[name="given_name"]') as HTMLInputElement;
+    const familyName = document.querySelector('[name="family_name"]') as HTMLInputElement;
     //POST USER
     if (givenName.value && familyName.value) {
       const response = await dispatch(
@@ -121,9 +88,7 @@ export default function GroupManagement() {
       );
       if (postUser.fulfilled.match(response)) {
         // update "version" for ManagedAccountsGroup before PUT
-        const result = await dispatch(
-          getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID })
-        );
+        const result = await dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }));
         if (getGroupDetails.fulfilled.match(result)) {
           console.log("result", result);
           const addedUserResult = await dispatch(
@@ -135,10 +100,7 @@ export default function GroupManagement() {
                   {
                     $ref: response.payload.meta?.location,
                     value: response.payload.id,
-                    display:
-                      response.payload.name.familyName +
-                      " " +
-                      response.payload.name.givenName,
+                    display: response.payload.name.familyName + " " + response.payload.name.givenName,
                   },
                 ],
               },
@@ -159,9 +121,7 @@ export default function GroupManagement() {
 
     const result = await dispatch(getGroupDetails({ id: groupID }));
 
-    const filteredUser = result.payload.members.filter(
-      (user: any) => user.value !== id
-    );
+    const filteredUser = result.payload.members.filter((user: any) => user.value !== id);
     // 2. tar bort user from group  -> put group
     if (getGroupDetails.fulfilled.match(result)) {
       const putFilteredUserResult = await dispatch(
@@ -193,10 +153,7 @@ export default function GroupManagement() {
       <section className="intro">
         <h1>Welcome</h1>
         <div className="lead">
-          <p>
-            You can search through your groups here and provide detailed
-            information.
-          </p>
+          <p>You can search through your groups here and provide detailed information.</p>
         </div>
       </section>
       <section>
@@ -247,11 +204,7 @@ export default function GroupManagement() {
       <article className="intro">
         <form onSubmit={(e) => getGroupsSearch1(e)}>
           <label>Search groups</label>
-          <input
-            className="form-control"
-            name="filter_string"
-            ref={filterString}
-          />
+          <input className="form-control" name="filter_string" ref={filterString} />
           <div className="buttons">
             <button className="btn btn-primary" type="submit">
               Search
@@ -271,10 +224,7 @@ export default function GroupManagement() {
               <tr key={group.id}>
                 <td>{group.displayName}</td>
                 <td>
-                  <button
-                    className="btn-link btn-sm"
-                    onClick={() => dispatch(getGroupDetails({ id: group.id }))}
-                  >
+                  <button className="btn-link btn-sm" onClick={() => dispatch(getGroupDetails({ id: group.id }))}>
                     see more
                   </button>
                 </td>
@@ -286,10 +236,7 @@ export default function GroupManagement() {
         {members?.map((member: any) => (
           <React.Fragment key={member.value}>
             <li>{member.display}</li>
-            <button
-              className="btn btn-primary"
-              onClick={() => removeUser(member.value)}
-            >
+            <button className="btn btn-primary" onClick={() => removeUser(member.value)}>
               remove
             </button>
           </React.Fragment>

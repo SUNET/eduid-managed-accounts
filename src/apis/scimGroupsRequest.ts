@@ -1,21 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
-import { generateNonce } from "../common/CryptoUtils";
 import { MANAGED_ACCOUNTS_GROUP_ID } from "../components/GroupManagement";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMDg0MDcwMiwiaWF0IjoxNzAwODM3MTAyLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAwODM3MTAyLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.sFPEZGuI5_8XPMHdwDknCYWGwmnj4TPgHQDkCcNpUdpWYAhVEWlhMg5IJysTpAGNMYtNshTuzc4XndSpMh-fDA";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTA3NTg4OSwiaWF0IjoxNzAxMDcyMjg5LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMDcyMjg5LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.wGW2HDyuM26vywtvZNwgUAVVQFkmbr7qeqAtcXsEhkdQPxlI24PRkFjjNqvNWPpau6WsCHN0Q-Pj7u-bbd8-dw";
 
-const scimHeaders = (token: string) => {
+export const scimHeaders = (token: string) => {
   return {
     "Content-Type": "application/scim+json",
     Authorization: `Bearer ${token}`,
   };
 };
 
-function createScimRequest(body?: string) {
+export function createScimRequest(body?: string) {
   const scimRequest = {
     headers: scimHeaders,
     method: body ? "POST" : "GET",
@@ -38,6 +37,7 @@ export interface Group {
 
 export interface GroupsResponse {
   groups: Group[];
+  Resources: any;
 }
 
 export interface GroupsSearchResponse {
@@ -50,10 +50,6 @@ export interface ErrorResponse {
   detail: string;
   message: string;
 }
-
-/**
- * Groups API
- */
 
 export const fetchGroups = createAsyncThunk<
   GroupsResponse, // return type
@@ -204,14 +200,11 @@ export const putGroup = createAsyncThunk<
         ...args.result,
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
       };
-      const scimResponse = await fetch(
-        baseURL + "Groups/" + MANAGED_ACCOUNTS_GROUP_ID,
-        {
-          ...scimRequest,
-          headers,
-          body: JSON.stringify(payload),
-        }
-      );
+      const scimResponse = await fetch(baseURL + "Groups/" + MANAGED_ACCOUNTS_GROUP_ID, {
+        ...scimRequest,
+        headers,
+        body: JSON.stringify(payload),
+      });
       if (scimResponse.ok) {
         await scimResponse.json();
       } else {
@@ -224,113 +217,8 @@ export const putGroup = createAsyncThunk<
   }
 });
 
-/**
- * Users API
- */
-
-interface PostUserResponse {}
-
-export const postUser = createAsyncThunk<
-  any, // return type
-  {
-    familyName: string;
-    givenName: string;
-  }, // args type
-  { dispatch: AppDispatch; state: AppRootState }
->("auth/postUser", async (args, thunkAPI) => {
-  try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
-      const scimRequest = createScimRequest(args.familyName);
-      const payload = {
-        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
-        externalId: generateNonce(12),
-        name: {
-          familyName: args.familyName,
-          givenName: args.givenName,
-        },
-      };
-      const scimResponse = await fetch(baseURL + "Users", {
-        ...scimRequest,
-        headers,
-        body: JSON.stringify(payload),
-      });
-
-      if (scimResponse.ok) {
-        return await scimResponse.json();
-      } else {
-        const result = await scimResponse.json();
-        await handleErrorResponse(result);
-      }
-    }
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const getUserDetails = createAsyncThunk<
-  any, // return type
-  { id: string }, // args type
-  { dispatch: AppDispatch; state: AppRootState }
->("auth/getUserDetails", async (args, thunkAPI) => {
-  try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
-      const scimRequest = createScimRequest();
-      const scimResponse = await fetch(baseURL + "Users/" + args.id, {
-        ...scimRequest,
-        headers,
-      });
-
-      if (scimResponse.ok) {
-        return await scimResponse.json();
-      } else {
-        const result = await scimResponse.json();
-        await handleErrorResponse(result);
-      }
-    }
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const deleteUser = createAsyncThunk<
-  any, // return type
-  { user: { id: string; version: string } }, // args type
-  { dispatch: AppDispatch; state: AppRootState }
->("auth/deleteUser", async (args, thunkAPI) => {
-  try {
-    if (accessTokenTest) {
-      const headers = {
-        "Content-Type": "application/scim+json",
-        Authorization: `Bearer ${accessTokenTest}`,
-        "If-Match": args.user.version,
-      };
-      const scimRequest = {
-        headers: scimHeaders,
-        method: "DELETE",
-      };
-
-      const scimResponse = await fetch(baseURL + "Users/" + args.user.id, {
-        ...scimRequest,
-        headers,
-      });
-      if (scimResponse.ok) {
-        console.log("Successfully deleted user");
-      } else {
-        const result = await scimResponse.json();
-        await handleErrorResponse(result);
-      }
-    }
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-const handleErrorResponse = async (response: ErrorResponse) => {
-  const errorMessage = `Failed with status ${response.status}: ${
-    response.message || response.detail
-  }`;
+export const handleErrorResponse = async (response: ErrorResponse) => {
+  const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
   throw new Error(errorMessage);
 };
 
