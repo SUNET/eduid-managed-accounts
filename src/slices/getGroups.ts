@@ -1,51 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchGroups, getGroupDetails } from "../apis/scimGroupsRequest";
-import { GroupMember } from "../typescript-clients/scim";
+import { fetchGroups, getGroupDetails, putGroup } from "../apis/scimGroupsRequest";
+import { GroupResponse } from "../typescript-clients/scim";
 
 interface GetGroupsState {
-  // managedAccounts: {
-  //   id: string;
-  //   version: string;
-  //   displayName: string;
-  //   members: [
-  //     {
-  //       version: string;
-  //       value: string;
-  //       $ref: string;
-  //       familyName: string;
-  //       givenName: string;
-  //       eppn: string;
-  //       password: string;
-  //     }
-  //   ];
-  // };
-  managedAccounts: {
-    id: string;
-    meta: {
-      location: string;
-      lastModified: string;
-      resourceType: string;
-      created: string;
-      version: string;
-    };
-    displayName: string;
-    members: GroupMember[];
-  };
+  managedAccounts: GroupResponse;
 }
 
 export const initialState: GetGroupsState = {
-  managedAccounts: {
-    id: "",
-    meta: {
-      location: "",
-      lastModified: "",
-      resourceType: "",
-      created: "",
-      version: "",
-    },
-    displayName: "",
-    members: [],
-  },
+  managedAccounts: {},
 };
 
 export const getGroupsSlice = createSlice({
@@ -60,8 +22,10 @@ export const getGroupsSlice = createSlice({
     //   state.searchedGroups = action.payload?.Resources;
     // });
     builder.addCase(getGroupDetails.fulfilled, (state, action) => {
-      state.managedAccounts.meta.version = action.payload.meta.version;
-      state.managedAccounts.members = action.payload?.members;
+      state.managedAccounts = action.payload;
+    });
+    builder.addCase(putGroup.fulfilled, (state, action) => {
+      state.managedAccounts = action.payload;
     });
   },
 });

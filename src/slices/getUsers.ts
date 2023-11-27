@@ -16,7 +16,7 @@ export const getUsersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
-      state.members = action.payload;
+      state.members.push(action.payload);
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
       state.members.push(action.payload);

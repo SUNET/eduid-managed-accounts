@@ -5,7 +5,7 @@ import { MANAGED_ACCOUNTS_GROUP_ID } from "../components/GroupManagement";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTA5NjQwNCwiaWF0IjoxNzAxMDkyODA0LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMDkyODA0LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.7gjpBZU1xZKAYaEePOjD2Mh6kGtPBKNmgyNnaM8yIYLXWkXnQOpnw7qvOBmBYvEzsB5Ww2aL-n0mEPtNIATgtg";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTEwMDc1OSwiaWF0IjoxNzAxMDk3MTU5LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMDk3MTU5LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.pye05L26iFhJfc3tHzh2-mBou2zngR3fPzOC9wK3rSGttqGxdrcFcesJIiqpO6vXBqz_YiRBSK32qXa2PeVhMw";
 
 export const scimHeaders = (token: string) => {
   return {
@@ -244,7 +244,7 @@ export const postGroup = createAsyncThunk<
 interface PutGroupResponse {}
 
 export const putGroup = createAsyncThunk<
-  PutGroupResponse, // return type
+  any, // return type
   { result: any }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
