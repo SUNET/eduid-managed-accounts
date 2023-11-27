@@ -4,42 +4,41 @@ import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Splash from "./Splash";
 
-export const MANAGED_ACCOUNTS_GROUP_ID = "16bda7c5-b7f7-470a-b44a-0a7a32b4876c";
+export const MANAGED_ACCOUNTS_GROUP_ID = "9ccc1331-fd60-4715-8728-962c35034f33";
 //TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
 
 export default function GroupManagement() {
   const dispatch = useAppDispatch();
 
-  const groupsData = useAppSelector((state) => state.groups.groups);
-  // const members = useAppSelector((state) => state.groups.members);
-  const searchedGroups = useAppSelector((state) => state.groups.searchedGroups);
+  const groupsData = useAppSelector((state) => state.groups.managedAccounts);
+  const members = useAppSelector((state) => state.groups.managedAccounts.members);
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
   // TODO: only for carinas test
-  const members = [
-    {
-      value: "d8b7003c-312a-4edb-ab71-a1481dc914af",
-      $ref: "https://api.eduid.docker/scim/Users/d8b7003c-312a-4edb-ab71-a1481dc914af",
-      display: "mouse donald",
-    },
-    {
-      value: "423bc5d8-43ff-4fda-b6f0-1215a2e96331",
-      $ref: "https://api.eduid.docker/scim/Users/423bc5d8-43ff-4fda-b6f0-1215a2e96331",
-      display: "mouse micke",
-    },
-    {
-      value: "3f8c6a39-2568-4741-bada-a6e2a700c673",
-      $ref: "https://api.eduid.docker/scim/Users/3f8c6a39-2568-4741-bada-a6e2a700c673",
-      display: "eunju  Huss",
-    },
-    {
-      value: "c81fc19a-dd38-4d97-a757-58a544b3ec7c",
-      $ref: "https://api.eduid.docker/scim/Users/c81fc19a-dd38-4d97-a757-58a544b3ec7c",
-      display: "anka kalle",
-    },
-  ];
+  // const members = [
+  //   {
+  //     value: "d8b7003c-312a-4edb-ab71-a1481dc914af",
+  //     $ref: "https://api.eduid.docker/scim/Users/d8b7003c-312a-4edb-ab71-a1481dc914af",
+  //     display: "mouse donald",
+  //   },
+  //   {
+  //     value: "423bc5d8-43ff-4fda-b6f0-1215a2e96331",
+  //     $ref: "https://api.eduid.docker/scim/Users/423bc5d8-43ff-4fda-b6f0-1215a2e96331",
+  //     display: "mouse micke",
+  //   },
+  //   {
+  //     value: "3f8c6a39-2568-4741-bada-a6e2a700c673",
+  //     $ref: "https://api.eduid.docker/scim/Users/3f8c6a39-2568-4741-bada-a6e2a700c673",
+  //     display: "eunju  Huss",
+  //   },
+  //   {
+  //     value: "c81fc19a-dd38-4d97-a757-58a544b3ec7c",
+  //     $ref: "https://api.eduid.docker/scim/Users/c81fc19a-dd38-4d97-a757-58a544b3ec7c",
+  //     display: "anka kalle",
+  //   },
+  // ];
 
   /**
    * Without user interaction
@@ -52,14 +51,13 @@ export default function GroupManagement() {
     const findManagedAccountsGroup = async () => {
       const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
       if (getGroupsSearch.fulfilled.match(result)) {
-        if (result.payload.Resources?.length === 0) {
+        if (!result.payload.Resources?.length) {
           // create a new Group "managed-accounts" and set the Group ID in the state
           // dispatch(createGroup({ groupName: GROUP_NAME }))
         } else if (result.payload.Resources?.length === 1) {
           // normal case
           //setManagedAccountsGroup(result.payload.Resources[0]);
           console.log("setManagedAccountsGroup: ", result.payload.Resources[0]);
-          console.log("searchedGroups: ", searchedGroups);
         } else {
           // if more groups are found, show message to contact eduID support
         }
@@ -69,12 +67,12 @@ export default function GroupManagement() {
     findManagedAccountsGroup();
   }, []);
 
-  useEffect(() => {
-    const fetchScimTest = async () => {
-      dispatch(fetchGroups());
-    };
-    fetchScimTest();
-  }, []);
+  // useEffect(() => {
+  //   const fetchScimTest = async () => {
+  //     dispatch(fetchGroups());
+  //   };
+  //   fetchScimTest();
+  // }, []);
 
   function getGroupsSearch1(e: any) {
     e.preventDefault();
@@ -109,6 +107,7 @@ export default function GroupManagement() {
         })
       );
       if (postUser.fulfilled.match(response)) {
+        e.target.reset();
         // update "version" for ManagedAccountsGroup before PUT
         const result = await dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }));
         if (getGroupDetails.fulfilled.match(result)) {
@@ -141,7 +140,7 @@ export default function GroupManagement() {
 
   const removeUser = async (id: any) => {
     // 1. get group details -> payload group version
-    const groupID = groupsData[0].id;
+    const groupID = groupsData.id;
 
     const result = await dispatch(getGroupDetails({ id: groupID }));
 
@@ -159,6 +158,7 @@ export default function GroupManagement() {
 
       if (putGroup.fulfilled.match(putFilteredUserResult)) {
         const userDetailsResult = await dispatch(getUserDetails({ id: id }));
+
         //4. DELETE user
         if (getGroupDetails.fulfilled.match(result)) {
           const user = {
@@ -166,14 +166,17 @@ export default function GroupManagement() {
             version: userDetailsResult.payload.meta.version,
           };
 
-          dispatch(deleteUser({ user }));
+          const response = await dispatch(deleteUser({ user }));
+          if (deleteUser.fulfilled.match(response)) {
+            dispatch(getGroupDetails({ id: groupID }));
+          }
         }
       }
     }
   };
 
   return (
-    <Splash showChildren={groupsData.length > 0}>
+    <Splash showChildren={groupsData.id !== undefined}>
       <section className="intro">
         <h1>Welcome to Managing Accounts using eduID</h1>
         <div className="lead">
