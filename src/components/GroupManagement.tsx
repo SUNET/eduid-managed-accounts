@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { fetchGroups, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -12,11 +12,34 @@ export default function GroupManagement() {
   const dispatch = useAppDispatch();
 
   const groupsData = useAppSelector((state) => state.groups.groups);
-  const members = useAppSelector((state) => state.groups.members);
+  // const members = useAppSelector((state) => state.groups.members);
   const searchedGroups = useAppSelector((state) => state.groups.searchedGroups);
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
+  // TODO: only for carinas test
+  const members = [
+    {
+      value: "d8b7003c-312a-4edb-ab71-a1481dc914af",
+      $ref: "https://api.eduid.docker/scim/Users/d8b7003c-312a-4edb-ab71-a1481dc914af",
+      display: "mouse donald",
+    },
+    {
+      value: "423bc5d8-43ff-4fda-b6f0-1215a2e96331",
+      $ref: "https://api.eduid.docker/scim/Users/423bc5d8-43ff-4fda-b6f0-1215a2e96331",
+      display: "mouse micke",
+    },
+    {
+      value: "3f8c6a39-2568-4741-bada-a6e2a700c673",
+      $ref: "https://api.eduid.docker/scim/Users/3f8c6a39-2568-4741-bada-a6e2a700c673",
+      display: "eunju  Huss",
+    },
+    {
+      value: "c81fc19a-dd38-4d97-a757-58a544b3ec7c",
+      $ref: "https://api.eduid.docker/scim/Users/c81fc19a-dd38-4d97-a757-58a544b3ec7c",
+      display: "anka kalle",
+    },
+  ];
 
   /**
    * Without user interaction
@@ -75,7 +98,6 @@ export default function GroupManagement() {
 
   const saveUser = async (e: any) => {
     e.preventDefault();
-    // TODO
     const givenName = document.querySelector('[name="given_name"]') as HTMLInputElement;
     const familyName = document.querySelector('[name="family_name"]') as HTMLInputElement;
     //POST USER
@@ -90,7 +112,6 @@ export default function GroupManagement() {
         // update "version" for ManagedAccountsGroup before PUT
         const result = await dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }));
         if (getGroupDetails.fulfilled.match(result)) {
-          console.log("result", result);
           const addedUserResult = await dispatch(
             putGroup({
               result: {
@@ -108,7 +129,10 @@ export default function GroupManagement() {
           );
 
           if (putGroup.fulfilled.match(addedUserResult)) {
-            dispatch(fetchGroups());
+            const response = await dispatch(fetchGroups());
+            if (fetchGroups.fulfilled.match(response)) {
+              dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }));
+            }
           }
         }
       }
@@ -160,25 +184,27 @@ export default function GroupManagement() {
         <form onSubmit={(e) => saveUser(e)}>
           <fieldset>
             <label>Given name</label>
-            <input type="text" name="givenName"></input>
-          </fieldset>
-          <fieldset>
-            <label>Middle name (optional)</label>
-            <input type="text" name="middleName"></input>
+            <input type="text" ref={givenNameRef} name="given_name"></input>
           </fieldset>
           <fieldset>
             <label>Surname</label>
-            <input type="text" name="familyName"></input>
+            <input type="text" ref={familyNameRef} name="family_name"></input>
           </fieldset>
           <div className="buttons">
             <button className="btn-primary">Create</button>
           </div>
-          <br />
+          {/* only for test */}
+          <button
+            className="btn-link btn-sm"
+            onClick={() => dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }))}
+          >
+            Managed accounts Group Members - see more
+          </button>
+
           <table>
             <thead>
               <tr>
                 <th>Given name*</th>
-                <th>Middle name</th>
                 <th>Surname*</th>
                 <th>EPPN</th>
                 <th>Password</th>
@@ -186,82 +212,24 @@ export default function GroupManagement() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <button>Remove</button>
-                </td>
-              </tr>
+              {members?.map((member: any) => (
+                <tr key={member.value}>
+                  <td>{member.display}</td>
+                  <td>{member.display}</td>
+                  <td> </td>
+                  <td> </td>
+                  <td>
+                    <button className="btn btn-primary" onClick={() => removeUser(member.value)}>
+                      remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </form>
       </section>
       {/* hämtar användaren */}
-      <article className="intro">
-        <form onSubmit={(e) => getGroupsSearch1(e)}>
-          <label>Search groups</label>
-          <input className="form-control" name="filter_string" ref={filterString} />
-          <div className="buttons">
-            <button className="btn btn-primary" type="submit">
-              Search
-            </button>
-          </div>
-        </form>
-      </article>
-      <article className="intro">
-        <h2>Groups</h2>
-        <p>Click on a group to see more details about it.</p>
-        <table>
-          <thead>
-            <tr>{renderHeader()}</tr>
-          </thead>
-          <tbody>
-            {groupsData?.map((group: any) => (
-              <tr key={group.id}>
-                <td>{group.displayName}</td>
-                <td>
-                  <button className="btn-link btn-sm" onClick={() => dispatch(getGroupDetails({ id: group.id }))}>
-                    see more
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {members?.map((member: any) => (
-          <React.Fragment key={member.value}>
-            <li>{member.display}</li>
-            <button className="btn btn-primary" onClick={() => removeUser(member.value)}>
-              remove
-            </button>
-          </React.Fragment>
-        ))}
-
-        <br />
-      </article>
-      <div>
-        <h2> Users</h2>
-        <form onSubmit={saveUser} style={{ display: "flex" }}>
-          <div>
-            <label>Family name</label>
-            <input name="family_name" ref={familyNameRef} />
-          </div>
-
-          <div>
-            <label>Given name</label>
-            <input name="given_name" ref={givenNameRef} />
-          </div>
-
-          <button className="btn btn-primary" type="submit">
-            create user
-          </button>
-        </form>
-      </div>
     </Splash>
   );
 }
