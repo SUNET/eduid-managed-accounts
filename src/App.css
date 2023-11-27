@@ -36,4 +36,6 @@
 @import "./styles/_Ladok.scss";
 @import "./styles/_reactSelect.scss";
 @import "./styles/_accordion.scss";
+
+@import "./styles/_groupManagement.scss";
 /* @import "../../node_modules/bootstrap/dist/css/bootstrap.min.css"; */

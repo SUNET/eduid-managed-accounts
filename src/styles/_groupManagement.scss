@@ -1,0 +1,60 @@
+/* additions and overwrites for the managed accounts app */
+@import "variables";
+
+table.group-management {
+  counter-reset: rowNumber;
+  tbody tr:nth-child(odd) {
+    background-color: $bg-gray;
+  }
+  tr > td:first-child {
+    counter-increment: rowNumber;
+  }
+  tr td:first-child::before {
+    content: counter(rowNumber);
+    min-width: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 0.5rem;
+    font-size: $txt-sm;
+  }
+  th:first-child {
+    white-space: nowrap;
+    width: 2.5rem;
+    padding-left: 1rem;
+  }
+  th:last-child {
+    text-align: right;
+    width: 5rem;
+  }
+  button {
+    height: auto;
+  }
+  th {
+    font-family: $inter-bold;
+    padding: 0.75rem 0.5rem;
+  }
+  caption {
+    background: $bg-orange;
+    padding: 0.75rem;
+  }
+}
+
+.buttons {
+  margin-bottom: 2rem;
+  padding: 0;
+}
+fieldset {
+  margin-bottom: 0;
+  margin-right: 1rem;
+}
+
+p {
+  font-size: 1.125rem;
+}
+
+.listed-steps li {
+  margin-bottom: 0.75rem;
+}
