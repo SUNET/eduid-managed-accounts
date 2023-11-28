@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
+import { UserResponse } from "typescript-clients/scim";
 import { generateNonce } from "../common/CryptoUtils";
 import {
   accessTokenTest,
@@ -9,10 +10,8 @@ import {
   scimHeaders,
 } from "./scimGroupsRequest";
 
-interface PostUserResponse {}
-
 export const postUser = createAsyncThunk<
-  any, // return type
+  UserResponse, // return type
   {
     familyName: string;
     givenName: string;
@@ -50,7 +49,7 @@ export const postUser = createAsyncThunk<
 });
 
 export const getUserDetails = createAsyncThunk<
-  any, // return type
+  UserResponse, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getUserDetails", async (args, thunkAPI) => {
