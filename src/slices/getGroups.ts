@@ -41,6 +41,7 @@ export const getGroupsSlice = createSlice({
       state.managedAccounts = action.payload;
     });
     builder.addCase(putGroup.fulfilled, (state, action) => {
+      console.log("action", action);
       state.managedAccounts = action.payload;
     });
   },
