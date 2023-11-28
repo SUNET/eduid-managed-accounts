@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
+import Pagination from "./Pagination";
 
 //TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
@@ -17,6 +18,8 @@ export default function GroupManagement() {
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
+  const [postsPerPage] = useState(3);
+  const [currentPage, setCurrentPage] = useState(1);
   // TODO: only for carinas test
   // const members = [
   //   {
@@ -72,6 +75,10 @@ export default function GroupManagement() {
       }
     };
     initializeManagedAccountsGroup();
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
   }, []);
 
   const saveUser = async (e: any) => {
@@ -130,6 +137,10 @@ export default function GroupManagement() {
       dispatch(deleteUser({ user }));
     }
   };
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = membersDetails.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <>
@@ -195,7 +206,7 @@ export default function GroupManagement() {
                   </tr>
                 </thead>
                 <tbody>
-                  {membersDetails?.map((member: any) => (
+                  {currentPosts?.map((member: any) => (
                     <tr key={member.id}>
                       <td> </td>
                       <td>{member.name.givenName}</td>
@@ -211,6 +222,13 @@ export default function GroupManagement() {
                   ))}
                 </tbody>
               </table>
+              <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={membersDetails.length}
+                // paginate={paginate}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
             </React.Fragment>
           )}
         </form>
