@@ -161,7 +161,6 @@ export const getGroupsSearch = createAsyncThunk<
       });
       if (scimResponse.ok) {
         const scimResponseJSON = await scimResponse.json();
-        console.log("SEARCH GROUPS RESPONSE: ", scimResponseJSON);
         return scimResponseJSON;
       } else {
         const result = await scimResponse.json();
@@ -242,8 +241,6 @@ export const putGroup = createAsyncThunk<
   { result: any }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
-  console.log("result", args.result);
-  const state = thunkAPI.getState();
   try {
     if (accessTokenTest) {
       const headers = {
