@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
-import { MANAGED_ACCOUNTS_GROUP_ID } from "../components/GroupManagement";
+import { GroupResponse } from "typescript-clients/scim";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTA5NjQwNCwiaWF0IjoxNzAxMDkyODA0LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMDkyODA0LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.7gjpBZU1xZKAYaEePOjD2Mh6kGtPBKNmgyNnaM8yIYLXWkXnQOpnw7qvOBmBYvEzsB5Ww2aL-n0mEPtNIATgtg";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTE3OTE4MSwiaWF0IjoxNzAxMTc1NTgxLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMTc1NTgxLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.ykEtQ48zn3ZP_RnVoETZyTQKuPShweJRmCcw7mLuI4osOLy_vFAOGVm-guO629Tghm2Az8HohfEbJ0L8CQS63g";
 
 export const scimHeaders = (token: string) => {
   return {
@@ -35,7 +35,7 @@ export interface Group {
   displayName: string;
 }
 
-export interface GroupsResponse {
+export interface AllGroupsResponse {
   groups: Group[];
   Resources: any;
 }
@@ -52,7 +52,7 @@ export interface ErrorResponse {
 }
 
 export const createGroup = createAsyncThunk<
-  GroupsResponse, // return type
+  GroupResponse, // return type
   { displayName: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/createGroup", async (args, thunkAPI) => {
@@ -74,7 +74,7 @@ export const createGroup = createAsyncThunk<
         return await scimResponse.json();
       } else {
         const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        return await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -83,7 +83,7 @@ export const createGroup = createAsyncThunk<
 });
 
 export const deleteGroup = createAsyncThunk<
-  GroupsResponse, // return type
+  any, // return type
   { group: { id: string; version: string } }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/deleteGroup", async (args, thunkAPI) => {
@@ -107,7 +107,7 @@ export const deleteGroup = createAsyncThunk<
         console.log("successfully deleted group");
       } else {
         const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        return await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -115,11 +115,11 @@ export const deleteGroup = createAsyncThunk<
   }
 });
 
-export const fetchGroups = createAsyncThunk<
-  GroupsResponse, // return type
+export const fetchAllGroups = createAsyncThunk<
+  AllGroupsResponse, // return type
   undefined, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/fetchGroups", async (args, thunkAPI) => {
+>("auth/fetchAllGroups", async (args, thunkAPI) => {
   try {
     if (accessTokenTest) {
       const headers = scimHeaders(accessTokenTest);
@@ -133,7 +133,7 @@ export const fetchGroups = createAsyncThunk<
         return await scimResponse.json();
       } else {
         const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        return await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -161,11 +161,10 @@ export const getGroupsSearch = createAsyncThunk<
       });
       if (scimResponse.ok) {
         const scimResponseJSON = await scimResponse.json();
-        console.log("SEARCH GROUPS RESPONSE: ", scimResponseJSON);
         return scimResponseJSON;
       } else {
         const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        return await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -173,10 +172,8 @@ export const getGroupsSearch = createAsyncThunk<
   }
 });
 
-interface GetGroupDetailsResponse {}
-
 export const getGroupDetails = createAsyncThunk<
-  any, // return type
+  GroupResponse, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupDetails", async (args, thunkAPI) => {
@@ -193,7 +190,7 @@ export const getGroupDetails = createAsyncThunk<
         return await scimResponse.json();
       } else {
         const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        return await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -201,10 +198,8 @@ export const getGroupDetails = createAsyncThunk<
   }
 });
 
-interface PostGroupResponse {}
-
 export const postGroup = createAsyncThunk<
-  PostGroupResponse, // return type
+  GroupResponse, // return type
   { displayName: any }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/postGroup", async (args, thunkAPI) => {
@@ -230,10 +225,10 @@ export const postGroup = createAsyncThunk<
         body: JSON.stringify(payload),
       });
       if (scimResponse.ok) {
-        await scimResponse.json();
+        return await scimResponse.json();
       } else {
         const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        return await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -241,21 +236,17 @@ export const postGroup = createAsyncThunk<
   }
 });
 
-interface PutGroupResponse {}
-
 export const putGroup = createAsyncThunk<
-  PutGroupResponse, // return type
+  GroupResponse, // return type
   { result: any }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
-  console.log("result", args.result);
-  const state = thunkAPI.getState();
   try {
     if (accessTokenTest) {
       const headers = {
         "Content-Type": "application/scim+json",
         Authorization: `Bearer ${accessTokenTest}`,
-        "If-Match": state.groups.managedAccounts.meta.version,
+        "If-Match": args.result.meta.version,
       };
       const scimRequest = putRequest();
       delete args.result.meta;
@@ -264,16 +255,17 @@ export const putGroup = createAsyncThunk<
         ...args.result,
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
       };
-      const scimResponse = await fetch(baseURL + "Groups/" + MANAGED_ACCOUNTS_GROUP_ID, {
+      const scimResponse = await fetch(baseURL + "Groups/" + args.result.id, {
         ...scimRequest,
         headers,
         body: JSON.stringify(payload),
       });
       if (scimResponse.ok) {
-        await scimResponse.json();
+        const json_response = await scimResponse.json();
+        return json_response;
       } else {
         const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        return await handleErrorResponse(result);
       }
     }
   } catch (error) {
@@ -285,5 +277,3 @@ export const handleErrorResponse = async (response: ErrorResponse) => {
   const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
   throw new Error(errorMessage);
 };
-
-// curl -X PUT -vv --insecure https://api.eduid.docker/scim/Groups/16bda7c5-b7f7-470a-b44a-0a7a32b4876c -H "If-Match: W/\"65646f1cbc2e092fda29c465\"" -H "Content-Type: application/scim+json" -H "Authorization: Bearer eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTA4NDEyOCwiaWF0IjoxNzAxMDgwNTI4LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMDgwNTI4LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.qnXOseUTLfmhaCbb1-hL_R9hOKW6o3IfWbdSItoIFoR7RIo3_UhDOzxshjwqx5_5to8W7NkQ92r29qKQU0pG9g" -d '{"displayName" : "Test Group 1", "schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"], "id":"16bda7c5-b7f7-470a-b44a-0a7a32b4876c","members":[]}' | json_pp

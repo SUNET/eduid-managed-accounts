@@ -44,7 +44,6 @@ export const postContinueRequest = createAsyncThunk<
         body: jws,
       };
       const response = await fetch(args.interactions.continue_url, { ...request });
-      console.log("response", response);
       if (response.ok) {
         return await response.json();
       } else {

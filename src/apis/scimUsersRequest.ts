@@ -1,12 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
+import { UserResponse } from "typescript-clients/scim";
 import { generateNonce } from "../common/CryptoUtils";
-import { accessTokenTest, baseURL, createScimRequest, handleErrorResponse, scimHeaders } from "./scimGroupsRequest";
-
-interface PostUserResponse {}
+import {
+  accessTokenTest,
+  baseURL,
+  createScimRequest,
+  handleErrorResponse,
+  scimHeaders,
+} from "./scimGroupsRequest";
 
 export const postUser = createAsyncThunk<
-  any, // return type
+  UserResponse, // return type
   {
     familyName: string;
     givenName: string;
@@ -44,7 +49,7 @@ export const postUser = createAsyncThunk<
 });
 
 export const getUserDetails = createAsyncThunk<
-  any, // return type
+  UserResponse, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getUserDetails", async (args, thunkAPI) => {
@@ -92,6 +97,7 @@ export const deleteUser = createAsyncThunk<
       });
       if (scimResponse.ok) {
         console.log("Successfully deleted user");
+        return args.user;
       } else {
         const result = await scimResponse.json();
         await handleErrorResponse(result);

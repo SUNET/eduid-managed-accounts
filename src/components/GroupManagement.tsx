@@ -1,18 +1,19 @@
-import { useEffect, useRef } from "react";
-import { fetchGroups, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
+import React, { useEffect, useRef } from "react";
+import { GroupMember } from "typescript-clients/scim/models/GroupMember";
+import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import Splash from "./Splash";
+import getGroupsSlice from "../slices/getGroups";
+import getUsersSlice from "../slices/getUsers";
 
-export const MANAGED_ACCOUNTS_GROUP_ID = "9ccc1331-fd60-4715-8728-962c35034f33";
 //TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
 
 export default function GroupManagement() {
   const dispatch = useAppDispatch();
 
-  const groupsData = useAppSelector((state) => state.groups.managedAccounts);
-  const members = useAppSelector((state) => state.groups.managedAccounts.members);
+  const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
+  const membersDetails = useAppSelector((state) => state.members.members);
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
@@ -48,51 +49,30 @@ export default function GroupManagement() {
    */
   useEffect(() => {
     console.log("FIRST ACTION");
-    const findManagedAccountsGroup = async () => {
+    const initializeManagedAccountsGroup = async () => {
+      dispatch(getUsersSlice.actions.initialize());
+      dispatch(getGroupsSlice.actions.initialize());
       const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
       if (getGroupsSearch.fulfilled.match(result)) {
         if (!result.payload.Resources?.length) {
           // create a new Group "managed-accounts" and set the Group ID in the state
-          // dispatch(createGroup({ groupName: GROUP_NAME }))
+          dispatch(createGroup({ displayName: GROUP_NAME }));
         } else if (result.payload.Resources?.length === 1) {
           // normal case
-          //setManagedAccountsGroup(result.payload.Resources[0]);
-          console.log("setManagedAccountsGroup: ", result.payload.Resources[0]);
+          const response = await dispatch(getGroupDetails({ id: result.payload.Resources[0].id }));
+          if (getGroupDetails.fulfilled.match(response)) {
+            response.payload.members?.map((member: any) => {
+              dispatch(getUserDetails({ id: member.value }));
+            });
+          }
         } else {
           // if more groups are found, show message to contact eduID support
         }
         console.log("LAST ACTION");
       }
     };
-    findManagedAccountsGroup();
+    initializeManagedAccountsGroup();
   }, []);
-
-  // useEffect(() => {
-  //   const fetchScimTest = async () => {
-  //     dispatch(fetchGroups());
-  //   };
-  //   fetchScimTest();
-  // }, []);
-
-  function getGroupsSearch1(e: any) {
-    e.preventDefault();
-    const filterStringValue = filterString?.current?.value;
-    if (filterStringValue) {
-      dispatch(getGroupsSearch({ searchFilter: filterStringValue }));
-    }
-  }
-
-  const renderHeader = () => {
-    let headerElement = ["Group name", ""];
-
-    return headerElement.map((key, index) => {
-      return (
-        <th className={key} key={index}>
-          {key}
-        </th>
-      );
-    });
-  };
 
   const saveUser = async (e: any) => {
     e.preventDefault();
@@ -100,83 +80,60 @@ export default function GroupManagement() {
     const familyName = document.querySelector('[name="family_name"]') as HTMLInputElement;
     //POST USER
     if (givenName.value && familyName.value) {
-      const response = await dispatch(
+      const createdUserResponse = await dispatch(
         postUser({
           familyName: familyName.value,
           givenName: givenName.value,
         })
       );
-      if (postUser.fulfilled.match(response)) {
+      if (postUser.fulfilled.match(createdUserResponse)) {
         e.target.reset();
-        // update "version" for ManagedAccountsGroup before PUT
-        const result = await dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }));
-        if (getGroupDetails.fulfilled.match(result)) {
-          const addedUserResult = await dispatch(
-            putGroup({
-              result: {
-                ...result.payload,
-                members: [
-                  ...result.payload.members,
-                  {
-                    $ref: response.payload.meta?.location,
-                    value: response.payload.id,
-                    display: response.payload.name.familyName + " " + response.payload.name.givenName,
-                  },
-                ],
-              },
-            })
-          );
+        const newGroupMember: GroupMember = {
+          $ref: createdUserResponse.payload.meta?.location,
+          value: createdUserResponse.payload.id,
+          display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
+        };
 
-          if (putGroup.fulfilled.match(addedUserResult)) {
-            const response = await dispatch(fetchGroups());
-            if (fetchGroups.fulfilled.match(response)) {
-              dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }));
-            }
-          }
-        }
+        const newMembersList = managedAccountsDetails.members?.slice(); // copy array
+        newMembersList?.push(newGroupMember);
+
+        const updatedGroupResponse = await dispatch(
+          putGroup({
+            result: {
+              ...managedAccountsDetails,
+              members: newMembersList,
+            },
+          })
+        );
       }
     }
   };
 
   const removeUser = async (id: any) => {
-    // 1. get group details -> payload group version
-    const groupID = groupsData.id;
-
-    const result = await dispatch(getGroupDetails({ id: groupID }));
-
-    const filteredUser = result.payload.members.filter((user: any) => user.value !== id);
-    // 2. tar bort user from group  -> put group
-    if (getGroupDetails.fulfilled.match(result)) {
-      const putFilteredUserResult = await dispatch(
-        putGroup({
-          result: {
-            ...result.payload,
-            members: filteredUser,
-          },
-        })
-      );
-
-      if (putGroup.fulfilled.match(putFilteredUserResult)) {
-        const userDetailsResult = await dispatch(getUserDetails({ id: id }));
-
-        //4. DELETE user
-        if (getGroupDetails.fulfilled.match(result)) {
-          const user = {
-            id: id,
-            version: userDetailsResult.payload.meta.version,
-          };
-
-          const response = await dispatch(deleteUser({ user }));
-          if (deleteUser.fulfilled.match(response)) {
-            dispatch(getGroupDetails({ id: groupID }));
-          }
-        }
-      }
+    // 1. Remove User from Group
+    const filteredUser = managedAccountsDetails?.members?.filter((user: any) => user.value !== id);
+    const putFilteredUserResult = await dispatch(
+      putGroup({
+        result: {
+          ...managedAccountsDetails,
+          members: filteredUser,
+        },
+      })
+    );
+    // 2. Delete User
+    if (putGroup.fulfilled.match(putFilteredUserResult)) {
+      const memberToBeRemoved = membersDetails?.filter((user: any) => user.id === id)[0];
+      const user = {
+        id: id,
+        version: memberToBeRemoved.meta.version,
+      };
+      dispatch(deleteUser({ user }));
     }
   };
 
   return (
-    <Splash showChildren={groupsData.id !== undefined}>
+    <>
+      {/* <Splash showChildren={managedAccountsDetails.id}> */}
       <section className="intro">
         <h1>Welcome to Managing Accounts using eduID</h1>
         <div className="lead">
@@ -218,50 +175,47 @@ export default function GroupManagement() {
               <button className="btn-primary">Add</button>
             </div>
           </div>
-
-          <h2>Manage members in group</h2>
-          <p>
-            The table shows members of this group. It is not possible to edit the already added member, nor retrieve a
-            password once the session in which the member was created is ended, but by clicking "REMOVE" you can remove
-            the member and if needed create it again -<strong> with a new EPPN and password</strong>.
-          </p>
-          <table className="group-management">
-            <caption>
-              {/* only for test */}
-              <button className="btn-link" onClick={() => dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }))}>
-                View Managed accounts Group Members
-              </button>
-            </caption>
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Given name</th>
-                <th>Surname</th>
-                <th>EPPN</th>
-                <th>Password</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {members?.map((member: any) => (
-                <tr key={member.value}>
-                  <td> </td>
-                  <td>{member.display}</td>
-                  <td>{member.display}</td>
-                  <td> </td>
-                  <td> </td>
-                  <td>
-                    <button className="btn btn-link btn-sm" onClick={() => removeUser(member.value)}>
-                      remove
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {membersDetails.length > 0 && (
+            <React.Fragment>
+              <h2>Manage members in group</h2>
+              <p>
+                The table shows members of this group. It is not possible to edit the already added member, nor retrieve
+                a password once the session in which the member was created is ended, but by clicking "REMOVE" you can
+                remove the member and if needed create it again -<strong> with a new EPPN and password</strong>.
+              </p>
+              <table className="group-management">
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>Given name</th>
+                    <th>Surname</th>
+                    <th>EPPN</th>
+                    <th>Password</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {membersDetails?.map((member: any) => (
+                    <tr key={member.id}>
+                      <td> </td>
+                      <td>{member.name.givenName}</td>
+                      <td>{member.name.familyName}</td>
+                      <td> {member.externalId}</td>
+                      <td> </td>
+                      <td>
+                        <button className="btn btn-link btn-sm" onClick={() => removeUser(member.id)}>
+                          remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </React.Fragment>
+          )}
         </form>
       </section>
-      {/* hämtar användaren */}
-    </Splash>
+    </>
+    // </Splash>
   );
 }

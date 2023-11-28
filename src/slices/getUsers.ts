@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUserDetails, postUser } from "../apis/scimUsersRequest";
+import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { UserResponse } from "../typescript-clients/scim";
 
 interface GetUsersState {
@@ -13,13 +13,20 @@ export const initialState: GetUsersState = {
 export const getUsersSlice = createSlice({
   name: "groups",
   initialState,
-  reducers: {},
+  reducers: {
+    initialize: (state) => {
+      state.members = [];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
-      state.members = action.payload;
+      state.members.push(action.payload);
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
       state.members.push(action.payload);
+    });
+    builder.addCase(deleteUser.fulfilled, (state, action) => {
+      state.members = state.members?.filter((user: any) => user.id !== action.payload.id);
     });
   },
 });

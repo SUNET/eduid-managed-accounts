@@ -1,36 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchGroups, getGroupDetails } from "../apis/scimGroupsRequest";
-import { GroupMember } from "../typescript-clients/scim";
+import { createGroup, fetchAllGroups, getGroupDetails, putGroup } from "../apis/scimGroupsRequest";
+import { GroupResponse, SCIMResourceType } from "../typescript-clients/scim";
 
 interface GetGroupsState {
-  // managedAccounts: {
-  //   id: string;
-  //   version: string;
-  //   displayName: string;
-  //   members: [
-  //     {
-  //       version: string;
-  //       value: string;
-  //       $ref: string;
-  //       familyName: string;
-  //       givenName: string;
-  //       eppn: string;
-  //       password: string;
-  //     }
-  //   ];
-  // };
-  managedAccounts: {
-    id: string;
-    meta: {
-      location: string;
-      lastModified: string;
-      resourceType: string;
-      created: string;
-      version: string;
-    };
-    displayName: string;
-    members: GroupMember[];
-  };
+  managedAccounts: GroupResponse;
 }
 
 export const initialState: GetGroupsState = {
@@ -39,10 +12,11 @@ export const initialState: GetGroupsState = {
     meta: {
       location: "",
       lastModified: "",
-      resourceType: "",
+      resourceType: SCIMResourceType.GROUP,
       created: "",
-      version: "",
+      version: null,
     },
+    schemas: [],
     displayName: "",
     members: [],
   },
@@ -51,17 +25,36 @@ export const initialState: GetGroupsState = {
 export const getGroupsSlice = createSlice({
   name: "groups",
   initialState,
-  reducers: {},
+  reducers: {
+    initialize: (state) => {
+      state.managedAccounts = {
+        id: "",
+        meta: {
+          location: "",
+          lastModified: "",
+          resourceType: SCIMResourceType.GROUP,
+          created: "",
+          version: null,
+        },
+        schemas: [],
+        displayName: "",
+        members: [],
+      };
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(fetchGroups.fulfilled, (state, action) => {
+    builder.addCase(createGroup.fulfilled, (state, action) => {
+      state.managedAccounts = action.payload;
+    });
+    builder.addCase(fetchAllGroups.fulfilled, (state, action) => {
       state.managedAccounts.id = action.payload?.Resources[0].id;
     });
-    // builder.addCase(getGroupsSearch.fulfilled, (state, action) => {
-    //   state.searchedGroups = action.payload?.Resources;
-    // });
     builder.addCase(getGroupDetails.fulfilled, (state, action) => {
-      state.managedAccounts.meta.version = action.payload.meta.version;
-      state.managedAccounts.members = action.payload?.members;
+      state.managedAccounts = action.payload;
+    });
+    builder.addCase(putGroup.fulfilled, (state, action) => {
+      console.log("action", action);
+      state.managedAccounts = action.payload;
     });
   },
 });

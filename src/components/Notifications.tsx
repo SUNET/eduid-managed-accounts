@@ -5,7 +5,6 @@ import { clearNotifications, eduidNotification } from "../slices/Notifications";
 
 export function Notifications(): JSX.Element | null {
   const error = useAppSelector((state) => state.notifications.error);
-  console.log("error", error);
   const dispatch = useAppDispatch();
 
   function handleRMNotification(e: React.MouseEvent<HTMLElement>) {
