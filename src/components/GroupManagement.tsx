@@ -85,7 +85,7 @@ export default function GroupManagement() {
 
   // useEffect(() => {
   //   const fetchScimTest = async () => {
-  //     dispatch(fetchGroups());
+  //     dispatch(fetchAllGroups());
   //   };
   //   fetchScimTest();
   // }, []);
@@ -156,8 +156,8 @@ export default function GroupManagement() {
         );
 
         // if (putGroup.fulfilled.match(updatedGroupResponse)) {
-        //   // const response = await dispatch(fetchGroups());
-        //   // if (fetchGroups.fulfilled.match(response)) {
+        //   // const response = await dispatch(fetchAllGroups());
+        //   // if (fetchAllGroups.fulfilled.match(response)) {
         //   dispatch(getGroupDetails({ id: MANAGED_ACCOUNTS_GROUP_ID }));
         //   // }
       }
