@@ -13,7 +13,11 @@ export const initialState: GetUsersState = {
 export const getUsersSlice = createSlice({
   name: "groups",
   initialState,
-  reducers: {},
+  reducers: {
+    initialize: (state) => {
+      state.members = [];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
       state.members.push(action.payload);
@@ -24,9 +28,7 @@ export const getUsersSlice = createSlice({
     builder.addCase(deleteUser.fulfilled, (state, action) => {
       //state.members.push(action.payload);
       console.log("action.payload: ", action.payload);
-      state.members = state.members?.filter(
-        (user: any) => user.id !== action.payload.id
-      );
+      state.members = state.members?.filter((user: any) => user.id !== action.payload.id);
     });
   },
 });

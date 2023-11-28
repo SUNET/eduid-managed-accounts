@@ -5,7 +5,7 @@ import { GroupResponse } from "typescript-clients/scim";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTE3NzA1OCwiaWF0IjoxNzAxMTczNDU4LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMTczNDU4LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.s0_NFj4wjHUbEN7KhpSJZ-wmy13GQOrkXPgMauXaDA2Z5uuneYPXdLNw6I2rMcqvI2WasOWqhmVMyh4oLls0_g";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTE3OTE4MSwiaWF0IjoxNzAxMTc1NTgxLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMTc1NTgxLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.ykEtQ48zn3ZP_RnVoETZyTQKuPShweJRmCcw7mLuI4osOLy_vFAOGVm-guO629Tghm2Az8HohfEbJ0L8CQS63g";
 
 export const scimHeaders = (token: string) => {
   return {
@@ -277,8 +277,6 @@ export const putGroup = createAsyncThunk<
 });
 
 export const handleErrorResponse = async (response: ErrorResponse) => {
-  const errorMessage = `Failed with status ${response.status}: ${
-    response.message || response.detail
-  }`;
+  const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
   throw new Error(errorMessage);
 };
