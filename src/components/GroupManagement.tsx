@@ -139,18 +139,20 @@ export default function GroupManagement() {
   };
 
   const [members, setMembers] = useState<any[]>([]);
+  const [selectAll, setSelectAll] = useState<boolean>(false);
 
   useEffect(() => {
     setMembers(membersDetails.map((member) => ({ ...member, selected: false })));
   }, [membersDetails]);
 
   const handleSelectAll = () => {
-    const allSelected = members.every((member) => member.selected);
+    setSelectAll((prevState) => !prevState);
 
     const updatedMembers = members.map((member) => ({
       ...member,
-      selected: !allSelected,
+      selected: !selectAll,
     }));
+
     setMembers(updatedMembers);
   };
 
@@ -158,6 +160,7 @@ export default function GroupManagement() {
     setMembers((prevMembers) =>
       prevMembers.map((member) => (member.id === id ? { ...member, selected: !member.selected } : member))
     );
+    setSelectAll(false);
   };
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -219,7 +222,7 @@ export default function GroupManagement() {
                 <thead>
                   <tr>
                     <th>
-                      <input type="checkbox" onChange={() => handleSelectAll()} />
+                      <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} />
                     </th>
                     <th>No.</th>
                     <th>Given name</th>
