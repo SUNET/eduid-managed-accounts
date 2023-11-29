@@ -18,7 +18,7 @@ export default function GroupManagement() {
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
-  const postsPerPage = 3;
+  const postsPerPage = 30;
   const [currentPage, setCurrentPage] = useState(1);
   // TODO: only for carinas test
   // const members = [
