@@ -18,7 +18,7 @@ export default function GroupManagement() {
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
   const filterString = useRef<HTMLInputElement | null>(null);
-  const [postsPerPage] = useState(3);
+  const postsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
   // TODO: only for carinas test
   // const members = [
@@ -225,7 +225,6 @@ export default function GroupManagement() {
               <Pagination
                 postsPerPage={postsPerPage}
                 totalPosts={membersDetails.length}
-                // paginate={paginate}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
               />

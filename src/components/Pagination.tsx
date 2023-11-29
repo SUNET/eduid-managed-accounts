@@ -1,21 +1,13 @@
 import { useEffect, useState } from "react";
 
-// TODO: Add correct types and remove any
 interface PaginationProps {
-  postsPerPage: number;
-  totalPosts: number;
-  // paginate: (value: number) => void;
-  currentPage: any;
-  setCurrentPage: any;
+  readonly postsPerPage: number;
+  readonly totalPosts: number;
+  readonly currentPage: any;
+  readonly setCurrentPage: (value: any) => void;
 }
 
-function Pagination({
-  postsPerPage,
-  totalPosts,
-  // paginate,
-  currentPage,
-  setCurrentPage,
-}: PaginationProps) {
+function Pagination({ postsPerPage, totalPosts, currentPage, setCurrentPage }: PaginationProps) {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const pageNumbers: any[] = [];
@@ -69,31 +61,32 @@ function Pagination({
     <nav>
       <ul className="pagination">
         <li className="page-item">
-          <a
+          <button
             aria-label="link previous"
             className={currentPage === 1 ? `disabled page-link` : `page-link`}
             onClick={() => setCurrentPage((prev: number) => (prev === 1 ? prev : prev - 1))}
           >
             &larr;
-            {/* <FontAwesomeIcon icon={faChevronLeft as IconProp} /> */}
-          </a>
+          </button>
         </li>
-        {arrOfCurrentButtons.map((number: number, index: number) => (
-          <li key={index} className="page-item">
-            <a onClick={() => paginate(number)} className={currentPage === number ? `active page-link` : `page-link`}>
+        {arrOfCurrentButtons.map((number: number) => (
+          <li key={number} className="page-item">
+            <button
+              onClick={() => paginate(number)}
+              className={currentPage === number ? `active page-link` : `page-link`}
+            >
               {number}
-            </a>
+            </button>
           </li>
         ))}
         <li className="page-item">
-          <a
+          <button
             aria-label="link next"
             className={currentPage === pageNumbers.length ? `disabled page-link` : `page-link`}
             onClick={() => setCurrentPage((prev: number) => (prev === pageNumbers.length ? prev : prev + 1))}
           >
             &rarr;
-            {/* <FontAwesomeIcon icon={faChevronRight as IconProp} /> */}
-          </a>
+          </button>
         </li>
       </ul>
     </nav>
