@@ -138,10 +138,31 @@ export default function GroupManagement() {
     }
   };
 
+  const [members, setMembers] = useState<any[]>([]);
+
+  useEffect(() => {
+    setMembers(membersDetails.map((member) => ({ ...member, selected: false })));
+  }, [membersDetails]);
+
+  const handleSelectAll = () => {
+    const allSelected = members.every((member) => member.selected);
+
+    const updatedMembers = members.map((member) => ({
+      ...member,
+      selected: !allSelected,
+    }));
+    setMembers(updatedMembers);
+  };
+
+  const handleSelect = (id: string) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) => (member.id === id ? { ...member, selected: !member.selected } : member))
+    );
+  };
+
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = membersDetails.slice(indexOfFirstPost, indexOfLastPost);
-
+  const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
   return (
     <>
       {/* <Splash showChildren={managedAccountsDetails.id}> */}
@@ -198,7 +219,7 @@ export default function GroupManagement() {
                 <thead>
                   <tr>
                     <th>
-                      <input type="checkbox" />
+                      <input type="checkbox" onChange={() => handleSelectAll()} />
                     </th>
                     <th>No.</th>
                     <th>Given name</th>
@@ -212,7 +233,7 @@ export default function GroupManagement() {
                   {currentPosts?.map((member: any) => (
                     <tr key={member.id}>
                       <td>
-                        <input type="checkbox" />
+                        <input type="checkbox" checked={member.selected} onChange={() => handleSelect(member.id)} />
                       </td>
                       <td> </td>
                       <td>{member.name.givenName}</td>
