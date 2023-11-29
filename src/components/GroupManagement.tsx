@@ -197,6 +197,9 @@ export default function GroupManagement() {
               <table className="group-management">
                 <thead>
                   <tr>
+                    <th>
+                      <input type="checkbox" />
+                    </th>
                     <th>No.</th>
                     <th>Given name</th>
                     <th>Surname</th>
@@ -208,6 +211,9 @@ export default function GroupManagement() {
                 <tbody>
                   {currentPosts?.map((member: any) => (
                     <tr key={member.id}>
+                      <td>
+                        <input type="checkbox" />
+                      </td>
                       <td> </td>
                       <td>{member.name.givenName}</td>
                       <td>{member.name.familyName}</td>
