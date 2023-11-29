@@ -142,6 +142,7 @@ export default function GroupManagement() {
   const [selectAll, setSelectAll] = useState<boolean>(false);
 
   useEffect(() => {
+    setSelectAll(false);
     setMembers(membersDetails.map((member) => ({ ...member, selected: false })));
   }, [membersDetails]);
 
