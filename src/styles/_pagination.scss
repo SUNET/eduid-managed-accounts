@@ -4,8 +4,14 @@ ul.pagination {
   display: flex;
   flex-direction: row;
 
+  li {
+    width: 2.5rem;
+  }
+
   button.page-link {
     color: $txt-orange;
+    width: 2rem;
+    height: 2rem;
   }
 
   button.active.page-link {
