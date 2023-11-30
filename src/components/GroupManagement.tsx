@@ -233,12 +233,27 @@ export default function GroupManagement() {
         <Form
           onSubmit={(e) => addUser(e)}
           render={({ handleSubmit, form, submitting, pristine, values }) => (
-            <form onSubmit={handleSubmit}>
+            <form
+              onSubmit={async (event) => {
+                await handleSubmit(event);
+                form.reset();
+              }}
+            >
               <div className="flex-between">
                 <label>Given name*</label>
-                <Field name={"given_name"} component="input" required={true} />
+                <Field
+                  name={"given_name"}
+                  component="input"
+                  type="text"
+                  required={true}
+                />
                 <label>Surname*</label>
-                <Field name={"surname"} component="input" required={true} />
+                <Field
+                  name={"surname"}
+                  component="input"
+                  type="text"
+                  required={true}
+                />
                 <div className="buttons">
                   <button className="btn-primary">Add</button>
                 </div>
