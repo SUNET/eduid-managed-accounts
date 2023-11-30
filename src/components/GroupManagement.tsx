@@ -219,6 +219,15 @@ export default function GroupManagement() {
                 a password once the session in which the member was created is ended, but by clicking "REMOVE" you can
                 remove the member and if needed create it again -<strong> with a new EPPN and password</strong>.
               </p>
+              <div className="flex-between form-controls">
+                <label>Edit selected rows:</label>
+                <div className="buttons">
+                  <button className="btn btn-secondary btn-sm">Copy to clipboard</button>
+                  <button className="btn btn-secondary btn-sm" onClick={() => removeUser(member.id)}>
+                    remove
+                  </button>
+                </div>
+              </div>
               <table className="group-management">
                 <thead>
                   <tr>
