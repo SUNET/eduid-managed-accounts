@@ -1,3 +1,6 @@
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
@@ -20,6 +23,7 @@ export default function GroupManagement() {
   const filterString = useRef<HTMLInputElement | null>(null);
   const postsPerPage = 30;
   const [currentPage, setCurrentPage] = useState(1);
+  const [tooltipCopied, setTooltipCopied] = useState(false);
   // TODO: only for carinas test
   // const members = [
   //   {
@@ -157,6 +161,8 @@ export default function GroupManagement() {
     setMembers(updatedMembers);
   };
 
+  console.log("members", members);
+
   const handleSelect = (id: string) => {
     setMembers((prevMembers) =>
       prevMembers.map((member) => (member.id === id ? { ...member, selected: !member.selected } : member))
@@ -167,6 +173,38 @@ export default function GroupManagement() {
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
+
+  const ref = useRef<HTMLInputElement>(null);
+
+  const copyToClipboard = () => {
+    if (ref && ref.current) {
+      ref.current.select();
+      document.execCommand("copy");
+      setTooltipCopied(true);
+      (document.getElementById("icon-copy") as HTMLInputElement).style.display = "none";
+      (document.getElementById("icon-check") as HTMLInputElement).style.display = "inline";
+      setTimeout(() => {
+        (document.getElementById("icon-copy") as HTMLInputElement).style.display = "inline";
+        (document.getElementById("icon-check") as HTMLInputElement).style.display = "none";
+        setTooltipCopied(false);
+      }, 1000);
+    }
+  };
+  const isMemberSelected = members.filter((member: any) => member.selected);
+
+  const copyToClipboardAllMembers = (members: any) => {
+    const membersString = isMemberSelected.map((member: any) => member.externalId).join(", ");
+    const TempText = document.createElement("input");
+    TempText.value = membersString;
+    document.body.appendChild(TempText);
+    TempText.select();
+
+    document.execCommand("copy");
+    document.body.removeChild(TempText);
+
+    alert("Copied the text: " + TempText.value);
+  };
+
   return (
     <>
       {/* <Splash showChildren={managedAccountsDetails.id}> */}
@@ -222,8 +260,18 @@ export default function GroupManagement() {
               <div className="flex-between form-controls">
                 <label>Edit selected rows:</label>
                 <div className="buttons">
-                  <button className="btn btn-secondary btn-sm">Copy to clipboard</button>
-                  <button className="btn btn-secondary btn-sm" onClick={() => removeUser(member.id)}>
+                  <button
+                    disabled={!isMemberSelected.length}
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => copyToClipboardAllMembers(members)}
+                  >
+                    Copy to clipboard
+                  </button>
+                  <button
+                    disabled={!isMemberSelected.length}
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => console.log(members)}
+                  >
                     remove
                   </button>
                 </div>
@@ -251,7 +299,16 @@ export default function GroupManagement() {
                       <td> </td>
                       <td>{member.name.givenName}</td>
                       <td>{member.name.familyName}</td>
-                      <td> {member.externalId}</td>
+                      <td>
+                        {member.externalId}{" "}
+                        <button id="clipboard" className="icon-only copybutton" onClick={copyToClipboard}>
+                          <FontAwesomeIcon id={"icon-copy"} icon={faCopy as IconProp} />
+                          <FontAwesomeIcon id={"icon-check"} icon={faCheck as IconProp} />
+                          <div className="tool-tip-text" id="tool-tip">
+                            {tooltipCopied ? <p>Copied!</p> : <p>Copy to clipboard!</p>}
+                          </div>
+                        </button>
+                      </td>
                       <td> </td>
                       <td>
                         <button className="btn btn-link btn-sm" onClick={() => removeUser(member.id)}>
