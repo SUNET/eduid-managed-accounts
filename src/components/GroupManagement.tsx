@@ -1,13 +1,11 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
-import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
+import { getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
+import MembersList from "./MembersList";
 import Pagination from "./Pagination";
 
 //TODO: change to GROUP_NAME  = "managed-accounts";
@@ -20,33 +18,8 @@ export default function GroupManagement() {
   const membersDetails = useAppSelector((state) => state.members.members);
   const familyNameRef = useRef<HTMLInputElement | null>(null);
   const givenNameRef = useRef<HTMLInputElement | null>(null);
-  const filterString = useRef<HTMLInputElement | null>(null);
   const postsPerPage = 30;
   const [currentPage, setCurrentPage] = useState(1);
-  const [tooltipCopied, setTooltipCopied] = useState(false);
-  // TODO: only for carinas test
-  // const members = [
-  //   {
-  //     value: "d8b7003c-312a-4edb-ab71-a1481dc914af",
-  //     $ref: "https://api.eduid.docker/scim/Users/d8b7003c-312a-4edb-ab71-a1481dc914af",
-  //     display: "mouse donald",
-  //   },
-  //   {
-  //     value: "423bc5d8-43ff-4fda-b6f0-1215a2e96331",
-  //     $ref: "https://api.eduid.docker/scim/Users/423bc5d8-43ff-4fda-b6f0-1215a2e96331",
-  //     display: "mouse micke",
-  //   },
-  //   {
-  //     value: "3f8c6a39-2568-4741-bada-a6e2a700c673",
-  //     $ref: "https://api.eduid.docker/scim/Users/3f8c6a39-2568-4741-bada-a6e2a700c673",
-  //     display: "eunju  Huss",
-  //   },
-  //   {
-  //     value: "c81fc19a-dd38-4d97-a757-58a544b3ec7c",
-  //     $ref: "https://api.eduid.docker/scim/Users/c81fc19a-dd38-4d97-a757-58a544b3ec7c",
-  //     display: "anka kalle",
-  //   },
-  // ];
 
   /**
    * Without user interaction
@@ -55,27 +28,25 @@ export default function GroupManagement() {
    * 3 - If the Group is found, set the Group ID in the state ManagedAccountsGroup and show the Users in the Group
    */
   useEffect(() => {
-    console.log("FIRST ACTION");
     const initializeManagedAccountsGroup = async () => {
-      dispatch(getUsersSlice.actions.initialize());
-      dispatch(getGroupsSlice.actions.initialize());
-      const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
-      if (getGroupsSearch.fulfilled.match(result)) {
-        if (!result.payload.Resources?.length) {
-          // create a new Group "managed-accounts" and set the Group ID in the state
-          dispatch(createGroup({ displayName: GROUP_NAME }));
-        } else if (result.payload.Resources?.length === 1) {
-          // normal case
-          const response = await dispatch(getGroupDetails({ id: result.payload.Resources[0].id }));
-          if (getGroupDetails.fulfilled.match(response)) {
-            response.payload.members?.map((member: any) => {
-              dispatch(getUserDetails({ id: member.value }));
-            });
+      try {
+        dispatch(getUsersSlice.actions.initialize());
+        dispatch(getGroupsSlice.actions.initialize());
+        const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
+        if (getGroupsSearch.fulfilled.match(result)) {
+          if (!result.payload.Resources?.length) {
+            dispatch(createGroup({ displayName: GROUP_NAME }));
+          } else if (result.payload.Resources?.length === 1) {
+            const response = await dispatch(getGroupDetails({ id: result.payload.Resources[0].id }));
+            if (getGroupDetails.fulfilled.match(response)) {
+              response.payload.members?.map((member: any) => {
+                dispatch(getUserDetails({ id: member.value }));
+              });
+            }
           }
-        } else {
-          // if more groups are found, show message to contact eduID support
         }
-        console.log("LAST ACTION");
+      } catch (error) {
+        console.log("Error", error);
       }
     };
     initializeManagedAccountsGroup();
@@ -89,121 +60,45 @@ export default function GroupManagement() {
     e.preventDefault();
     const givenName = document.querySelector('[name="given_name"]') as HTMLInputElement;
     const familyName = document.querySelector('[name="family_name"]') as HTMLInputElement;
-    //POST USER
     if (givenName.value && familyName.value) {
-      const createdUserResponse = await dispatch(
-        postUser({
-          familyName: familyName.value,
-          givenName: givenName.value,
-        })
-      );
-      if (postUser.fulfilled.match(createdUserResponse)) {
-        e.target.reset();
-        const newGroupMember: GroupMember = {
-          $ref: createdUserResponse.payload.meta?.location,
-          value: createdUserResponse.payload.id,
-          display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
-        };
-
-        const newMembersList = managedAccountsDetails.members?.slice(); // copy array
-        newMembersList?.push(newGroupMember);
-
-        const updatedGroupResponse = await dispatch(
-          putGroup({
-            result: {
-              ...managedAccountsDetails,
-              members: newMembersList,
-            },
+      try {
+        const createdUserResponse = await dispatch(
+          postUser({
+            familyName: familyName.value,
+            givenName: givenName.value,
           })
         );
+        if (postUser.fulfilled.match(createdUserResponse)) {
+          e.target.reset();
+          const newGroupMember: GroupMember = {
+            $ref: createdUserResponse.payload.meta?.location,
+            value: createdUserResponse.payload.id,
+            display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
+          };
+
+          const newMembersList = managedAccountsDetails.members?.slice(); // copy array
+          newMembersList?.push(newGroupMember);
+
+          await dispatch(
+            putGroup({
+              result: {
+                ...managedAccountsDetails,
+                members: newMembersList,
+              },
+            })
+          );
+        }
+      } catch (error) {
+        console.log("error", error);
       }
     }
   };
 
-  const removeUser = async (id: any) => {
-    // 1. Remove User from Group
-    const filteredUser = managedAccountsDetails?.members?.filter((user: any) => user.value !== id);
-    const putFilteredUserResult = await dispatch(
-      putGroup({
-        result: {
-          ...managedAccountsDetails,
-          members: filteredUser,
-        },
-      })
-    );
-    // 2. Delete User
-    if (putGroup.fulfilled.match(putFilteredUserResult)) {
-      const memberToBeRemoved = membersDetails?.filter((user: any) => user.id === id)[0];
-      const user = {
-        id: id,
-        version: memberToBeRemoved.meta.version,
-      };
-      dispatch(deleteUser({ user }));
-    }
-  };
-
   const [members, setMembers] = useState<any[]>([]);
-  const [selectAll, setSelectAll] = useState<boolean>(false);
-
-  useEffect(() => {
-    setSelectAll(false);
-    setMembers(membersDetails.map((member) => ({ ...member, selected: false })));
-  }, [membersDetails]);
-
-  const handleSelectAll = () => {
-    setSelectAll((prevState) => !prevState);
-
-    const updatedMembers = members.map((member) => ({
-      ...member,
-      selected: !selectAll,
-    }));
-
-    setMembers(updatedMembers);
-  };
-
-  console.log("members", members);
-
-  const handleSelect = (id: string) => {
-    setMembers((prevMembers) =>
-      prevMembers.map((member) => (member.id === id ? { ...member, selected: !member.selected } : member))
-    );
-    setSelectAll(false);
-  };
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
-
-  const ref = useRef<HTMLInputElement>(null);
-
-  const copyToClipboard = () => {
-    if (ref && ref.current) {
-      ref.current.select();
-      document.execCommand("copy");
-      setTooltipCopied(true);
-      (document.getElementById("icon-copy") as HTMLInputElement).style.display = "none";
-      (document.getElementById("icon-check") as HTMLInputElement).style.display = "inline";
-      setTimeout(() => {
-        (document.getElementById("icon-copy") as HTMLInputElement).style.display = "inline";
-        (document.getElementById("icon-check") as HTMLInputElement).style.display = "none";
-        setTooltipCopied(false);
-      }, 1000);
-    }
-  };
-  const isMemberSelected = members.filter((member: any) => member.selected);
-
-  const copyToClipboardAllMembers = (members: any) => {
-    const membersString = isMemberSelected.map((member: any) => member.externalId).join(", ");
-    const TempText = document.createElement("input");
-    TempText.value = membersString;
-    document.body.appendChild(TempText);
-    TempText.select();
-
-    document.execCommand("copy");
-    document.body.removeChild(TempText);
-
-    alert("Copied the text: " + TempText.value);
-  };
 
   return (
     <>
@@ -249,86 +144,20 @@ export default function GroupManagement() {
               <button className="btn-primary">Add</button>
             </div>
           </div>
-          {membersDetails.length > 0 && (
-            <React.Fragment>
-              <h2>Manage members in group</h2>
-              <p>
-                The table shows members of this group. It is not possible to edit the already added member, nor retrieve
-                a password once the session in which the member was created is ended, but by clicking "REMOVE" you can
-                remove the member and if needed create it again -<strong> with a new EPPN and password</strong>.
-              </p>
-              <div className="flex-between form-controls">
-                <label>Edit selected rows:</label>
-                <div className="buttons">
-                  <button
-                    disabled={!isMemberSelected.length}
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => copyToClipboardAllMembers(members)}
-                  >
-                    Copy to clipboard
-                  </button>
-                  <button
-                    disabled={!isMemberSelected.length}
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => console.log(members)}
-                  >
-                    remove
-                  </button>
-                </div>
-              </div>
-              <table className="group-management">
-                <thead>
-                  <tr>
-                    <th>
-                      <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} />
-                    </th>
-                    <th>No.</th>
-                    <th>Given name</th>
-                    <th>Surname</th>
-                    <th>EPPN</th>
-                    <th>Password</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentPosts?.map((member: any) => (
-                    <tr key={member.id}>
-                      <td>
-                        <input type="checkbox" checked={member.selected} onChange={() => handleSelect(member.id)} />
-                      </td>
-                      <td> </td>
-                      <td>{member.name.givenName}</td>
-                      <td>{member.name.familyName}</td>
-                      <td>
-                        {member.externalId}{" "}
-                        <button id="clipboard" className="icon-only copybutton" onClick={copyToClipboard}>
-                          <FontAwesomeIcon id={"icon-copy"} icon={faCopy as IconProp} />
-                          <FontAwesomeIcon id={"icon-check"} icon={faCheck as IconProp} />
-                          <div className="tool-tip-text" id="tool-tip">
-                            {tooltipCopied ? <p>Copied!</p> : <p>Copy to clipboard!</p>}
-                          </div>
-                        </button>
-                      </td>
-                      <td> </td>
-                      <td>
-                        <button className="btn btn-link btn-sm" onClick={() => removeUser(member.id)}>
-                          remove
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <Pagination
-                postsPerPage={postsPerPage}
-                totalPosts={membersDetails.length}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-              />
-            </React.Fragment>
-          )}
         </form>
       </section>
+      <MembersList
+        members={members}
+        setMembers={setMembers}
+        currentPosts={currentPosts}
+        membersDetails={membersDetails}
+      />
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={membersDetails.length}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </>
     // </Splash>
   );

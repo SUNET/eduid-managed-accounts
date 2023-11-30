@@ -80,7 +80,6 @@ export default function MembersList({ currentPosts, membersDetails, members, set
     // 2. Delete User
     if (putGroup.fulfilled.match(putFilteredUserResult)) {
       const memberToBeRemoved = membersDetails?.filter((user: any) => user.id === id)[0];
-      console.log("memberToBeRemoved", memberToBeRemoved);
       const user = {
         id: id,
         version: memberToBeRemoved.meta.version,
@@ -91,24 +90,20 @@ export default function MembersList({ currentPosts, membersDetails, members, set
 
   const removeSelectedUser = async () => {
     const selectedUserIds = isMemberSelected?.map((user: any) => user.id) || [];
+    const currentUsers = managedAccountsDetails?.members?.filter((user: any) => !selectedUserIds.includes(user.value));
+    const putGroupResponse = await dispatch(
+      putGroup({
+        result: {
+          ...managedAccountsDetails,
+          members: currentUsers,
+        },
+      })
+    );
 
-    const filteredUsers = managedAccountsDetails?.members?.filter((user: any) => !selectedUserIds.includes(user.id));
-    console.log("filteredUsers", filteredUsers);
-    const deletePromises = filteredUsers?.map(async (filteredUser) => {
-      const putFilteredUserResult = await dispatch(
-        putGroup({
-          result: {
-            ...managedAccountsDetails,
-            members: [filteredUser],
-          },
-        })
-      );
-      console.log("selectedUserIds", selectedUserIds);
-      if (putGroup.fulfilled.match(putFilteredUserResult)) {
-        const memberToBeRemoved = membersDetails?.filter((user: any) => selectedUserIds.includes(user.id));
-
-        if (memberToBeRemoved && memberToBeRemoved.length > 0) {
-          // Assuming you want to remove all matching users, you can iterate through them
+    if (putGroup.fulfilled.match(putGroupResponse)) {
+      const memberToBeRemoved = membersDetails?.filter((user: any) => selectedUserIds.includes(user.id));
+      if (memberToBeRemoved && memberToBeRemoved.length > 0) {
+        await Promise.all(
           memberToBeRemoved.map(async (user: any) => {
             const userToDelete = {
               id: user.id,
@@ -116,13 +111,12 @@ export default function MembersList({ currentPosts, membersDetails, members, set
             };
 
             await dispatch(deleteUser({ user: userToDelete }));
-          });
-        } else {
-          console.warn("No matching users found to be removed.");
-        }
+          })
+        );
+      } else {
+        console.warn("No matching users found to be removed.");
       }
-    });
-    await Promise.all(deletePromises || []);
+    }
   };
 
   return (

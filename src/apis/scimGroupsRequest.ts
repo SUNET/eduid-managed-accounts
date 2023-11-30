@@ -5,7 +5,7 @@ import { GroupResponse } from "typescript-clients/scim";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTM0MDU4NSwiaWF0IjoxNzAxMzM2OTg1LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxMzM2OTg1LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.i_FpvkzopQIKEF0kxNbAMslgmL6YMvxV-3jANv1Vr_xLN10SRNAWmeSYPniZWNI8e4ufxvC297PCJKiEw0vW5Q";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTQyNzc3MSwiaWF0IjoxNzAxNDI0MTcxLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxNDI0MTcxLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.i24yhdqlZe7stCJAlq_9WfhB6RztUyJwcg7LgOQ6p2uLDZPZWex_y8oXq78seFSUNAP0b0S2lL0RX1lychUoeg";
 
 export const scimHeaders = (token: string) => {
   return {
@@ -275,5 +275,7 @@ export const putGroup = createAsyncThunk<
 
 export const handleErrorResponse = async (response: ErrorResponse) => {
   const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
-  throw new Error(errorMessage);
+  throw errorMessage;
 };
+
+//curl -X PUT -vv --insecure https://api.eduid.docker/scim/Groups/9ccc1331-fd60-4715-8728-962c35034f33 -H "If-Match: W/\"6569aec2467f09ca6d7a0c45\"" -H "Content-Type: application/scim+json" -H "Authorization: Bearer eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTQyNzc3MSwiaWF0IjoxNzAxNDI0MTcxLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxNDI0MTcxLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.i24yhdqlZe7stCJAlq_9WfhB6RztUyJwcg7LgOQ6p2uLDZPZWex_y8oXq78seFSUNAP0b0S2lL0RX1lychUoeg" -d '{"displayName" : "Test Group 1", "id":"9ccc1331-fd60-4715-8728-962c35034f33","members":[],"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"]}' | json_pp
