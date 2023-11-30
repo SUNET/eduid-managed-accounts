@@ -32,7 +32,7 @@ table.group-management {
       }
     }
     &:nth-child(2) {
-      width: 1rem;
+      width: 2rem;
     }
     &:last-child {
       white-space: nowrap;
@@ -46,15 +46,19 @@ table.group-management {
       &:nth-child(odd) {
         background-color: $bg-gray;
       }
-      td:first-child {
-        padding-left: 1rem;
-        width: unset;
-      }
-      > td:nth-child(2) {
-        counter-increment: rowNumber;
+      td {
+        word-wrap: break-word;
 
-        &::before {
-          content: counter(rowNumber);
+        &:first-child {
+          padding-left: 1rem;
+          width: unset;
+        }
+        &:nth-child(2) {
+          counter-increment: rowNumber;
+
+          &::before {
+            content: counter(rowNumber);
+          }
         }
       }
     }
