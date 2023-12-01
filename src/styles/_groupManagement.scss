@@ -34,11 +34,6 @@ table.group-management {
     &:nth-child(2) {
       width: 2rem;
     }
-    &:last-child {
-      white-space: nowrap;
-      padding-left: 1rem;
-      width: 5.25rem;
-    }
   }
 
   tbody {
@@ -99,7 +94,9 @@ input[type="checkbox"] {
 }
 
 .form-controls {
-  margin: 1rem 0;
+  padding: 1rem 1rem 0.75rem;
+  background: $white;
+  border-bottom: 2px dashed $border-gray;
 
   .buttons {
     margin-bottom: 5px;
