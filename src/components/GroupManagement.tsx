@@ -179,12 +179,15 @@ export default function GroupManagement() {
           )}
         />
       </section>
-      <MembersList
-        members={members}
-        setMembers={setMembers}
-        currentPosts={currentPosts}
-        membersDetails={membersDetails}
-      />
+      <hr className="border-line"></hr>
+      <section>
+        <MembersList
+          members={members}
+          setMembers={setMembers}
+          currentPosts={currentPosts}
+          membersDetails={membersDetails}
+        />
+      </section>
       <Pagination
         postsPerPage={postsPerPage}
         totalPosts={membersDetails.length}
