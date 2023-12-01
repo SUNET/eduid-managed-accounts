@@ -8,6 +8,7 @@ import {
   putGroup,
 } from "../apis/scimGroupsRequest";
 import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
+import { onlyLetters } from "../common/regexPatterns";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
@@ -184,6 +185,18 @@ export default function GroupManagement() {
     setSelectAll(false);
   };
 
+  const validatePersonalData = (values: any) => {
+    const errors: any = {};
+    if (values !== undefined) {
+      ["given_name", "surname"].forEach((inputName) => {
+        if (!values[inputName] || !onlyLetters.test(values[inputName])) {
+          errors[inputName] = "required only letters";
+        }
+      });
+    }
+    return errors;
+  };
+
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
@@ -231,8 +244,16 @@ export default function GroupManagement() {
         </p>
 
         <Form
+          validate={validatePersonalData}
           onSubmit={(e) => addUser(e)}
-          render={({ handleSubmit, form, submitting, pristine, values }) => (
+          render={({
+            handleSubmit,
+            form,
+            submitting,
+            pristine,
+            values,
+            invalid,
+          }) => (
             <form
               onSubmit={async (event) => {
                 await handleSubmit(event);
@@ -240,22 +261,32 @@ export default function GroupManagement() {
               }}
             >
               <div className="flex-between">
-                <label>Given name*</label>
-                <Field
-                  name={"given_name"}
-                  component="input"
-                  type="text"
-                  required={true}
-                />
-                <label>Surname*</label>
-                <Field
-                  name={"surname"}
-                  component="input"
-                  type="text"
-                  required={true}
-                />
+                <Field name="given_name">
+                  {({ input, meta }) => (
+                    <div>
+                      <label>Given name*</label>
+                      <input type="text" {...input} placeholder="given name" />
+                      {meta.touched && meta.error && <span>{meta.error}</span>}
+                    </div>
+                  )}
+                </Field>
+
+                <Field name="surname">
+                  {({ input, meta }) => (
+                    <div>
+                      <label>Surname*</label>
+                      <input type="text" {...input} placeholder="surname" />
+                      {meta.touched && meta.error && <span>{meta.error}</span>}
+                    </div>
+                  )}
+                </Field>
                 <div className="buttons">
-                  <button className="btn-primary">Add</button>
+                  <button
+                    disabled={submitting || invalid}
+                    className="btn-primary"
+                  >
+                    Add
+                  </button>
                 </div>
               </div>
             </form>
