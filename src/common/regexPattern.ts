@@ -13,6 +13,5 @@ export const emptyStringPattern = /^\s+$/;
 export const emailPattern =
   /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 export const onlyASCIILetters = /^[a-zA-Z]+$/;
-//export const onlySwedishLetters = [åäöÅÄÖA-Za-z_]+
-export const onlyWordsAndMinusSeparatedBySpace =
-  /^[-åäöÅÄÖA-Za-z-()]+(\s+[-åäöÅÄÖA-Za-z-()]+)*$/;
+// allowes words with ASCII characters and Swedish characters, plus space, dash, and parentheses. No trailing or leading spaces.
+export const namePattern = /^[-åäöÅÄÖA-Za-z-.()]+(\s+[-åäöÅÄÖA-Za-z-.()]+)*$/;
