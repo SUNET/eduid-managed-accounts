@@ -137,14 +137,14 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                 className="btn btn-secondary btn-sm"
                 onClick={() => copyToClipboardAllMembers()}
               >
-                Copy to clipboard
+                Copy row to clipboard
               </button>
               <button
                 disabled={!isMemberSelected.length}
                 className="btn btn-secondary btn-sm"
                 onClick={() => removeSelectedUser()}
               >
-                remove
+                Remove row
               </button>
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                       <FontAwesomeIcon id={"icon-copy"} icon={faCopy as IconProp} />
                       <FontAwesomeIcon id={"icon-check"} icon={faCheck as IconProp} />
                       <div className="tool-tip-text" id="tool-tip">
-                        {tooltipCopied ? <p>Copied!</p> : <p>Copy to clipboard!</p>}
+                        {tooltipCopied ? <span>Copied</span> : <span>Copy eppn</span>}
                       </div>
                     </button>
                   </td>
