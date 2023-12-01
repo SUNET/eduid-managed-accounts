@@ -12,4 +12,7 @@ export const emptyStringPattern = /^\s+$/;
 // matches email strings
 export const emailPattern =
   /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-export const onlyLetters = /^[a-zA-Z]+$/;
+export const onlyASCIILetters = /^[a-zA-Z]+$/;
+//export const onlySwedishLetters = [åäöÅÄÖA-Za-z_]+
+export const onlyWordsAndMinusSeparatedBySpace =
+  /^[-åäöÅÄÖA-Za-z-()]+(\s+[-åäöÅÄÖA-Za-z-()]+)*$/;

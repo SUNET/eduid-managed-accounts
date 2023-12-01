@@ -8,7 +8,7 @@ import {
   putGroup,
 } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
-import { onlyLetters } from "../common/regexPattern";
+import { onlyWordsAndMinusSeparatedBySpace } from "../common/regexPattern";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
@@ -110,7 +110,10 @@ export default function GroupManagement() {
     const errors: any = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
-        if (!values[inputName] || !onlyLetters.test(values[inputName])) {
+        if (
+          !values[inputName] ||
+          !onlyWordsAndMinusSeparatedBySpace.test(values[inputName])
+        ) {
           errors[inputName] = "required only letters";
         }
       });
