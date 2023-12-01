@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from "react";
 import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import NotificationModal from "./NotificationModal";
 
 export default function MembersList({ currentPosts, membersDetails, members, setMembers }: any) {
   const [tooltipCopied, setTooltipCopied] = useState(false);
@@ -12,6 +13,7 @@ export default function MembersList({ currentPosts, membersDetails, members, set
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const dispatch = useAppDispatch();
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
     setSelectAll(false);
@@ -110,7 +112,10 @@ export default function MembersList({ currentPosts, membersDetails, members, set
               version: user.meta.version,
             };
 
-            await dispatch(deleteUser({ user: userToDelete }));
+            const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete }));
+            if (deleteUser.fulfilled.match(deleteUserResponse)) {
+              setShowModal(false);
+            }
           })
         );
       } else {
@@ -142,7 +147,7 @@ export default function MembersList({ currentPosts, membersDetails, members, set
               <button
                 disabled={!isMemberSelected.length}
                 className="btn btn-secondary btn-sm"
-                onClick={() => removeSelectedUser()}
+                onClick={() => setShowModal(true)}
               >
                 Remove row
               </button>
@@ -202,6 +207,18 @@ export default function MembersList({ currentPosts, membersDetails, members, set
           </table>
         </Fragment>
       )}
+
+      <NotificationModal
+        id="remove-selected-users-modal"
+        title="remove all users"
+        mainText="Are you sure you want to delete all members? If so, please press the OK button below."
+        showModal={showModal}
+        closeModal={() => {
+          setShowModal(false);
+        }}
+        acceptModal={() => removeSelectedUser()}
+        acceptButtonText="ok"
+      />
     </Fragment>
   );
 }
