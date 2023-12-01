@@ -9,6 +9,7 @@ import NotificationModal from "./NotificationModal";
 
 export default function MembersList({ currentPosts, membersDetails, members, setMembers }: any) {
   const [tooltipCopied, setTooltipCopied] = useState(false);
+  const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
   const isMemberSelected = members.filter((member: any) => member.selected);
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
@@ -21,14 +22,31 @@ export default function MembersList({ currentPosts, membersDetails, members, set
   }, [membersDetails]);
 
   const copyToClipboardAllMembers = () => {
-    const membersString = isMemberSelected.map((member: any) => member.externalId).join(", ");
-    const TempText = document.createElement("input");
-    TempText.value = membersString;
-    document.body.appendChild(TempText);
-    TempText.select();
+    const memberGivenName = isMemberSelected.map((member: any) => member.name.givenName);
+    const memberFamilyName = isMemberSelected.map((member: any) => member.name.familyName);
+    const memberEPPN = isMemberSelected.map((member: any) => member.externalId);
+
+    const membersArray = [];
+
+    for (let i = 0; i < isMemberSelected.length; i++) {
+      const memberInfo = `${memberGivenName[i]}, ${memberFamilyName[i]}, ${memberEPPN[i]}`;
+      membersArray.push(memberInfo);
+    }
+
+    const lineBreak = membersArray.join("\n");
+
+    const createdTextArea = document.createElement("textarea");
+    createdTextArea.value = lineBreak;
+    document.body.appendChild(createdTextArea);
+    createdTextArea.select();
 
     document.execCommand("copy");
-    document.body.removeChild(TempText);
+    document.body.removeChild(createdTextArea);
+
+    setCopiedRowToClipboard(true);
+    setTimeout(() => {
+      setCopiedRowToClipboard(false);
+    }, 1000);
   };
 
   const copyToClipboard = (id: string) => {
@@ -65,29 +83,6 @@ export default function MembersList({ currentPosts, membersDetails, members, set
       prevMembers.map((member: any) => (member.id === id ? { ...member, selected: !member.selected } : member))
     );
     setSelectAll(false);
-  };
-
-  const removeUser = async (id: any) => {
-    // 1. Remove User from Group
-    const filteredUser = managedAccountsDetails?.members?.filter((user: any) => user.value !== id);
-    const putFilteredUserResult = await dispatch(
-      putGroup({
-        result: {
-          ...managedAccountsDetails,
-          members: filteredUser,
-        },
-      })
-    );
-
-    // 2. Delete User
-    if (putGroup.fulfilled.match(putFilteredUserResult)) {
-      const memberToBeRemoved = membersDetails?.filter((user: any) => user.id === id)[0];
-      const user = {
-        id: id,
-        version: memberToBeRemoved.meta.version,
-      };
-      dispatch(deleteUser({ user }));
-    }
   };
 
   const removeSelectedUser = async () => {
@@ -139,10 +134,10 @@ export default function MembersList({ currentPosts, membersDetails, members, set
             <div className="buttons">
               <button
                 disabled={!isMemberSelected.length}
-                className="btn btn-secondary btn-sm"
+                className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => copyToClipboardAllMembers()}
               >
-                Copy row to clipboard
+                {copiedRowToClipboard ? "Copied row to clipboard" : "Copy row to clipboard"}
               </button>
               <button
                 disabled={!isMemberSelected.length}
