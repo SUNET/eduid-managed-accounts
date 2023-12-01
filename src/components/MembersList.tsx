@@ -157,12 +157,19 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                     <label htmlFor="selectAll">All</label>
                   </span>
                 </th>
-                <th>No.</th>
-                <th>Given name</th>
-                <th>Surname</th>
+                <th>#</th>
+                <th>
+                  <a href="" title="Sort given name alphabetically / first">
+                    Given name &#8645;
+                  </a>
+                </th>
+                <th>
+                  <a href="" title="Sort surname alphabetically / first">
+                    Surname &#8645;
+                  </a>
+                </th>
                 <th>EPPN</th>
                 <th>Password</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -189,11 +196,6 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                     </button>
                   </td>
                   <td> </td>
-                  <td>
-                    <button className="btn btn-link btn-sm" onClick={() => removeUser(member.id)}>
-                      remove
-                    </button>
-                  </td>
                 </tr>
               ))}
             </tbody>
