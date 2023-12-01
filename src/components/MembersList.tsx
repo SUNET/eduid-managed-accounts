@@ -137,14 +137,14 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                 className="btn btn-secondary btn-sm"
                 onClick={() => copyToClipboardAllMembers()}
               >
-                Copy to clipboard
+                Copy row to clipboard
               </button>
               <button
                 disabled={!isMemberSelected.length}
                 className="btn btn-secondary btn-sm"
                 onClick={() => removeSelectedUser()}
               >
-                remove
+                Remove row
               </button>
             </div>
           </div>
@@ -152,14 +152,24 @@ export default function MembersList({ currentPosts, membersDetails, members, set
             <thead>
               <tr>
                 <th>
-                  <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} />
+                  <span className="flex-between">
+                    <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} id="selectAll" />
+                    <label htmlFor="selectAll">All</label>
+                  </span>
                 </th>
-                <th>No.</th>
-                <th>Given name</th>
-                <th>Surname</th>
+                <th>#</th>
+                <th>
+                  <a href="" title="Sort given name alphabetically / first">
+                    Given name &#8645;
+                  </a>
+                </th>
+                <th>
+                  <a href="" title="Sort surname alphabetically / first">
+                    Surname &#8645;
+                  </a>
+                </th>
                 <th>EPPN</th>
                 <th>Password</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -181,16 +191,11 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                       <FontAwesomeIcon id={"icon-copy"} icon={faCopy as IconProp} />
                       <FontAwesomeIcon id={"icon-check"} icon={faCheck as IconProp} />
                       <div className="tool-tip-text" id="tool-tip">
-                        {tooltipCopied ? <p>Copied!</p> : <p>Copy to clipboard!</p>}
+                        {tooltipCopied ? <span>Copied</span> : <span>Copy eppn</span>}
                       </div>
                     </button>
                   </td>
                   <td> </td>
-                  <td>
-                    <button className="btn btn-link btn-sm" onClick={() => removeUser(member.id)}>
-                      remove
-                    </button>
-                  </td>
                 </tr>
               ))}
             </tbody>

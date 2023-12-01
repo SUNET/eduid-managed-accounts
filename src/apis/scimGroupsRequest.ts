@@ -274,9 +274,7 @@ export const putGroup = createAsyncThunk<
 });
 
 export const handleErrorResponse = async (response: ErrorResponse) => {
-  const errorMessage = `Failed with status ${response.status}: ${
-    response.message || response.detail
-  }`;
+  const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
   throw errorMessage;
 };
 
