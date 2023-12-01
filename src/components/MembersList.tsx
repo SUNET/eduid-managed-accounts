@@ -152,7 +152,10 @@ export default function MembersList({ currentPosts, membersDetails, members, set
             <thead>
               <tr>
                 <th>
-                  <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} />
+                  <span className="flex-between">
+                    <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} id="selectAll" />
+                    <label htmlFor="selectAll">All</label>
+                  </span>
                 </th>
                 <th>No.</th>
                 <th>Given name</th>
