@@ -5,13 +5,29 @@ import { Fragment, useEffect, useState } from "react";
 import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import NotificationModal from "./NotificationModal";
+import Pagination from "./Pagination";
 
-export default function MembersList({ currentPosts, membersDetails, members, setMembers }: any) {
+export default function MembersList({ membersDetails, members, setMembers }: any) {
   const [tooltipCopied, setTooltipCopied] = useState(false);
+  const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
   const isMemberSelected = members.filter((member: any) => member.selected);
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const dispatch = useAppDispatch();
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const [postsPerPage, setPostsPerPage] = useState(15);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showAll, setShowAll] = useState(false);
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, []);
 
   useEffect(() => {
     setSelectAll(false);
@@ -19,14 +35,31 @@ export default function MembersList({ currentPosts, membersDetails, members, set
   }, [membersDetails]);
 
   const copyToClipboardAllMembers = () => {
-    const membersString = isMemberSelected.map((member: any) => member.externalId).join(", ");
-    const TempText = document.createElement("input");
-    TempText.value = membersString;
-    document.body.appendChild(TempText);
-    TempText.select();
+    const memberGivenName = isMemberSelected.map((member: any) => member.name.givenName);
+    const memberFamilyName = isMemberSelected.map((member: any) => member.name.familyName);
+    const memberEPPN = isMemberSelected.map((member: any) => member.externalId);
+
+    const membersArray = [];
+
+    for (let i = 0; i < isMemberSelected.length; i++) {
+      const memberInfo = `${memberGivenName[i]}, ${memberFamilyName[i]}, ${memberEPPN[i]}`;
+      membersArray.push(memberInfo);
+    }
+
+    const lineBreak = membersArray.join("\n");
+
+    const createdTextArea = document.createElement("textarea");
+    createdTextArea.value = lineBreak;
+    document.body.appendChild(createdTextArea);
+    createdTextArea.select();
 
     document.execCommand("copy");
-    document.body.removeChild(TempText);
+    document.body.removeChild(createdTextArea);
+
+    setCopiedRowToClipboard(true);
+    setTimeout(() => {
+      setCopiedRowToClipboard(false);
+    }, 1000);
   };
 
   const copyToClipboard = (id: string) => {
@@ -65,29 +98,6 @@ export default function MembersList({ currentPosts, membersDetails, members, set
     setSelectAll(false);
   };
 
-  const removeUser = async (id: any) => {
-    // 1. Remove User from Group
-    const filteredUser = managedAccountsDetails?.members?.filter((user: any) => user.value !== id);
-    const putFilteredUserResult = await dispatch(
-      putGroup({
-        result: {
-          ...managedAccountsDetails,
-          members: filteredUser,
-        },
-      })
-    );
-
-    // 2. Delete User
-    if (putGroup.fulfilled.match(putFilteredUserResult)) {
-      const memberToBeRemoved = membersDetails?.filter((user: any) => user.id === id)[0];
-      const user = {
-        id: id,
-        version: memberToBeRemoved.meta.version,
-      };
-      dispatch(deleteUser({ user }));
-    }
-  };
-
   const removeSelectedUser = async () => {
     const selectedUserIds = isMemberSelected?.map((user: any) => user.id) || [];
     const currentUsers = managedAccountsDetails?.members?.filter((user: any) => !selectedUserIds.includes(user.value));
@@ -110,13 +120,28 @@ export default function MembersList({ currentPosts, membersDetails, members, set
               version: user.meta.version,
             };
 
-            await dispatch(deleteUser({ user: userToDelete }));
+            const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete }));
+            if (deleteUser.fulfilled.match(deleteUserResponse)) {
+              setShowModal(false);
+            }
           })
         );
       } else {
         console.warn("No matching users found to be removed.");
       }
     }
+  };
+
+  const showAllMembers = () => {
+    setCurrentPage(1);
+    setPostsPerPage(membersDetails.length);
+    setShowAll(true);
+  };
+
+  const showLessMembers = () => {
+    setCurrentPage(1);
+    setPostsPerPage(10);
+    setShowAll(false);
   };
 
   return (
@@ -132,17 +157,36 @@ export default function MembersList({ currentPosts, membersDetails, members, set
           <div className="flex-between form-controls">
             <label>Edit selected rows:</label>
             <div className="buttons">
+              {membersDetails.length >= 10 &&
+                (showAll ? (
+                  <button
+                    disabled={!membersDetails.length}
+                    className={`btn btn-sm btn-secondary`}
+                    onClick={() => showLessMembers()}
+                  >
+                    show less
+                  </button>
+                ) : (
+                  <button
+                    disabled={!membersDetails.length}
+                    className={`btn btn-sm btn-primary`}
+                    onClick={() => showAllMembers()}
+                  >
+                    show all({membersDetails.length})
+                  </button>
+                ))}
+
               <button
                 disabled={!isMemberSelected.length}
-                className="btn btn-secondary btn-sm"
+                className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => copyToClipboardAllMembers()}
               >
-                Copy row
+                {copiedRowToClipboard ? "Copied row" : "Copy row"}
               </button>
               <button
                 disabled={!isMemberSelected.length}
                 className="btn btn-secondary btn-sm"
-                onClick={() => removeSelectedUser()}
+                onClick={() => setShowModal(true)}
               >
                 Remove row
               </button>
@@ -165,12 +209,12 @@ export default function MembersList({ currentPosts, membersDetails, members, set
               </tr>
             </thead>
             <tbody>
-              {currentPosts?.map((member: any) => (
+              {currentPosts?.map((member: any, index: number) => (
                 <tr key={member.id}>
                   <td>
                     <input type="checkbox" checked={member.selected} onChange={() => handleSelect(member.id)} />
                   </td>
-                  <td> </td>
+                  <td>{(currentPage - 1) * postsPerPage + index + 1}</td>
                   <td>{member.name.givenName}</td>
                   <td>{member.name.familyName}</td>
                   <td>
@@ -192,8 +236,26 @@ export default function MembersList({ currentPosts, membersDetails, members, set
               ))}
             </tbody>
           </table>
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={membersDetails.length}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </Fragment>
       )}
+
+      <NotificationModal
+        id="remove-selected-users-modal"
+        title="Remove all members in group"
+        mainText="Are you sure you want to delete all members? If so, please press the OK button below."
+        showModal={showModal}
+        closeModal={() => {
+          setShowModal(false);
+        }}
+        acceptModal={() => removeSelectedUser()}
+        acceptButtonText="ok"
+      />
     </Fragment>
   );
 }
