@@ -97,9 +97,9 @@ export default function MembersList({ membersDetails, members, setMembers }: any
     );
     setSelectAll(false);
   };
+  const selectedUserIds = isMemberSelected?.map((user: any) => user.id) || [];
 
   const removeSelectedUser = async () => {
-    const selectedUserIds = isMemberSelected?.map((user: any) => user.id) || [];
     const currentUsers = managedAccountsDetails?.members?.filter((user: any) => !selectedUserIds.includes(user.value));
     const putGroupResponse = await dispatch(
       putGroup({
@@ -144,6 +144,14 @@ export default function MembersList({ membersDetails, members, setMembers }: any
     setShowAll(false);
   };
 
+  const handleRemoveUsers = () => {
+    if (selectedUserIds.length === managedAccountsDetails?.members?.length) {
+      setShowModal(true);
+    } else {
+      removeSelectedUser();
+    }
+  };
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -186,7 +194,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
               <button
                 disabled={!isMemberSelected.length}
                 className="btn btn-secondary btn-sm"
-                onClick={() => setShowModal(true)}
+                onClick={() => handleRemoveUsers()}
               >
                 Remove row
               </button>
