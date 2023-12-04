@@ -50,10 +50,6 @@ table.group-management {
         }
         &:nth-child(2) {
           counter-increment: rowNumber;
-
-          &::before {
-            content: counter(rowNumber);
-          }
         }
       }
     }
