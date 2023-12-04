@@ -156,6 +156,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
     <Fragment>
       {membersDetails.length > 0 && (
         <Fragment>
+          <hr className="border-line"></hr>
           <h2>Manage members in group</h2>
           <p>
             The table shows members of this group. It is not possible to edit the already added member, nor retrieve a
