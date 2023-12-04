@@ -156,6 +156,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
     <Fragment>
       {membersDetails.length > 0 && (
         <Fragment>
+          <hr className="border-line"></hr>
           <h2>Manage members in group</h2>
           <p>
             The table shows members of this group. It is not possible to edit the already added member, nor retrieve a
@@ -209,7 +210,6 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                     <label htmlFor="selectAll">All</label>
                   </span>
                 </th>
-                <th>#</th>
                 <th>Given name</th>
                 <th>Surname</th>
                 <th>EPPN</th>
@@ -220,9 +220,16 @@ export default function MembersList({ membersDetails, members, setMembers }: any
               {currentPosts?.map((member: any, index: number) => (
                 <tr key={member.id}>
                   <td>
-                    <input type="checkbox" checked={member.selected} onChange={() => handleSelect(member.id)} />
+                    <span className="flex-between">
+                      <input
+                        type="checkbox"
+                        checked={member.selected}
+                        onChange={() => handleSelect(member.id)}
+                        id="selectMember"
+                      />
+                      <label htmlFor="selectMember">{(currentPage - 1) * postsPerPage + index + 1}</label>
+                    </span>
                   </td>
-                  <td>{(currentPage - 1) * postsPerPage + index + 1}</td>
                   <td>{member.name.givenName}</td>
                   <td>{member.name.familyName}</td>
                   <td>

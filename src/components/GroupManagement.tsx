@@ -166,7 +166,6 @@ export default function GroupManagement() {
           )}
         />
       </section>
-      <hr className="border-line"></hr>
       <section>
         <MembersList members={members} setMembers={setMembers} membersDetails={membersDetails} />
       </section>
