@@ -1,7 +1,7 @@
 // from https://gist.github.com/DiegoSalazar/4075533/
 
 // This takes only 10 digits
-export function valid_personnummer(value: string) {
+export function validNationalIDNumber(value: string) {
   // Accept only digits, dashes or spaces
   if (/[^0-9-\s]+/.test(value)) {
     return false;
