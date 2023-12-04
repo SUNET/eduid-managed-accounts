@@ -53,7 +53,7 @@ function Pagination({ postsPerPage, totalPosts, currentPage, setCurrentPage }: P
     }
     // how many pages will be shown
     setArrOfCurrentButtons(numberOfPages);
-  }, [totalPosts, currentPage]);
+  }, [totalPosts, currentPage, postsPerPage]);
 
   if (!pageNumbers.length) return null;
 
