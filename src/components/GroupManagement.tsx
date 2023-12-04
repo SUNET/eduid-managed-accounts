@@ -95,7 +95,7 @@ export default function GroupManagement() {
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
         if (!values[inputName] || !onlyLetters.test(values[inputName])) {
-          errors[inputName] = "required only letters";
+          errors[inputName] = "Only letters permitted";
         }
       });
     }
@@ -151,39 +151,41 @@ export default function GroupManagement() {
               <div className="flex-between">
                 <Field name="given_name">
                   {({ input, meta }) => (
-                    <div>
+                    <fieldset>
                       <label>Given name*</label>
                       <input type="text" {...input} placeholder="given name" />
-                      {meta.touched && meta.error && <span>{meta.error}</span>}
-                    </div>
+                      {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
+                    </fieldset>
                   )}
                 </Field>
 
                 <Field name="surname">
                   {({ input, meta }) => (
-                    <div>
+                    <fieldset>
                       <label>Surname*</label>
                       <input type="text" {...input} placeholder="surname" />
-                      {meta.touched && meta.error && <span>{meta.error}</span>}
-                    </div>
+                      {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
+                    </fieldset>
                   )}
                 </Field>
-                <div className="buttons">
-                  <button disabled={submitting || invalid} className="btn-primary">
-                    Add
-                  </button>
-                </div>
+
+                <button disabled={submitting || invalid} className="btn btn-primary">
+                  Add
+                </button>
               </div>
             </form>
           )}
         />
       </section>
-      <MembersList
-        members={members}
-        setMembers={setMembers}
-        currentPosts={currentPosts}
-        membersDetails={membersDetails}
-      />
+      <hr className="border-line"></hr>
+      <section>
+        <MembersList
+          members={members}
+          setMembers={setMembers}
+          currentPosts={currentPosts}
+          membersDetails={membersDetails}
+        />
+      </section>
       <Pagination
         postsPerPage={postsPerPage}
         totalPosts={membersDetails.length}

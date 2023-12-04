@@ -137,7 +137,7 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                 className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => copyToClipboardAllMembers()}
               >
-                {copiedRowToClipboard ? "Copied row to clipboard" : "Copy row to clipboard"}
+                {copiedRowToClipboard ? "Copied row" : "Copy row"}
               </button>
               <button
                 disabled={!isMemberSelected.length}
@@ -158,16 +158,8 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                   </span>
                 </th>
                 <th>#</th>
-                <th>
-                  <a href="" title="Sort given name alphabetically / first">
-                    Given name &#8645;
-                  </a>
-                </th>
-                <th>
-                  <a href="" title="Sort surname alphabetically / first">
-                    Surname &#8645;
-                  </a>
-                </th>
+                <th>Given name</th>
+                <th>Surname</th>
                 <th>EPPN</th>
                 <th>Password</th>
               </tr>
