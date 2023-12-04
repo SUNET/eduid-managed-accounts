@@ -17,7 +17,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const postsPerPage = 1;
+  const [postsPerPage, setPostsPerPage] = useState(2);
   const [currentPage, setCurrentPage] = useState(1);
 
   const indexOfLastPost = currentPage * postsPerPage;
@@ -131,6 +131,11 @@ export default function MembersList({ membersDetails, members, setMembers }: any
     }
   };
 
+  const showAllMembers = () => {
+    setCurrentPage(1);
+    setPostsPerPage(membersDetails.length);
+  };
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -144,6 +149,14 @@ export default function MembersList({ membersDetails, members, setMembers }: any
           <div className="flex-between form-controls">
             <label>Edit selected rows:</label>
             <div className="buttons">
+              <button
+                disabled={!membersDetails.length}
+                className={`btn btn-sm btn-primary`}
+                onClick={() => showAllMembers()}
+              >
+                show all members {membersDetails.length}
+              </button>
+
               <button
                 disabled={!isMemberSelected.length}
                 className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
