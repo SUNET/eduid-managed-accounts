@@ -1,5 +1,4 @@
 /* CSS copied from front-end repo */
-@import "bootstrap/dist/css/bootstrap.min.css";
 @import "./styles/_reset.scss";
 @import "./styles/_anti-bootstrap.scss";
 @import "./styles/_fonts.scss";

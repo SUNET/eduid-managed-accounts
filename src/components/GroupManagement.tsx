@@ -3,7 +3,7 @@ import { Field, Form } from "react-final-form";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
-import { onlyLetters } from "../common/regexPattern";
+import { validNationalIDNumber } from "../common/nationalIDNumber";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
@@ -83,12 +83,33 @@ export default function GroupManagement() {
     }
   };
 
+  function containsNationalIDNumber(params: string) {
+    // 0 -filter out all non-digits
+    const inputNumbers = params.replace(/\D/g, "");
+    // 1 - if less than 10 digits, return false
+    const ID_NUMBER_MAX_LENGTH = 10;
+    if (inputNumbers.length < ID_NUMBER_MAX_LENGTH) {
+      return false;
+    } else {
+      // 2 - else, test the first 8 characters and validNationalIDNumber()
+      for (let i = 0; i < inputNumbers.length - 10 + 1; i++) {
+        if (validNationalIDNumber(inputNumbers.substring(i, i + ID_NUMBER_MAX_LENGTH))) {
+          return true;
+        }
+      }
+    }
+  }
+
   const validatePersonalData = (values: any) => {
     const errors: any = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
-        if (!values[inputName] || !onlyLetters.test(values[inputName])) {
-          errors[inputName] = "Only letters permitted";
+        // check if the input is empty
+        if (!values[inputName]) {
+          errors[inputName] = "Required";
+          // check if it is national ID number
+        } else if (containsNationalIDNumber(values[inputName])) {
+          errors[inputName] = "It is not allowed to save a national ID number";
         }
       });
     }
