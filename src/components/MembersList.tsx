@@ -17,7 +17,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const [postsPerPage, setPostsPerPage] = useState(2);
+  const [postsPerPage, setPostsPerPage] = useState(15);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAll, setShowAll] = useState(false);
 
@@ -140,7 +140,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
 
   const showLessMembers = () => {
     setCurrentPage(1);
-    setPostsPerPage(2);
+    setPostsPerPage(10);
     setShowAll(false);
   };
 
@@ -157,23 +157,24 @@ export default function MembersList({ membersDetails, members, setMembers }: any
           <div className="flex-between form-controls">
             <label>Edit selected rows:</label>
             <div className="buttons">
-              {showAll ? (
-                <button
-                  disabled={!membersDetails.length}
-                  className={`btn btn-sm btn-secondary`}
-                  onClick={() => showLessMembers()}
-                >
-                  show less
-                </button>
-              ) : (
-                <button
-                  disabled={!membersDetails.length}
-                  className={`btn btn-sm btn-primary`}
-                  onClick={() => showAllMembers()}
-                >
-                  show all({membersDetails.length})
-                </button>
-              )}
+              {membersDetails.length >= 10 &&
+                (showAll ? (
+                  <button
+                    disabled={!membersDetails.length}
+                    className={`btn btn-sm btn-secondary`}
+                    onClick={() => showLessMembers()}
+                  >
+                    show less
+                  </button>
+                ) : (
+                  <button
+                    disabled={!membersDetails.length}
+                    className={`btn btn-sm btn-primary`}
+                    onClick={() => showAllMembers()}
+                  >
+                    show all({membersDetails.length})
+                  </button>
+                ))}
 
               <button
                 disabled={!isMemberSelected.length}
