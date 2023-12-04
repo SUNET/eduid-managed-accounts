@@ -3,7 +3,7 @@ import { Field, Form } from "react-final-form";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
-import { onlyLetters } from "../common/regexPattern";
+import { valid_personnummer } from "../common/personnummer";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
@@ -92,12 +92,34 @@ export default function GroupManagement() {
     }
   };
 
+  function contains_personnummer(params: string) {
+    // 0 -filter out all non-digits
+    const input_numbers = params.replace(/\D/g, "");
+    // 1 - if less than 10 digits, return false
+    const pnr_max_length = 10;
+    if (input_numbers.length < pnr_max_length) {
+      return false;
+    } else {
+      // 2 - else, test the first 8 characters and valid_personnummer()
+      for (let i = 0; i < input_numbers.length - 10 + 1; i++) {
+        if (valid_personnummer(input_numbers.substring(i, i + pnr_max_length))) {
+          return true;
+        }
+      }
+    }
+  }
+
   const validatePersonalData = (values: any) => {
+    console.log("validatePersonalData", values);
     const errors: any = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
-        if (!values[inputName] || !onlyLetters.test(values[inputName])) {
-          errors[inputName] = "Only letters permitted";
+        // check if the input is empty
+        if (!values[inputName]) {
+          errors[inputName] = "Required";
+          // check if it is personnnummer
+        } else if (contains_personnummer(values[inputName])) {
+          errors[inputName] = "It is not allowed to save a personnummer";
         }
       });
     }
