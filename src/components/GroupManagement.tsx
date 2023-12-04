@@ -1,9 +1,9 @@
-import { validNationalIDNumber } from "common/nationalIDNumber";
 import { useEffect, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
+import { validNationalIDNumber } from "../common/nationalIDNumber";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
