@@ -219,9 +219,16 @@ export default function MembersList({ membersDetails, members, setMembers }: any
             <tbody>
               {currentPosts?.map((member: any, index: number) => (
                 <tr key={member.id}>
-                  <td className="flex-between">
-                    <input type="checkbox" checked={member.selected} onChange={() => handleSelect(member.id)} />
-                    <span>{(currentPage - 1) * postsPerPage + index + 1}</span>
+                  <td>
+                    <span className="flex-between">
+                      <input
+                        type="checkbox"
+                        checked={member.selected}
+                        onChange={() => handleSelect(member.id)}
+                        id="selectMember"
+                      />
+                      <label htmlFor="selectMember">{(currentPage - 1) * postsPerPage + index + 1}</label>
+                    </span>
                   </td>
                   <td>{member.name.givenName}</td>
                   <td>{member.name.familyName}</td>
