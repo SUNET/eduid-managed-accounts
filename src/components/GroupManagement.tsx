@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
 import MembersList from "./MembersList";
-import Pagination from "./Pagination";
 
 //TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
@@ -18,8 +17,6 @@ export default function GroupManagement() {
 
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
-  const postsPerPage = 30;
-  const [currentPage, setCurrentPage] = useState(1);
 
   /**
    * Without user interaction
@@ -50,10 +47,6 @@ export default function GroupManagement() {
       }
     };
     initializeManagedAccountsGroup();
-  }, []);
-
-  useEffect(() => {
-    setCurrentPage(1);
   }, []);
 
   const addUser = async (values: any) => {
@@ -103,10 +96,6 @@ export default function GroupManagement() {
   };
 
   const [members, setMembers] = useState<any[]>([]);
-
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <>
@@ -179,19 +168,8 @@ export default function GroupManagement() {
       </section>
       <hr className="border-line"></hr>
       <section>
-        <MembersList
-          members={members}
-          setMembers={setMembers}
-          currentPosts={currentPosts}
-          membersDetails={membersDetails}
-        />
+        <MembersList members={members} setMembers={setMembers} membersDetails={membersDetails} />
       </section>
-      <Pagination
-        postsPerPage={postsPerPage}
-        totalPosts={membersDetails.length}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
     </>
     // </Splash>
   );

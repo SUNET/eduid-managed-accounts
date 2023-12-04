@@ -6,8 +6,9 @@ import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import NotificationModal from "./NotificationModal";
+import Pagination from "./Pagination";
 
-export default function MembersList({ currentPosts, membersDetails, members, setMembers }: any) {
+export default function MembersList({ membersDetails, members, setMembers }: any) {
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
   const isMemberSelected = members.filter((member: any) => member.selected);
@@ -15,6 +16,17 @@ export default function MembersList({ currentPosts, membersDetails, members, set
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const postsPerPage = 1;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, []);
 
   useEffect(() => {
     setSelectAll(false);
@@ -192,6 +204,12 @@ export default function MembersList({ currentPosts, membersDetails, members, set
               ))}
             </tbody>
           </table>
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={membersDetails.length}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </Fragment>
       )}
 
