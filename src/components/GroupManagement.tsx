@@ -171,7 +171,7 @@ export default function GroupManagement() {
                   )}
                 </Field>
 
-                <button disabled={submitting || invalid} className="btn-primary">
+                <button disabled={submitting || invalid} className="btn btn-primary">
                   Add
                 </button>
               </div>
