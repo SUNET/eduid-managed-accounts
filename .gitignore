@@ -13,3 +13,6 @@ dist/
 .vscode/*.log
 src/jwk.json
 src/jwks.json
+src/apis/scimGroupsRequest.ts
+package-lock.json
+package.json
