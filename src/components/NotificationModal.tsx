@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import EduIDButton from "../common/EduIDButton";
 
 interface NotificationModalProps {
   id: string;
@@ -24,13 +25,18 @@ function NotificationModal(props: NotificationModalProps) {
       <Modal isOpen={props.showModal} className={props.id}>
         <ModalHeader>
           {props.title}
-          <button id={`${props.id}-close-button`} className="close float-right" onClick={props.closeModal} />
+          <EduIDButton
+            id={`${props.id}-close-button`}
+            buttonstyle="close"
+            className="float-right"
+            onClick={props.closeModal}
+          ></EduIDButton>
         </ModalHeader>
         <ModalBody>{props.mainText}</ModalBody>
         <ModalFooter>
-          <button id={`${props.id}-accept-button`} className="primary" onClick={props.acceptModal}>
+          <EduIDButton id={`${props.id}-accept-button`} buttonstyle="primary" onClick={props.acceptModal}>
             {props.acceptButtonText}
-          </button>
+          </EduIDButton>
         </ModalFooter>
       </Modal>
     </div>

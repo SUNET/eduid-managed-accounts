@@ -27,6 +27,23 @@
           display: flex;
           text-transform: none;
           @extend .heading-2 !optional;
+
+          //remove below when fixed vite @extend rule
+          margin-top: 0;
+          margin-bottom: 1em;
+          line-height: 1.2;
+          font-family: $inter-bold;
+          font-weight: unset;
+          font-size: 1.65rem;
+          margin-bottom: 0.75em;
+          @media (max-width: $bp-md) {
+            font-size: 1.5rem;
+          }
+
+          @media (max-width: $bp-md) {
+            word-wrap: break-word;
+            word-break: break-word;
+          }
         }
       }
 

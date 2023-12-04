@@ -205,7 +205,7 @@ export default function MembersList({ currentPosts, membersDetails, members, set
 
       <NotificationModal
         id="remove-selected-users-modal"
-        title="remove all users"
+        title="Remove all members in group"
         mainText="Are you sure you want to delete all members? If so, please press the OK button below."
         showModal={showModal}
         closeModal={() => {
