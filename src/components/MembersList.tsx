@@ -6,8 +6,9 @@ import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import NotificationModal from "./NotificationModal";
+import Pagination from "./Pagination";
 
-export default function MembersList({ currentPosts, membersDetails, members, setMembers }: any) {
+export default function MembersList({ membersDetails, members, setMembers }: any) {
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
   const isMemberSelected = members.filter((member: any) => member.selected);
@@ -15,6 +16,18 @@ export default function MembersList({ currentPosts, membersDetails, members, set
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const [postsPerPage, setPostsPerPage] = useState(15);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showAll, setShowAll] = useState(false);
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, []);
 
   useEffect(() => {
     setSelectAll(false);
@@ -119,6 +132,18 @@ export default function MembersList({ currentPosts, membersDetails, members, set
     }
   };
 
+  const showAllMembers = () => {
+    setCurrentPage(1);
+    setPostsPerPage(membersDetails.length);
+    setShowAll(true);
+  };
+
+  const showLessMembers = () => {
+    setCurrentPage(1);
+    setPostsPerPage(10);
+    setShowAll(false);
+  };
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -132,12 +157,31 @@ export default function MembersList({ currentPosts, membersDetails, members, set
           <div className="flex-between form-controls">
             <label>Edit selected rows:</label>
             <div className="buttons">
+              {membersDetails.length >= 10 &&
+                (showAll ? (
+                  <button
+                    disabled={!membersDetails.length}
+                    className={`btn btn-sm btn-secondary`}
+                    onClick={() => showLessMembers()}
+                  >
+                    show less
+                  </button>
+                ) : (
+                  <button
+                    disabled={!membersDetails.length}
+                    className={`btn btn-sm btn-primary`}
+                    onClick={() => showAllMembers()}
+                  >
+                    show all({membersDetails.length})
+                  </button>
+                ))}
+
               <button
                 disabled={!isMemberSelected.length}
                 className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => copyToClipboardAllMembers()}
               >
-                {copiedRowToClipboard ? "Copied row to clipboard" : "Copy row to clipboard"}
+                {copiedRowToClipboard ? "Copied row" : "Copy row"}
               </button>
               <button
                 disabled={!isMemberSelected.length}
@@ -158,27 +202,19 @@ export default function MembersList({ currentPosts, membersDetails, members, set
                   </span>
                 </th>
                 <th>#</th>
-                <th>
-                  <a href="" title="Sort given name alphabetically / first">
-                    Given name &#8645;
-                  </a>
-                </th>
-                <th>
-                  <a href="" title="Sort surname alphabetically / first">
-                    Surname &#8645;
-                  </a>
-                </th>
+                <th>Given name</th>
+                <th>Surname</th>
                 <th>EPPN</th>
                 <th>Password</th>
               </tr>
             </thead>
             <tbody>
-              {currentPosts?.map((member: any) => (
+              {currentPosts?.map((member: any, index: number) => (
                 <tr key={member.id}>
                   <td>
                     <input type="checkbox" checked={member.selected} onChange={() => handleSelect(member.id)} />
                   </td>
-                  <td> </td>
+                  <td>{(currentPage - 1) * postsPerPage + index + 1}</td>
                   <td>{member.name.givenName}</td>
                   <td>{member.name.familyName}</td>
                   <td>
@@ -200,6 +236,12 @@ export default function MembersList({ currentPosts, membersDetails, members, set
               ))}
             </tbody>
           </table>
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={membersDetails.length}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </Fragment>
       )}
 
