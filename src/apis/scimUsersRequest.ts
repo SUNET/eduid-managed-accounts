@@ -2,13 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { UserResponse } from "typescript-clients/scim";
 import { generateNonce } from "../common/CryptoUtils";
-import {
-  accessTokenTest,
-  baseURL,
-  createScimRequest,
-  handleErrorResponse,
-  scimHeaders,
-} from "./scimGroupsRequest";
+import { accessTokenTest, baseURL, createScimRequest, handleErrorResponse, scimHeaders } from "./scimGroupsRequest";
 
 export const postUser = createAsyncThunk<
   UserResponse, // return type
