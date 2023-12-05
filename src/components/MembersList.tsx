@@ -166,7 +166,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
           <div className="flex-between form-controls">
             <label>Edit selected rows:</label>
             <div className="buttons">
-              {membersDetails.length >= 10 &&
+              {membersDetails.length >= 11 &&
                 (showAll ? (
                   <button
                     disabled={!membersDetails.length}
