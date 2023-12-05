@@ -17,7 +17,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const [postsPerPage, setPostsPerPage] = useState(15);
+  const [postsPerPage, setPostsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAll, setShowAll] = useState(false);
 
