@@ -20,7 +20,6 @@ export const getUsersSlice = createSlice({
     },
     sortMembers: (state) => {
       state.members?.sort(function (a, b) {
-        console.log("B", new Date(b.meta.created), "A", new Date(a.meta.created));
         return (new Date(b.meta.created) as any) - (new Date(a.meta.created) as any);
       });
     },
