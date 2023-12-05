@@ -255,7 +255,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                         className="btn btn-link btn-sm"
                         onClick={() => console.log("generate a new password")}
                       >
-                        Generate a new password
+                        New password
                       </button>
                     )}
                   </td>
