@@ -145,7 +145,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
   };
 
   const handleRemoveUsers = () => {
-    if (selectedUserIds.length === managedAccountsDetails?.members?.length) {
+    if (selectedUserIds.length >= 2) {
       setShowModal(true);
     } else {
       removeSelectedUser();
@@ -246,7 +246,19 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                       </div>
                     </button>
                   </td>
-                  <td> </td>
+                  <td>
+                    {member.password ? (
+                      member.password
+                    ) : (
+                      <button
+                        id="generate-new-password"
+                        className="btn btn-link btn-sm"
+                        onClick={() => console.log("generate a new password")}
+                      >
+                        Generate a new password
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
