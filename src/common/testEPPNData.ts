@@ -5,7 +5,6 @@ import { generateNonce } from "./CryptoUtils";
  */
 export function fakeEPPN() {
   const eppn: string = "ma-" + generateNonce(8);
-  console.log("EPPN: ", eppn);
   return eppn;
 }
 
@@ -14,6 +13,5 @@ export function fakeEPPN() {
  */
 export function fakePassword() {
   let password = `${generateNonce(4) + " " + generateNonce(4) + " " + generateNonce(4)}`;
-  console.log("password: ", password);
   return password;
 }
