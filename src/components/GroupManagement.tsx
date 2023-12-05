@@ -162,8 +162,8 @@ export default function GroupManagement() {
                 <Field name="given_name">
                   {({ input, meta }) => (
                     <fieldset>
-                      <label>Given name*</label>
-                      <input type="text" {...input} placeholder="given name" />
+                      <label htmlFor="givenName">Given name*</label>
+                      <input type="text" {...input} placeholder="given name" id="givenName" />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
@@ -172,8 +172,8 @@ export default function GroupManagement() {
                 <Field name="surname">
                   {({ input, meta }) => (
                     <fieldset>
-                      <label>Surname*</label>
-                      <input type="text" {...input} placeholder="surname" />
+                      <label htmlFor="surName">Surname*</label>
+                      <input type="text" {...input} placeholder="surname" id="surName" />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
