@@ -1,14 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { UserResponse } from "typescript-clients/scim";
-import { generateNonce } from "../common/CryptoUtils";
-import {
-  accessTokenTest,
-  baseURL,
-  createScimRequest,
-  handleErrorResponse,
-  scimHeaders,
-} from "./scimGroupsRequest";
+import { fakeEPPN } from "../common/testEPPNData";
+import { accessTokenTest, baseURL, createScimRequest, handleErrorResponse, scimHeaders } from "./scimGroupsRequest";
 
 export const postUser = createAsyncThunk<
   UserResponse, // return type
@@ -24,7 +18,7 @@ export const postUser = createAsyncThunk<
       const scimRequest = createScimRequest(args.familyName);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
-        externalId: generateNonce(12),
+        externalId: fakeEPPN(),
         name: {
           familyName: args.familyName,
           givenName: args.givenName,
