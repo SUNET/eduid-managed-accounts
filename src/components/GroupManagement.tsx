@@ -4,6 +4,7 @@ import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { validNationalIDNumber } from "../common/nationalIDNumber";
+import { fakeEPPN, fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
@@ -48,6 +49,11 @@ export default function GroupManagement() {
     };
     initializeManagedAccountsGroup();
   }, []);
+
+  useEffect(() => {
+    fakeEPPN();
+    fakePassword();
+  });
 
   const addUser = async (values: any) => {
     if (values.given_name && values.surname) {
