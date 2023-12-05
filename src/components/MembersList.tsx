@@ -145,7 +145,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
   };
 
   const handleRemoveUsers = () => {
-    if (selectedUserIds.length === managedAccountsDetails?.members?.length) {
+    if (selectedUserIds.length >= 2) {
       setShowModal(true);
     } else {
       removeSelectedUser();
