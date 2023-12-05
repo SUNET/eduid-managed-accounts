@@ -23,6 +23,9 @@ export const getUsersSlice = createSlice({
         return (new Date(b.meta.created) as any) - (new Date(a.meta.created) as any);
       });
     },
+    generatedNewPassword: (state, action) => {
+      state.members = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserDetails.fulfilled, (state, action) => {

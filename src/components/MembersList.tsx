@@ -4,7 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
+import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { getUsersSlice } from "../slices/getUsers";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
 
@@ -154,6 +156,15 @@ export default function MembersList({ membersDetails, members, setMembers }: any
     }
   };
 
+  const generateNewPassword = (id: string) => {
+    const generatedPassword = fakePassword();
+    const memberWithGeneratedPassword = membersDetails.map((member: any) =>
+      member.id === id ? { ...member, password: generatedPassword } : member
+    );
+
+    dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
+  };
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -257,7 +268,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                       <button
                         id="generate-new-password"
                         className="btn btn-link btn-sm"
-                        onClick={() => console.log("generate a new password")}
+                        onClick={() => generateNewPassword(member.id)}
                       >
                         New password
                       </button>
