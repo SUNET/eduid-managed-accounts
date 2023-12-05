@@ -36,9 +36,15 @@ export default function GroupManagement() {
           } else if (result.payload.Resources?.length === 1) {
             const response = await dispatch(getGroupDetails({ id: result.payload.Resources[0].id }));
             if (getGroupDetails.fulfilled.match(response)) {
-              response.payload.members?.map((member: any) => {
-                dispatch(getUserDetails({ id: member.value }));
-              });
+              const members = response.payload.members;
+              if (members) {
+                await Promise.all(
+                  members?.map(async (member: any) => {
+                    await dispatch(getUserDetails({ id: member.value }));
+                  })
+                );
+                dispatch(getUsersSlice.actions.sortMembers());
+              }
             }
           }
         }

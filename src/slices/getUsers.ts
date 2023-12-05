@@ -18,6 +18,12 @@ export const getUsersSlice = createSlice({
     initialize: (state) => {
       state.members = [];
     },
+    sortMembers: (state) => {
+      state.members?.sort(function (a, b) {
+        console.log("B", new Date(b.meta.created), "A", new Date(a.meta.created));
+        return (new Date(b.meta.created) as any) - (new Date(a.meta.created) as any);
+      });
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
@@ -25,7 +31,7 @@ export const getUsersSlice = createSlice({
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
       const payloadWithPassword = { ...action.payload, password: fakePassword() };
-      state.members.push(payloadWithPassword);
+      state.members.unshift(payloadWithPassword);
     });
     builder.addCase(deleteUser.fulfilled, (state, action) => {
       state.members = state.members?.filter((user: any) => user.id !== action.payload.id);
