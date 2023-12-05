@@ -38,11 +38,13 @@ export default function MembersList({ membersDetails, members, setMembers }: any
     const memberGivenName = isMemberSelected.map((member: any) => member.name.givenName);
     const memberFamilyName = isMemberSelected.map((member: any) => member.name.familyName);
     const memberEPPN = isMemberSelected.map((member: any) => member.externalId);
+    const memberPassword = isMemberSelected.map((member: any) => member.password);
 
     const membersArray = [];
 
     for (let i = 0; i < isMemberSelected.length; i++) {
-      const memberInfo = `${memberGivenName[i]}, ${memberFamilyName[i]}, ${memberEPPN[i]}`;
+      const password = memberPassword[i] ? memberPassword[i] : " ";
+      const memberInfo = `${memberGivenName[i]}, ${memberFamilyName[i]}, ${memberEPPN[i]}, ${password}`;
       membersArray.push(memberInfo);
     }
 
