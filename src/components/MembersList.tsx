@@ -73,11 +73,11 @@ export default function MembersList({ membersDetails, members, setMembers }: any
     document.execCommand("copy");
     document.body.removeChild(TempText);
     setTooltipCopied(true);
-    (document.getElementById("icon-copy") as HTMLInputElement).style.display = "none";
-    (document.getElementById("icon-check") as HTMLInputElement).style.display = "inline";
+    (document.getElementById(`icon-copy ${id}`) as HTMLInputElement).style.display = "none";
+    (document.getElementById(`icon-check ${id}`) as HTMLInputElement).style.display = "inline";
     setTimeout(() => {
-      (document.getElementById("icon-copy") as HTMLInputElement).style.display = "inline";
-      (document.getElementById("icon-check") as HTMLInputElement).style.display = "none";
+      (document.getElementById(`icon-copy ${id}`) as HTMLInputElement).style.display = "inline";
+      (document.getElementById(`icon-check ${id}`) as HTMLInputElement).style.display = "none";
       setTooltipCopied(false);
     }, 1000);
   };
@@ -243,8 +243,8 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                       className="icon-only copybutton"
                       onClick={() => copyToClipboard(member.externalId)}
                     >
-                      <FontAwesomeIcon id={"icon-copy"} icon={faCopy as IconProp} />
-                      <FontAwesomeIcon id={"icon-check"} icon={faCheck as IconProp} />
+                      <FontAwesomeIcon id={`icon-copy ${member.externalId}`} icon={faCopy as IconProp} />
+                      <FontAwesomeIcon id={`icon-check ${member.externalId}`} icon={faCheck as IconProp} />
                       <div className="tool-tip-text" id="tool-tip">
                         {tooltipCopied ? <span>Copied</span> : <span>Copy eppn</span>}
                       </div>

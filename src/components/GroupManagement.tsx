@@ -138,8 +138,7 @@ export default function GroupManagement() {
           <li>When you click "ADD" the member will be added to the group as shown in the table below.</li>
           <li>
             <strong>Note the corresponding EPPN and password which appears in the members table</strong>, transfer it to
-            whatever external system of your choice, as you will not be able to retrieve it afterwards and would have to
-            create a new password.
+            whatever external system of your choice, as you will not be able to retrieve it afterwards.
           </li>
         </ol>
         <p>
