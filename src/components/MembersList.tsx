@@ -225,9 +225,11 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                         type="checkbox"
                         checked={member.selected}
                         onChange={() => handleSelect(member.id)}
-                        id="selectMember"
+                        id={"selectMember" + (index + 1)}
                       />
-                      <label htmlFor="selectMember">{(currentPage - 1) * postsPerPage + index + 1}</label>
+                      <label htmlFor={"selectMember" + (index + 1)}>
+                        {(currentPage - 1) * postsPerPage + index + 1}
+                      </label>
                     </span>
                   </td>
                   <td>{member.name.givenName}</td>
