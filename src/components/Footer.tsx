@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 const Footer = (): JSX.Element => {
   return (
     <footer key="0" id="footer">
@@ -10,7 +8,7 @@ const Footer = (): JSX.Element => {
         <span>&copy; 2013-2023</span>
       </div>
 
-      <nav>
+      {/* <nav>
         <ul>
           <li>
             <Link className="help-link" to="#">
@@ -25,7 +23,7 @@ const Footer = (): JSX.Element => {
             </span>
           </li>
         </ul>
-      </nav>
+      </nav> */}
     </footer>
   );
 };
