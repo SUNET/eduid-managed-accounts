@@ -1,0 +1,9 @@
+{
+  "intro-heading": {
+    "string": "Welcome to Managing Accounts using eduID"
+  },
+  "modal.close": {
+    "developer_comment": "Notification modal close label",
+    "string": "Close"
+  }
+}

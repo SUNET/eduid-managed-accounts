@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Field, Form } from "react-final-form";
+import { FormattedMessage } from "react-intl";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
@@ -128,7 +129,9 @@ export default function GroupManagement() {
     <>
       {/* <Splash showChildren={managedAccountsDetails.id}> */}
       <section className="intro">
-        <h1>Welcome to Managing Accounts using eduID</h1>
+        <h1>
+          <FormattedMessage defaultMessage="Welcome to Managing Accounts using eduID" id="intro-heading" />
+        </h1>
         <div className="lead">
           <p>
             In the form below you can manage your group by adding students as members, to create the unique identifier -
