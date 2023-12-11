@@ -219,8 +219,8 @@ export default function MembersList({ membersDetails, members, setMembers }: any
               <label htmlFor="sortOrder">Sort rows</label>
               <select id="sortOrder">
                 <option>Latest (default)</option>
-                <option>Given name ABC</option>
-                <option>Surname ABC</option>
+                <option>Given name (ABC)</option>
+                <option>Surname (ABC)</option>
               </select>
             </div>
           </div>
