@@ -1,10 +1,10 @@
+import Personnummer from "personnummer";
 import { useEffect, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage } from "react-intl";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
-import { validNationalIDNumber } from "../common/nationalIDNumber";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
@@ -98,9 +98,9 @@ export default function GroupManagement() {
     if (inputNumbers.length < ID_NUMBER_MAX_LENGTH) {
       return false;
     } else {
-      // 2 - else, test the first 8 characters and validNationalIDNumber()
+      // 2 - else, test the first 10 characters and personnummer library
       for (let i = 0; i < inputNumbers.length - 10 + 1; i++) {
-        if (validNationalIDNumber(inputNumbers.substring(i, i + ID_NUMBER_MAX_LENGTH))) {
+        if (Personnummer.valid(inputNumbers.substring(i, i + ID_NUMBER_MAX_LENGTH))) {
           return true;
         }
       }
