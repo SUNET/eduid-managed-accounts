@@ -2,6 +2,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { fakePassword } from "../common/testEPPNData";
@@ -170,14 +171,23 @@ export default function MembersList({ membersDetails, members, setMembers }: any
       {membersDetails.length > 0 && (
         <Fragment>
           <hr className="border-line"></hr>
-          <h2>Manage members in group</h2>
+          <h2>
+            <FormattedMessage defaultMessage="Manage members in group" id="manageGroup-heading" />
+          </h2>
           <p>
-            The table shows members of this group. It is not possible to edit the already added member, nor retrieve a
+            <FormattedMessage
+              defaultMessage='The table shows members of this group. It is not possible to edit the already added member, nor retrieve a
             password once the session in which the member was created is ended, but by clicking "REMOVE" you can remove
-            the member and if needed create it again -<strong> with a new EPPN and password</strong>.
+            the member and if needed create it again -'
+              id="manageGroup-paragraph"
+            />
+            &nbsp;
+            <FormattedMessage defaultMessage="with a new EPPN and password" id="manageGroup-paragraphStrong" />.
           </p>
           <div className="flex-between form-controls">
-            <label>Edit selected rows:</label>
+            <label>
+              <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+            </label>
             <div className="buttons">
               {membersDetails.length >= 11 &&
                 (showAll ? (
@@ -186,7 +196,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                     className={`btn btn-sm btn-secondary`}
                     onClick={() => showLessMembers()}
                   >
-                    show less
+                    <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
                   </button>
                 ) : (
                   <button
@@ -194,7 +204,8 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                     className={`btn btn-sm btn-primary`}
                     onClick={() => showAllMembers()}
                   >
-                    show all({membersDetails.length})
+                    <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                    {membersDetails.length})
                   </button>
                 ))}
 
