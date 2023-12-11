@@ -113,10 +113,15 @@ export default function GroupManagement() {
       ["given_name", "surname"].forEach((inputName) => {
         // check if the input is empty
         if (!values[inputName]) {
-          errors[inputName] = "Required";
+          errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {
-          errors[inputName] = "It is not allowed to save a national ID number";
+          errors[inputName] = (
+            <FormattedMessage
+              defaultMessage="It is not allowed to save a national ID number"
+              id="addToGroup-ninValidation"
+            />
+          );
         }
       });
     }

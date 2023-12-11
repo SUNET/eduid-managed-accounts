@@ -214,14 +214,18 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                 className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => copyToClipboardAllMembers()}
               >
-                {copiedRowToClipboard ? "Copied row" : "Copy row"}
+                {copiedRowToClipboard ? (
+                  <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
+                ) : (
+                  <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
+                )}
               </button>
               <button
                 disabled={!isMemberSelected.length}
                 className="btn btn-secondary btn-sm"
                 onClick={() => handleRemoveUsers()}
               >
-                Remove row
+                <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
               </button>
             </div>
           </div>
@@ -231,13 +235,23 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                 <th>
                   <span className="flex-between">
                     <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} id="selectAll" />
-                    <label htmlFor="selectAll">All</label>
+                    <label htmlFor="selectAll">
+                      <FormattedMessage defaultMessage="All" id="manageGroup-selectAllCheckbox" />
+                    </label>
                   </span>
                 </th>
-                <th>Given name</th>
-                <th>Surname</th>
-                <th>EPPN</th>
-                <th>Password</th>
+                <th>
+                  <FormattedMessage defaultMessage="Given name" id="manageGroup-givenNameColumn" />
+                </th>
+                <th>
+                  <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
+                </th>
+                <th>
+                  <FormattedMessage defaultMessage="EPPN" id="manageGroup-eppnColumn" />
+                </th>
+                <th>
+                  <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -268,7 +282,15 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                       <FontAwesomeIcon id={`icon-copy ${member.externalId}`} icon={faCopy as IconProp} />
                       <FontAwesomeIcon id={`icon-check ${member.externalId}`} icon={faCheck as IconProp} />
                       <div className="tool-tip-text" id="tool-tip">
-                        {tooltipCopied ? <span>Copied</span> : <span>Copy eppn</span>}
+                        {tooltipCopied ? (
+                          <span>
+                            <FormattedMessage defaultMessage="Copied EPPN" id="manageGroup-copiedEppnDialog" />
+                          </span>
+                        ) : (
+                          <span>
+                            <FormattedMessage defaultMessage="Copy EPPN" id="manageGroup-copyEppnDialog" />
+                          </span>
+                        )}
                       </div>
                     </button>
                   </td>
@@ -281,7 +303,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                         className="btn btn-link btn-sm"
                         onClick={() => generateNewPassword(member.id)}
                       >
-                        New password
+                        <FormattedMessage defaultMessage="New password" id="manageGroup-newPasswordLink" />
                       </button>
                     )}
                   </td>
@@ -300,8 +322,15 @@ export default function MembersList({ membersDetails, members, setMembers }: any
 
       <NotificationModal
         id="remove-selected-users-modal"
-        title="Remove members in group"
-        mainText={`Are you sure you want to delete ${isMemberSelected.length} members? If so, please press the OK button below.`}
+        title={
+          <FormattedMessage defaultMessage="Remove members in group" id="manageGroup-removeMembersDialogHeading" />
+        }
+        mainText={
+          <FormattedMessage
+            defaultMessage={`Are you sure you want to delete ${isMemberSelected.length} members? If so, please press the OK button below.`}
+            id="manageGroup-removeMembersDialogParagraph"
+          />
+        }
         showModal={showModal}
         closeModal={() => {
           setShowModal(false);
