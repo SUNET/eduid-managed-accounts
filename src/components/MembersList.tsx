@@ -176,42 +176,52 @@ export default function MembersList({ membersDetails, members, setMembers }: any
             password once the session in which the member was created is ended, but by clicking "REMOVE" you can remove
             the member and if needed create it again -<strong> with a new EPPN and password</strong>.
           </p>
-          <div className="flex-between form-controls">
-            <label>Edit selected rows:</label>
-            <div className="buttons">
-              {membersDetails.length >= 11 &&
-                (showAll ? (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-secondary`}
-                    onClick={() => showLessMembers()}
-                  >
-                    show less
-                  </button>
-                ) : (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-primary`}
-                    onClick={() => showAllMembers()}
-                  >
-                    show all({membersDetails.length})
-                  </button>
-                ))}
+          <div className="form-controls">
+            <div className="flex-between">
+              <label>Edit selected rows:</label>
+              <div className="buttons">
+                {membersDetails.length >= 11 &&
+                  (showAll ? (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-secondary`}
+                      onClick={() => showLessMembers()}
+                    >
+                      show less
+                    </button>
+                  ) : (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-primary`}
+                      onClick={() => showAllMembers()}
+                    >
+                      show all({membersDetails.length})
+                    </button>
+                  ))}
 
-              <button
-                disabled={!isMemberSelected.length}
-                className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
-                onClick={() => copyToClipboardAllMembers()}
-              >
-                {copiedRowToClipboard ? "Copied row" : "Copy row"}
-              </button>
-              <button
-                disabled={!isMemberSelected.length}
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleRemoveUsers()}
-              >
-                Remove row
-              </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
+                  onClick={() => copyToClipboardAllMembers()}
+                >
+                  {copiedRowToClipboard ? "Copied row" : "Copy row"}
+                </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => handleRemoveUsers()}
+                >
+                  Remove row
+                </button>
+              </div>
+            </div>
+            <div className="flex-between">
+              <label htmlFor="sortOrder">Sort rows</label>
+              <select id="sortOrder">
+                <option>Latest (default)</option>
+                <option>Given name ABC</option>
+                <option>Surname ABC</option>
+              </select>
             </div>
           </div>
           <table className="group-management">
