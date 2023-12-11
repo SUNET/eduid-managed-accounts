@@ -134,26 +134,53 @@ export default function GroupManagement() {
         </h1>
         <div className="lead">
           <p>
-            In the form below you can manage your group by adding students as members, to create the unique identifier -
-            EPPN - and the password that they will need to be able to perform the Digital National Exam. <br />
-            You can also view the existing group and remove members.
+            <FormattedMessage
+              defaultMessage="In the form below you can manage your group by adding students as members, to create the unique identifier -
+            EPPN - and the password that they will need to be able to perform the Digital National Exam.
+            You can also view the existing group and remove members."
+              id="intro-lead"
+            />
           </p>
         </div>
       </section>
       <section>
-        <h2>Add member to group</h2>
+        <h2>
+          <FormattedMessage defaultMessage="Add member to group" id="addToGroup-heading" />
+        </h2>
         <ol className="listed-steps">
-          <li>Add the given name and surname to manage each member, complete one at a time.</li>
-          <li>When you click "ADD" the member will be added to the group as shown in the table below.</li>
           <li>
-            <strong>Note the corresponding EPPN and password which appears in the members table</strong>, transfer it to
-            whatever external system of your choice, as you will not be able to retrieve it afterwards.
+            <FormattedMessage
+              defaultMessage="Add the given name and surname to manage each member, complete one at a time."
+              id="addToGroup-listItem1"
+            />
+          </li>
+          <li>
+            <FormattedMessage
+              defaultMessage='When you click "ADD" the member will be added to the group as shown in the table below.'
+              id="addToGroup-listItem2"
+            />
+          </li>
+          <li>
+            <strong>
+              <FormattedMessage
+                defaultMessage="Note the corresponding EPPN and password which appears in the members table"
+                id="addToGroup-listItem3Strong"
+              />
+            </strong>
+            ,&nbsp;
+            <FormattedMessage
+              defaultMessage="transfer it to whatever external system of your choice, as you will not be able to retrieve it afterwards."
+              id="addToGroup-listItem3"
+            />
           </li>
         </ol>
         <p>
           <em>
-            Write the name so that you can distinguish the identity of the person even if there are several students
-            with identical names e.g. by adding an initial.
+            <FormattedMessage
+              defaultMessage="Write the name so that you can distinguish the identity of the person even if there are several students
+                with identical names e.g. by adding an initial."
+              id="addToGroup-hint"
+            />
           </em>
         </p>
 
@@ -171,7 +198,9 @@ export default function GroupManagement() {
                 <Field name="given_name">
                   {({ input, meta }) => (
                     <fieldset>
-                      <label htmlFor="givenName">Given name*</label>
+                      <label htmlFor="givenName">
+                        <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
+                      </label>
                       <input type="text" {...input} placeholder="given name" id="givenName" />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
@@ -181,7 +210,9 @@ export default function GroupManagement() {
                 <Field name="surname">
                   {({ input, meta }) => (
                     <fieldset>
-                      <label htmlFor="surName">Surname*</label>
+                      <label htmlFor="surName">
+                        <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
+                      </label>
                       <input type="text" {...input} placeholder="surname" id="surName" />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
@@ -189,7 +220,7 @@ export default function GroupManagement() {
                 </Field>
 
                 <button disabled={submitting || invalid} className="btn btn-primary">
-                  Add
+                  <FormattedMessage defaultMessage="Add" id="addToGroup-addButton" />
                 </button>
               </div>
             </form>
