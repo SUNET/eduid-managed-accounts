@@ -2,6 +2,7 @@ import Personnummer from "personnummer";
 import { useEffect, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage } from "react-intl";
+import { useLocation } from "react-router";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
@@ -13,7 +14,9 @@ import MembersList from "./MembersList";
 //TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
 
-export default function GroupManagement() {
+export default function GroupManagement(props: {}) {
+  let data = useLocation();
+  const accessToken = data.state.accessToken.value;
   const dispatch = useAppDispatch();
 
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
@@ -30,10 +33,10 @@ export default function GroupManagement() {
       try {
         dispatch(getUsersSlice.actions.initialize());
         dispatch(getGroupsSlice.actions.initialize());
-        const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
+        const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME, accessToken: accessToken }));
         if (getGroupsSearch.fulfilled.match(result)) {
           if (!result.payload.Resources?.length) {
-            dispatch(createGroup({ displayName: GROUP_NAME }));
+            dispatch(createGroup({ displayName: GROUP_NAME, accessToken: accessToken }));
           } else if (result.payload.Resources?.length === 1) {
             const response = await dispatch(getGroupDetails({ id: result.payload.Resources[0].id }));
             if (getGroupDetails.fulfilled.match(response)) {
