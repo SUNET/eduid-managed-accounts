@@ -11,7 +11,7 @@ import { getUsersSlice } from "../slices/getUsers";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
 
-export default function MembersList({ membersDetails, members, setMembers }: any) {
+export default function MembersList({ membersDetails, members, setMembers, accessToken }: any) {
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
   const isMemberSelected = members.filter((member: any) => member.selected);
@@ -112,6 +112,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
           ...managedAccountsDetails,
           members: currentUsers,
         },
+        accessToken: accessToken,
       })
     );
 
@@ -125,7 +126,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
               version: user.meta.version,
             };
 
-            const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete }));
+            const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
             if (deleteUser.fulfilled.match(deleteUserResponse)) {
               setShowModal(false);
             }

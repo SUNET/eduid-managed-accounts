@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGroup, fetchAllGroups, getGroupDetails, putGroup } from "../apis/scimGroupsRequest";
+import { createGroup, getGroupDetails, putGroup } from "../apis/scimGroupsRequest";
 import { GroupResponse, SCIMResourceType } from "../typescript-clients/scim";
 
 interface GetGroupsState {
@@ -45,9 +45,6 @@ export const getGroupsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(createGroup.fulfilled, (state, action) => {
       state.managedAccounts = action.payload;
-    });
-    builder.addCase(fetchAllGroups.fulfilled, (state, action) => {
-      state.managedAccounts.id = action.payload?.Resources[0].id;
     });
     builder.addCase(getGroupDetails.fulfilled, (state, action) => {
       state.managedAccounts = action.payload;
