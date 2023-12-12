@@ -5,7 +5,7 @@ import { GroupResponse } from "typescript-clients/scim";
 export const baseURL = "https://api.eduid.docker/scim/";
 
 export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMjMwMDc4NiwiaWF0IjoxNzAyMjk3MTg2LCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAyMjk3MTg2LCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.7IEqUGzFQYWqcwXflRUh3scHGIU7tK9kvj5ZxIY6cihw6VmswhN7PoVgiQkVX87y2bCwT5ZyFCqKUR2-zdZg1w";
+  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMjM3OTI2MiwiaWF0IjoxNzAyMzc1NjYyLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAyMzc1NjYyLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.vTrviqCp14uLIoUwSPiEJgIC57bBxNUGbnr5MxsmwnZQQhBNVoNkmWZUSaK6hMIy502L0rCXEeeVHZAud-gjrg";
 
 export const scimHeaders = (token: string) => {
   return {
@@ -203,7 +203,6 @@ export const postGroup = createAsyncThunk<
   { displayName: any }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/postGroup", async (args, thunkAPI) => {
-  const state = thunkAPI.getState();
   try {
     if (accessTokenTest) {
       const headers = {
