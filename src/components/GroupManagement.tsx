@@ -38,13 +38,15 @@ export default function GroupManagement(props: {}) {
           if (!result.payload.Resources?.length) {
             dispatch(createGroup({ displayName: GROUP_NAME, accessToken: accessToken }));
           } else if (result.payload.Resources?.length === 1) {
-            const response = await dispatch(getGroupDetails({ id: result.payload.Resources[0].id }));
+            const response = await dispatch(
+              getGroupDetails({ id: result.payload.Resources[0].id, accessToken: accessToken })
+            );
             if (getGroupDetails.fulfilled.match(response)) {
               const members = response.payload.members;
               if (members) {
                 await Promise.all(
                   members?.map(async (member: any) => {
-                    await dispatch(getUserDetails({ id: member.value }));
+                    await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
                   })
                 );
                 dispatch(getUsersSlice.actions.sortMembers());
@@ -66,6 +68,7 @@ export default function GroupManagement(props: {}) {
           postUser({
             familyName: values.surname,
             givenName: values.given_name,
+            accessToken: accessToken,
           })
         );
         if (postUser.fulfilled.match(createdUserResponse)) {
@@ -84,6 +87,7 @@ export default function GroupManagement(props: {}) {
                 ...managedAccountsDetails,
                 members: newMembersList,
               },
+              accessToken: accessToken,
             })
           );
         }
@@ -200,7 +204,12 @@ export default function GroupManagement(props: {}) {
         />
       </section>
       <section>
-        <MembersList members={members} setMembers={setMembers} membersDetails={membersDetails} />
+        <MembersList
+          accessToken={accessToken}
+          members={members}
+          setMembers={setMembers}
+          membersDetails={membersDetails}
+        />
       </section>
     </>
     // </Splash>
