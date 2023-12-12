@@ -53,13 +53,13 @@ export interface ErrorResponse {
 
 export const createGroup = createAsyncThunk<
   GroupResponse, // return type
-  { displayName: string }, // args type
+  { displayName: string; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/createGroup", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
-      const scimRequest = createScimRequest(accessTokenTest);
+    if (args.accessToken) {
+      const headers = scimHeaders(args.accessToken);
+      const scimRequest = createScimRequest(args.accessToken);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
         displayName: args.displayName,
@@ -143,12 +143,12 @@ export const fetchAllGroups = createAsyncThunk<
 
 export const getGroupsSearch = createAsyncThunk<
   GroupsSearchResponse, // return type
-  { searchFilter: string }, // args type
+  { searchFilter: string; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
+    if (args.accessToken) {
+      const headers = scimHeaders(args.accessToken);
       const scimRequest = createScimRequest(args.searchFilter);
       const payload = {
         schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],

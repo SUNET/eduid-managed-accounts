@@ -7,13 +7,14 @@ import { ContinueRequest } from "../typescript-clients/gnap";
 interface PostContinueRequestResponse {}
 
 export const postContinueRequest = createAsyncThunk<
-  PostContinueRequestResponse, // return type
+  any, // return type
   { interactions: any; interactRef: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {
+  console.log("args,", args);
   try {
     if (args.interactions) {
-      const access_token_calculated = await getSHA256Hash(args.interactions.continue_access_token);
+      const access_token_calculated = await getSHA256Hash(args.interactions.continue.access_token.value);
       const continue_request: ContinueRequest = {
         interact_ref: args.interactRef,
       };
@@ -26,7 +27,7 @@ export const postContinueRequest = createAsyncThunk<
         alg: alg,
         kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
         htm: "POST",
-        uri: args.interactions.continue_url,
+        uri: args.interactions.continue.uri,
         created: Date.now(),
         ath: access_token_calculated,
       };
@@ -38,12 +39,13 @@ export const postContinueRequest = createAsyncThunk<
       const request = {
         method: "POST",
         headers: {
-          Authorization: `GNAP ${args.interactions.continue_access_token}`,
+          Authorization: `GNAP ${args.interactions.continue.access_token.value}`,
           "Content-Type": "application/jose+json",
         },
         body: jws,
       };
-      const response = await fetch(args.interactions.continue_url, { ...request });
+      const response = await fetch(args.interactions.continue.uri, { ...request });
+      console.log("response", response);
       if (response.ok) {
         return await response.json();
       } else {

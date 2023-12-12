@@ -1,7 +1,16 @@
-import { CompactSign, GenerateKeyPairOptions, exportJWK, importJWK } from "jose";
+import { CompactSign, GenerateKeyPairOptions, exportJWK, generateKeyPair } from "jose";
 import { generateNonce } from "./common/CryptoUtils";
-import jwk_file from "./jwk.json";
-import { AccessTokenFlags, AccessTokenRequest, ECJWK, GrantRequest, KeyType } from "./typescript-clients/gnap";
+import {
+  AccessTokenFlags,
+  AccessTokenRequest,
+  ECJWK,
+  FinishInteractionMethod,
+  GrantRequest,
+  KeyType,
+  ProofMethod,
+  StartInteractionMethod,
+  SubjectAssertionFormat,
+} from "./typescript-clients/gnap";
 
 const url = "https://api.eduid.docker/auth/transaction";
 export const INTERACTION_RESPONSE = "InteractionResponse";
@@ -16,7 +25,8 @@ export async function initLocalStorage() {
   if (token === null || Object.keys(token).length === 0 || token === undefined) {
     try {
       const atr: AccessTokenRequest = {
-        access: [{ scope: "eduid.se", type: "scim-api" }],
+        // TODO
+        access: [{ scope: "eduid.docker", type: "scim-api" }],
         flags: [AccessTokenFlags.BEARER],
       };
 
@@ -25,30 +35,13 @@ export async function initLocalStorage() {
         crv: "25519",
         extractable: true,
       };
-      // const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
-
-      // use key i JWK
-      const jwk_private = { ...jwk_file, ext: true };
-      console.log("JWK FILE + ext:", jwk_private);
-      // const jwk_private = {
-      //   kty: "EC",
-      //   kid: "eduid_managed_accounts_1",
-      //   crv: "P-256",
-      //   x: "dCxVL9thTTc-ZtiL_CrPpMp1Vqo2p_gUVqiVBRwqjq8",
-      //   y: "P3dAvr2IYy7DQEf4vA5bPN8gCg41M1oA5993vHr9peE",
-      //   d: "i9hH9BeErxtI40b0_1P4XR6CXra4itKvg8ccLrxXrhQ",
-      //   ext: true,
-      // };
-
-      const privateKey = await importJWK(jwk_private, alg);
-      const publicKey = await importJWK(jwk_private, alg);
+      const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
 
       const privateJwk = await exportJWK(privateKey);
-      console.log("privateKey", JSON.stringify(privateJwk));
       const publicJwk = await exportJWK(publicKey);
 
       const EllipticCurveJSONWebKey: ECJWK = {
-        kid: "eduid_managed_accounts_1",
+        kid: "random_generated_id",
         kty: publicJwk.kty as KeyType,
         crv: publicJwk.crv,
         x: publicJwk.x,
@@ -59,22 +52,24 @@ export async function initLocalStorage() {
 
       const gr: GrantRequest = {
         access_token: atr,
-        client: { key: "eduid_managed_accounts_1" },
-        // client: { key: { proof: { method: ProofMethod.JWS }, jwk: EllipticCurveJSONWebKey } },
-        // interact: {
-        //   start: [StartInteractionMethod.REDIRECT],
-        //   finish: {
-        //     method: FinishInteractionMethod.REDIRECT,
-        //     uri: "http://localhost:5173/redirect", // TODO: redirect url, TO BE FIXED
-        //     nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
-        //   },
-        // },
+        client: { key: { proof: { method: ProofMethod.JWS }, jwk: EllipticCurveJSONWebKey } },
+        subject: {
+          assertion_formats: [SubjectAssertionFormat.SAML2],
+        },
+        interact: {
+          start: [StartInteractionMethod.REDIRECT],
+          finish: {
+            method: FinishInteractionMethod.REDIRECT,
+            uri: "http://localhost:5173/redirect", // TODO: redirect url, TO BE FIXED
+            nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
+          },
+        },
       };
 
       const jwsHeader = {
         typ: "gnap-binding+jws",
         alg: alg,
-        kid: "eduid_managed_accounts_1", // TODO: fix, coupled with publicKey, privateKey
+        kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
         htm: "POST",
         uri: url,
         created: Date.now(),
