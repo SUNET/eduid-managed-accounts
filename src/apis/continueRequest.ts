@@ -11,7 +11,6 @@ export const postContinueRequest = createAsyncThunk<
   { interactions: any; interactRef: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {
-  console.log("args,", args);
   try {
     if (args.interactions) {
       const access_token_calculated = await getSHA256Hash(args.interactions.continue.access_token.value);
@@ -45,7 +44,6 @@ export const postContinueRequest = createAsyncThunk<
         body: jws,
       };
       const response = await fetch(args.interactions.continue.uri, { ...request });
-      console.log("response", response);
       if (response.ok) {
         return await response.json();
       } else {

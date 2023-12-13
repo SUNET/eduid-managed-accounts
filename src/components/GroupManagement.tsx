@@ -14,11 +14,10 @@ import MembersList from "./MembersList";
 //TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
 
-export default function GroupManagement(props: {}) {
+export default function GroupManagement() {
   let data = useLocation();
   const accessToken = data.state.accessToken.value;
   const dispatch = useAppDispatch();
-
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
 

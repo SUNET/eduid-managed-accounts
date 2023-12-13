@@ -52,8 +52,6 @@ export default function Callback() {
     if (interactions && interactRef) {
       const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
       if (postContinueRequest.fulfilled.match(response)) {
-        console.log("repsonse", response);
-        // token = response;
         setAccessToken(response.payload.access_token);
       }
     }

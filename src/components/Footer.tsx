@@ -25,7 +25,8 @@ const Footer = (): JSX.Element => {
     language = translateTo[0][1];
   }
 
-  const changeLanguage = () => {
+  const changeLanguage = (e: any) => {
+    e.preventDefault();
     if (locale) {
       dispatch(
         updateIntl({
@@ -54,7 +55,7 @@ const Footer = (): JSX.Element => {
           </li>
           <li id="language-selector">
             <span className="lang-selected" data-lang={locale}>
-              <a className="link" href="#" onClick={changeLanguage}>
+              <a className="link" href="#" onClick={(e) => changeLanguage(e)}>
                 {language}
               </a>
             </span>
