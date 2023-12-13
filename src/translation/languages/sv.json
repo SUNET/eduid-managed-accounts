@@ -6,7 +6,7 @@
     "string": "Nödvändig"
   },
   "addToGroup-givenName": {
-    "string": "Förnamn"
+    "string": "Förnamn*"
   },
   "addToGroup-heading": {
     "string": "Lägg till elev till organisationen"
