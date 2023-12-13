@@ -2,13 +2,29 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { CompactSign, importJWK } from "jose";
 import { getSHA256Hash } from "../common/CryptoUtils";
-import { ContinueRequest } from "../typescript-clients/gnap";
+import { ContinueAccessToken, ContinueRequest } from "../typescript-clients/gnap";
 
-interface PostContinueRequestResponse {}
+interface PostContinueRequestResponse {
+  access_token: ContinueAccessToken;
+}
+
+interface InteractionsTypes {
+  interact: {
+    access_token: {
+      value: string;
+    };
+  };
+  continue: {
+    access_token: {
+      value: string;
+    };
+    uri: string;
+  };
+}
 
 export const postContinueRequest = createAsyncThunk<
-  any, // return type
-  { interactions: any; interactRef: string }, // args type
+  PostContinueRequestResponse, // return type
+  { interactions: InteractionsTypes; interactRef: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {
   try {
