@@ -1,1 +1,104 @@
-{}
+{
+  "addToGroup-addButton": {
+    "string": "Lägg till"
+  },
+  "addToGroup-emptyValidation": {
+    "string": "Nödvändig"
+  },
+  "addToGroup-givenName": {
+    "string": "Förnamn"
+  },
+  "addToGroup-heading": {
+    "string": "Lägg till elev till organisationen"
+  },
+  "addToGroup-listItem1": {
+    "string": "Skriv in förnamn och efternamn för varje student, en i taget."
+  },
+  "addToGroup-listItem2": {
+    "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer för detta syfte."
+  },
+  "addToGroup-listItem3": {
+    "string": "När du klickar på LÄGG TILL så läggs eleven till organisationen som tabellen nedan visar."
+  },
+  "addToGroup-listItem4": {
+    "string": "överför till lämpligt externt format, eftersom det inte går att återse samma lösenord efter denna inloggade session."
+  },
+  "addToGroup-listItem4Strong": {
+    "string": "Notera det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
+  },
+  "addToGroup-ninValidation": {
+    "string": "Det är inte tillåtet att spara personnummer"
+  },
+  "addToGroup-surname": {
+    "string": "Efternamn*"
+  },
+  "intro-heading": {
+    "string": "Välkommen till Hantera Konto med eduID"
+  },
+  "intro-lead": {
+    "string": "I formulären nedan kan du hantera din organisations grupp genom att lägga till elever som medlemmar, för att skapa det unika användarnamn - EPPN - och lösenord, som de behöver för att kunna genomföra Digitala Nationella Provet."
+  },
+  "manageGroup-copiedEppnDialog": {
+    "string": "EPPN kopierad"
+  },
+  "manageGroup-copiedRowButton": {
+    "string": "Rad kopierad"
+  },
+  "manageGroup-copyEppnDialog": {
+    "string": "Kopiera EPPN"
+  },
+  "manageGroup-copyRowButton": {
+    "string": "Kopiera rad"
+  },
+  "manageGroup-eppnColumn": {
+    "string": "EPPN/användarnamn"
+  },
+  "manageGroup-givenNameColumn": {
+    "string": "Förnamn"
+  },
+  "manageGroup-heading": {
+    "string": "Hantera tillagda studenter"
+  },
+  "manageGroup-listItem1": {
+    "string": "Du kan välja genom att markera tillhörande checkboxar och kopiera flera/alla rader samtidigt, eller bara det individuella EPPN/användarnamnet med hjälp av kopierings-ikonen intill."
+  },
+  "manageGroup-listItem2": {
+    "string": "Om du skapar ett nytt lösenord genom att klicka NYTT LÖSENORD, så måste det användas av eleven vid provtillfället, eftersom det tidigare lösenordet genast blir ogiltigt."
+  },
+  "manageGroup-listItem3": {
+    "string": "Om du behöver göra förändringar av tillagda elever, kan du sortera tabellordningen enligt senaste eller namn, välj rad/rader och klicka på TA BORT-knappen, varefter eleven kan läggas till igen på samma sätt - men med nytt EPPN/användarnamn och lösenord."
+  },
+  "manageGroup-newPasswordLink": {
+    "string": "Nytt lösenord"
+  },
+  "manageGroup-passwordColumn": {
+    "string": "Lösenord"
+  },
+  "manageGroup-removeMembersDialogHeading": {
+    "string": "Ta bort elever ur organisationen"
+  },
+  "manageGroup-removeMembersDialogParagraph": {
+  },
+  "manageGroup-removeRowButton": {
+    "string": "Ta bort rad"
+  },
+  "manageGroup-rowButtonsLabel": {
+    "string": "Ändra valda rader:"
+  },
+  "manageGroup-selectAllCheckbox": {
+    "string": "Alla"
+  },
+  "manageGroup-showAllButton": {
+    "string": "visa alla"
+  },
+  "manageGroup-showLessButton": {
+    "string": "Visa färre"
+  },
+  "manageGroup-surnameColumn": {
+    "string": "Efternamn"
+  },
+  "modal.close": {
+    "developer_comment": "Notification modal close label",
+    "string": "Stäng"
+  }
+}
