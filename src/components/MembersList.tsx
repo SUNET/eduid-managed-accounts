@@ -3,6 +3,7 @@ import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { Meta } from "typescript-clients/scim";
 import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { fakePassword } from "../common/testEPPNData";
@@ -11,7 +12,27 @@ import { getUsersSlice } from "../slices/getUsers";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
 
-export default function MembersList({ membersDetails, members, setMembers, accessToken }: any) {
+export interface MembersDetailsTypes {
+  emails: [];
+  externalId: string;
+  groups: [{ display: string; value: string }];
+  id: string;
+  meta: Meta;
+  name: { familyName: string; givenName: string };
+  phoneNumbers: [];
+  schemas: [];
+}
+
+export interface MembersListTypes {
+  membersDetails: MembersDetailsTypes[];
+  members: Array<MembersDetailsTypes & { selected: boolean }>;
+  setMembers: React.Dispatch<React.SetStateAction<any>>;
+  accessToken: string;
+}
+
+export default function MembersList({ membersDetails, members, setMembers, accessToken }: MembersListTypes) {
+  console.log("membersDetails", membersDetails);
+  console.log("members", members);
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
   const isMemberSelected = members.filter((member: any) => member.selected);
@@ -34,13 +55,13 @@ export default function MembersList({ membersDetails, members, setMembers, acces
 
   useEffect(() => {
     setSelectAll(false);
-    setMembers(membersDetails.map((member: any) => ({ ...member, selected: false })));
+    setMembers(membersDetails.map((member: MembersDetailsTypes) => ({ ...member, selected: false })));
   }, [membersDetails]);
 
   const copyToClipboardAllMembers = () => {
-    const memberGivenName = isMemberSelected.map((member: any) => member.name.givenName);
-    const memberFamilyName = isMemberSelected.map((member: any) => member.name.familyName);
-    const memberEPPN = isMemberSelected.map((member: any) => member.externalId);
+    const memberGivenName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.givenName);
+    const memberFamilyName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.familyName);
+    const memberEPPN = isMemberSelected.map((member: MembersDetailsTypes) => member.externalId);
     const memberPassword = isMemberSelected.map((member: any) => member.password);
 
     const membersArray = [];
