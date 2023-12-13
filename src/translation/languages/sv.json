@@ -60,7 +60,7 @@
     "string": "Hantera tillagda studenter"
   },
   "manageGroup-listItem1": {
-    "string": "Du kan välja genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt, eller bara det individuella EPPN/användarnamnet med hjälp av kopierings-ikonen intill."
+    "string": "Du kan välja genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt, eller bara det individuella EPPN/användarnamnet m.h.a. kopierings-ikonen intill."
   },
   "manageGroup-listItem2": {
     "string": "Om du skapar ett nytt lösenord genom att klicka NYTT LÖSENORD, så måste det användas av eleven vid provtillfället, eftersom det tidigare lösenordet genast blir ogiltigt."
