@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { postContinueRequest } from "../apis/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
 import { useAppDispatch } from "../hooks";
@@ -7,6 +7,7 @@ import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
 
 export default function Callback() {
   const dispatch = useAppDispatch();
+  const [accessToken, setAccessToken] = useState<any>();
 
   // Get "InteractionResponse" from LocalStorage
   const value = localStorage.getItem(INTERACTION_RESPONSE) ?? "";
@@ -34,7 +35,9 @@ export default function Callback() {
         if (hashCalculated === hashURL) {
           await continueRequest();
         }
-      } catch {}
+      } catch {
+        console.log("error");
+      }
     }
     testHash();
   }, []);
@@ -44,9 +47,13 @@ export default function Callback() {
    * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-continuing-a-grant-request
    *
    * */
+  // let token: any;
   const continueRequest = async () => {
     if (interactions && interactRef) {
-      dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
+      const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
+      if (postContinueRequest.fulfilled.match(response)) {
+        setAccessToken(response.payload.access_token);
+      }
     }
   };
 
@@ -54,9 +61,11 @@ export default function Callback() {
     <>
       <br></br>
       <h1>Press the button to redirect</h1>
-      {/* <Link to="/scim" state={{ accessToken: accessToken }}>
-        Next Step
-      </Link> */}
+      {accessToken && (
+        <Link to="/scim" state={{ accessToken: accessToken }}>
+          Next Step
+        </Link>
+      )}
     </>
   );
 }

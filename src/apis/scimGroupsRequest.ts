@@ -4,9 +4,6 @@ import { GroupResponse } from "typescript-clients/scim";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
-export const accessTokenTest =
-  "eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMjQ2NjM1MywiaWF0IjoxNzAyNDYyNzUzLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAyNDYyNzUzLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.J_iNtLH25lAuB3rBF-TtCjki4RLJt8JXeRgmImSNMZ8iLG4_An4sWxs_4Dl5TmP8OB6-nj8wLDK-EJWMzpgHJA";
-
 export const scimHeaders = (token: string) => {
   return {
     "Content-Type": "application/scim+json",
@@ -53,13 +50,13 @@ export interface ErrorResponse {
 
 export const createGroup = createAsyncThunk<
   GroupResponse, // return type
-  { displayName: string }, // args type
+  { displayName: string; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/createGroup", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
-      const scimRequest = createScimRequest(accessTokenTest);
+    if (args.accessToken) {
+      const headers = scimHeaders(args.accessToken);
+      const scimRequest = createScimRequest(args.accessToken);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
         displayName: args.displayName,
@@ -82,73 +79,14 @@ export const createGroup = createAsyncThunk<
   }
 });
 
-export const deleteGroup = createAsyncThunk<
-  any, // return type
-  { group: { id: string; version: string } }, // args type
-  { dispatch: AppDispatch; state: AppRootState }
->("auth/deleteGroup", async (args, thunkAPI) => {
-  try {
-    if (accessTokenTest) {
-      const headers = {
-        "Content-Type": "application/scim+json",
-        Authorization: `Bearer ${accessTokenTest}`,
-        "If-Match": args.group.version,
-      };
-      const scimRequest = {
-        headers: scimHeaders,
-        method: "DELETE",
-      };
-      const scimResponse = await fetch(baseURL + "Groups/" + args.group.id, {
-        ...scimRequest,
-        headers,
-      });
-
-      if (scimResponse.ok) {
-        console.log("successfully deleted group");
-      } else {
-        const result = await scimResponse.json();
-        return await handleErrorResponse(result);
-      }
-    }
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
-export const fetchAllGroups = createAsyncThunk<
-  AllGroupsResponse, // return type
-  undefined, // args type
-  { dispatch: AppDispatch; state: AppRootState }
->("auth/fetchAllGroups", async (args, thunkAPI) => {
-  try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
-      const scimRequest = createScimRequest();
-      const scimResponse = await fetch(baseURL + "Groups/", {
-        ...scimRequest,
-        headers,
-      });
-
-      if (scimResponse.ok) {
-        return await scimResponse.json();
-      } else {
-        const result = await scimResponse.json();
-        return await handleErrorResponse(result);
-      }
-    }
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
 export const getGroupsSearch = createAsyncThunk<
   GroupsSearchResponse, // return type
-  { searchFilter: string }, // args type
+  { searchFilter: string; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
+    if (args.accessToken) {
+      const headers = scimHeaders(args.accessToken);
       const scimRequest = createScimRequest(args.searchFilter);
       const payload = {
         schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
@@ -174,12 +112,12 @@ export const getGroupsSearch = createAsyncThunk<
 
 export const getGroupDetails = createAsyncThunk<
   GroupResponse, // return type
-  { id: string }, // args type
+  { id: string; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupDetails", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
+    if (args.accessToken) {
+      const headers = scimHeaders(args.accessToken);
       const scimRequest = createScimRequest();
       const scimResponse = await fetch(baseURL + "Groups/" + args.id, {
         ...scimRequest,
@@ -198,54 +136,16 @@ export const getGroupDetails = createAsyncThunk<
   }
 });
 
-export const postGroup = createAsyncThunk<
-  GroupResponse, // return type
-  { displayName: any }, // args type
-  { dispatch: AppDispatch; state: AppRootState }
->("auth/postGroup", async (args, thunkAPI) => {
-  const state = thunkAPI.getState();
-  try {
-    if (accessTokenTest) {
-      const headers = {
-        "Content-Type": "application/scim+json",
-        Authorization: `Bearer ${accessTokenTest}`,
-      };
-      const scimRequest = {
-        headers: scimHeaders,
-        method: "POST",
-      };
-      const payload = {
-        schemas: ["urn:ietf:params:scim:schemas:core:2.0:Group"],
-        displayName: args.displayName,
-        members: [],
-      };
-      const scimResponse = await fetch(baseURL + "Groups/", {
-        ...scimRequest,
-        headers,
-        body: JSON.stringify(payload),
-      });
-      if (scimResponse.ok) {
-        return await scimResponse.json();
-      } else {
-        const result = await scimResponse.json();
-        return await handleErrorResponse(result);
-      }
-    }
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
-  }
-});
-
 export const putGroup = createAsyncThunk<
   GroupResponse, // return type
-  { result: any }, // args type
+  { result: any; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
+    if (args.accessToken) {
       const headers = {
         "Content-Type": "application/scim+json",
-        Authorization: `Bearer ${accessTokenTest}`,
+        Authorization: `Bearer ${args.accessToken}`,
         "If-Match": args.result.meta.version,
       };
       const scimRequest = putRequest();
@@ -277,5 +177,3 @@ export const handleErrorResponse = async (response: ErrorResponse) => {
   const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
   throw errorMessage;
 };
-
-//curl -X PUT -vv --insecure https://api.eduid.docker/scim/Groups/9ccc1331-fd60-4715-8728-962c35034f33 -H "If-Match: W/\"6569aec2467f09ca6d7a0c45\"" -H "Content-Type: application/scim+json" -H "Authorization: Bearer eyJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJlZHVpZC5kb2NrZXIiLCJhdXRoX3NvdXJjZSI6ImNvbmZpZyIsImV4cCI6MTcwMTQyNzc3MSwiaWF0IjoxNzAxNDI0MTcxLCJpc3MiOiJhcGkuZWR1aWQuZG9ja2VyIiwibmJmIjoxNzAxNDI0MTcxLCJyZXF1ZXN0ZWRfYWNjZXNzIjpbeyJzY29wZSI6ImVkdWlkLnNlIiwidHlwZSI6InNjaW0tYXBpIn1dLCJzY29wZXMiOlsiZWR1aWQuc2UiXSwic291cmNlIjoiY29uZmlnIiwic3ViIjoiZWR1aWRfbWFuYWdlZF9hY2NvdW50c18xIiwidmVyc2lvbiI6MX0.i24yhdqlZe7stCJAlq_9WfhB6RztUyJwcg7LgOQ6p2uLDZPZWex_y8oXq78seFSUNAP0b0S2lL0RX1lychUoeg" -d '{"displayName" : "Test Group 1", "id":"9ccc1331-fd60-4715-8728-962c35034f33","members":[],"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"]}' | json_pp

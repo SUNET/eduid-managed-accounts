@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { initLocalStorage, INTERACTION_RESPONSE } from "../initLocalStorage";
-import Splash from "./Splash";
 
 /**
  * Implement Redirect-based Interaction flow
@@ -9,8 +8,10 @@ import Splash from "./Splash";
  */
 export function StartSession() {
   // for debugging/development
-  const token = localStorage.getItem(INTERACTION_RESPONSE);
+  localStorage.clear();
+
   async function redirect() {
+    const token = localStorage.getItem(INTERACTION_RESPONSE);
     if (token) {
       try {
         const tokenObject = JSON.parse(token);
@@ -31,11 +32,13 @@ export function StartSession() {
   }, []);
 
   return (
-    <Splash showChildren={token !== null}>
+    <>
+      {/* <Splash showChildren={token !== null}> */}
       <h1>Press the button to redirect</h1>
       <button className="btn btn-primary" onClick={redirect}>
         Redirect
       </button>
-    </Splash>
+      {/* </Splash> */}
+    </>
   );
 }

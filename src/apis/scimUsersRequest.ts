@@ -2,19 +2,20 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { UserResponse } from "typescript-clients/scim";
 import { fakeEPPN } from "../common/testEPPNData";
-import { accessTokenTest, baseURL, createScimRequest, handleErrorResponse, scimHeaders } from "./scimGroupsRequest";
+import { baseURL, createScimRequest, handleErrorResponse, scimHeaders } from "./scimGroupsRequest";
 
 export const postUser = createAsyncThunk<
   UserResponse, // return type
   {
     familyName: string;
     givenName: string;
+    accessToken: string;
   }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/postUser", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
+    if (args.accessToken) {
+      const headers = scimHeaders(args.accessToken);
       const scimRequest = createScimRequest(args.familyName);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
@@ -44,12 +45,12 @@ export const postUser = createAsyncThunk<
 
 export const getUserDetails = createAsyncThunk<
   UserResponse, // return type
-  { id: string }, // args type
+  { id: string; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getUserDetails", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
-      const headers = scimHeaders(accessTokenTest);
+    if (args.accessToken) {
+      const headers = scimHeaders(args.accessToken);
       const scimRequest = createScimRequest();
       const scimResponse = await fetch(baseURL + "Users/" + args.id, {
         ...scimRequest,
@@ -70,14 +71,14 @@ export const getUserDetails = createAsyncThunk<
 
 export const deleteUser = createAsyncThunk<
   any, // return type
-  { user: { id: string; version: string } }, // args type
+  { user: { id: string; version: string }; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/deleteUser", async (args, thunkAPI) => {
   try {
-    if (accessTokenTest) {
+    if (args.accessToken) {
       const headers = {
         "Content-Type": "application/scim+json",
-        Authorization: `Bearer ${accessTokenTest}`,
+        Authorization: `Bearer ${args.accessToken}`,
         "If-Match": args.user.version,
       };
       const scimRequest = {
