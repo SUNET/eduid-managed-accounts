@@ -2,6 +2,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { fakePassword } from "../common/testEPPNData";
@@ -170,14 +171,34 @@ export default function MembersList({ membersDetails, members, setMembers }: any
       {membersDetails.length > 0 && (
         <Fragment>
           <hr className="border-line"></hr>
-          <h2>Manage members in group</h2>
-          <p>
-            The table shows members of this group. It is not possible to edit the already added member, nor retrieve a
-            password once the session in which the member was created is ended, but by clicking "REMOVE" you can remove
-            the member and if needed create it again -<strong> with a new EPPN and password</strong>.
-          </p>
+          <h2>
+            <FormattedMessage defaultMessage="Manage added students" id="manageGroup-heading" />
+          </h2>
+
+          <ol className="listed-steps">
+            <li>
+              <FormattedMessage
+                defaultMessage="You can select by using the corresponding checkboxes and copy several/all entire rows at once, or just the individual EPPN/username with the copy icon next to it."
+                id="manageGroup-listItem1"
+              />
+            </li>
+            <li>
+              <FormattedMessage
+                defaultMessage="If you get a new password by clicking NEW PASSWORD, it must be used by the student for the exam, as the previous password will be invalid."
+                id="manageGroup-listItem2"
+              />
+            </li>
+            <li>
+              <FormattedMessage
+                defaultMessage="If you need to make changes to added students, sort the table by entry-order or names, select row/s and click the REMOVE-button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
+                id="manageGroup-listItem3"
+              />
+            </li>
+          </ol>
           <div className="flex-between form-controls">
-            <label>Edit selected rows:</label>
+            <label>
+              <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+            </label>
             <div className="buttons">
               {membersDetails.length >= 11 &&
                 (showAll ? (
@@ -186,7 +207,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                     className={`btn btn-sm btn-secondary`}
                     onClick={() => showLessMembers()}
                   >
-                    show less
+                    <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
                   </button>
                 ) : (
                   <button
@@ -194,7 +215,8 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                     className={`btn btn-sm btn-primary`}
                     onClick={() => showAllMembers()}
                   >
-                    show all({membersDetails.length})
+                    <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                    {membersDetails.length})
                   </button>
                 ))}
 
@@ -203,14 +225,18 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                 className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
                 onClick={() => copyToClipboardAllMembers()}
               >
-                {copiedRowToClipboard ? "Copied row" : "Copy row"}
+                {copiedRowToClipboard ? (
+                  <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
+                ) : (
+                  <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
+                )}
               </button>
               <button
                 disabled={!isMemberSelected.length}
                 className="btn btn-secondary btn-sm"
                 onClick={() => handleRemoveUsers()}
               >
-                Remove row
+                <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
               </button>
             </div>
           </div>
@@ -220,13 +246,23 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                 <th>
                   <span className="flex-between">
                     <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} id="selectAll" />
-                    <label htmlFor="selectAll">All</label>
+                    <label htmlFor="selectAll">
+                      <FormattedMessage defaultMessage="All" id="manageGroup-selectAllCheckbox" />
+                    </label>
                   </span>
                 </th>
-                <th>Given name</th>
-                <th>Surname</th>
-                <th>EPPN</th>
-                <th>Password</th>
+                <th>
+                  <FormattedMessage defaultMessage="Given name" id="manageGroup-givenNameColumn" />
+                </th>
+                <th>
+                  <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
+                </th>
+                <th>
+                  <FormattedMessage defaultMessage="EPPN/username" id="manageGroup-eppnColumn" />
+                </th>
+                <th>
+                  <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -257,7 +293,15 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                       <FontAwesomeIcon id={`icon-copy ${member.externalId}`} icon={faCopy as IconProp} />
                       <FontAwesomeIcon id={`icon-check ${member.externalId}`} icon={faCheck as IconProp} />
                       <div className="tool-tip-text" id="tool-tip">
-                        {tooltipCopied ? <span>Copied</span> : <span>Copy eppn</span>}
+                        {tooltipCopied ? (
+                          <span>
+                            <FormattedMessage defaultMessage="Copied EPPN" id="manageGroup-copiedEppnDialog" />
+                          </span>
+                        ) : (
+                          <span>
+                            <FormattedMessage defaultMessage="Copy EPPN" id="manageGroup-copyEppnDialog" />
+                          </span>
+                        )}
                       </div>
                     </button>
                   </td>
@@ -270,7 +314,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                         className="btn btn-link btn-sm"
                         onClick={() => generateNewPassword(member.id)}
                       >
-                        New password
+                        <FormattedMessage defaultMessage="New password" id="manageGroup-newPasswordLink" />
                       </button>
                     )}
                   </td>
@@ -289,8 +333,18 @@ export default function MembersList({ membersDetails, members, setMembers }: any
 
       <NotificationModal
         id="remove-selected-users-modal"
-        title="Remove members in group"
-        mainText={`Are you sure you want to delete ${isMemberSelected.length} members? If so, please press the OK button below.`}
+        title={
+          <FormattedMessage
+            defaultMessage="Remove students in organisation"
+            id="manageGroup-removeMembersDialogHeading"
+          />
+        }
+        mainText={
+          <FormattedMessage
+            defaultMessage={`Are you sure you want to delete ${isMemberSelected.length} students? If so, please press the OK button below.`}
+            id="manageGroup-removeMembersDialogParagraph"
+          />
+        }
         showModal={showModal}
         closeModal={() => {
           setShowModal(false);
