@@ -172,18 +172,29 @@ export default function MembersList({ membersDetails, members, setMembers }: any
         <Fragment>
           <hr className="border-line"></hr>
           <h2>
-            <FormattedMessage defaultMessage="Manage members in group" id="manageGroup-heading" />
+            <FormattedMessage defaultMessage="Manage added students" id="manageGroup-heading" />
           </h2>
-          <p>
-            <FormattedMessage
-              defaultMessage='The table shows members of this group. It is not possible to edit the already added member, nor retrieve a
-            password once the session in which the member was created is ended, but by clicking "REMOVE" you can remove
-            the member and if needed create it again -'
-              id="manageGroup-paragraph"
-            />
-            &nbsp;
-            <FormattedMessage defaultMessage="with a new EPPN and password" id="manageGroup-paragraphStrong" />.
-          </p>
+
+          <ol className="listed-steps">
+            <li>
+              <FormattedMessage
+                defaultMessage="You can select by using the corresponding checkboxes and copy several/all entire rows at once, or just the individual EPPN/username with the copy icon next to it."
+                id="manageGroup-listItem1"
+              />
+            </li>
+            <li>
+              <FormattedMessage
+                defaultMessage="If you get a new password by clicking NEW PASSWORD, it must be used by the student for the exam, as the previous password will be invalid."
+                id="manageGroup-listItem2"
+              />
+            </li>
+            <li>
+              <FormattedMessage
+                defaultMessage="If you need to make changes to added students, sort the table by entry-order or names, select row/s and click the REMOVE-button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
+                id="manageGroup-listItem3"
+              />
+            </li>
+          </ol>
           <div className="flex-between form-controls">
             <label>
               <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
@@ -247,7 +258,7 @@ export default function MembersList({ membersDetails, members, setMembers }: any
                   <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
                 </th>
                 <th>
-                  <FormattedMessage defaultMessage="EPPN" id="manageGroup-eppnColumn" />
+                  <FormattedMessage defaultMessage="EPPN/username" id="manageGroup-eppnColumn" />
                 </th>
                 <th>
                   <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />
@@ -323,11 +334,14 @@ export default function MembersList({ membersDetails, members, setMembers }: any
       <NotificationModal
         id="remove-selected-users-modal"
         title={
-          <FormattedMessage defaultMessage="Remove members in group" id="manageGroup-removeMembersDialogHeading" />
+          <FormattedMessage
+            defaultMessage="Remove students in organisation"
+            id="manageGroup-removeMembersDialogHeading"
+          />
         }
         mainText={
           <FormattedMessage
-            defaultMessage={`Are you sure you want to delete ${isMemberSelected.length} members? If so, please press the OK button below.`}
+            defaultMessage={`Are you sure you want to delete ${isMemberSelected.length} students? If so, please press the OK button below.`}
             id="manageGroup-removeMembersDialogParagraph"
           />
         }

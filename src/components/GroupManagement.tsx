@@ -140,9 +140,8 @@ export default function GroupManagement() {
         <div className="lead">
           <p>
             <FormattedMessage
-              defaultMessage="In the form below you can manage your group by adding students as members, to create the unique identifier -
-            EPPN - and the password that they will need to be able to perform the Digital National Exam.
-            You can also view the existing group and remove members."
+              defaultMessage="In the forms below you can manage your organisations group by adding students as members, to create the unique username -
+            EPPN - and the password that they will need to be able to perform the Digital National Exam."
               id="intro-lead"
             />
           </p>
@@ -150,44 +149,42 @@ export default function GroupManagement() {
       </section>
       <section>
         <h2>
-          <FormattedMessage defaultMessage="Add member to group" id="addToGroup-heading" />
+          <FormattedMessage defaultMessage="Add student to organisation" id="addToGroup-heading" />
         </h2>
         <ol className="listed-steps">
           <li>
             <FormattedMessage
-              defaultMessage="Add the given name and surname to manage each member, complete one at a time."
+              defaultMessage="Enter the given name and surname for each student, one at a time."
               id="addToGroup-listItem1"
             />
           </li>
           <li>
             <FormattedMessage
-              defaultMessage='When you click "ADD" the member will be added to the group as shown in the table below.'
+              defaultMessage="Write the name so that you can distinguish the identity of the person even if there are several students
+              with identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
               id="addToGroup-listItem2"
+            />
+          </li>
+          <li>
+            <FormattedMessage
+              defaultMessage="When you click ADD the student will be added to the organisation as shown in the table below."
+              id="addToGroup-listItem3"
             />
           </li>
           <li>
             <strong>
               <FormattedMessage
-                defaultMessage="Note the corresponding EPPN and password which appears in the members table"
-                id="addToGroup-listItem3Strong"
+                defaultMessage="Note the corresponding EPPN/username and password which appears in the table"
+                id="addToGroup-listItem4Strong"
               />
             </strong>
             ,&nbsp;
             <FormattedMessage
-              defaultMessage="transfer it to whatever external system of your choice, as you will not be able to retrieve it afterwards."
-              id="addToGroup-listItem3"
+              defaultMessage="transfer it to whatever external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+              id="addToGroup-listItem4"
             />
           </li>
         </ol>
-        <p>
-          <em>
-            <FormattedMessage
-              defaultMessage="Write the name so that you can distinguish the identity of the person even if there are several students
-                with identical names e.g. by adding an initial."
-              id="addToGroup-hint"
-            />
-          </em>
-        </p>
 
         <Form
           validate={validatePersonalData}
