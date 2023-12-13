@@ -27,9 +27,13 @@ export default function MembersList({ membersDetails, members, setMembers, acces
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
 
+  const [selectedValue, setSelectedValue] = useState("");
+  const [sortedData, setSortedData] = useState(currentPosts);
+
   useEffect(() => {
     setCurrentPage(1);
-  }, []);
+    setSortedData(currentPosts);
+  }, [members]);
 
   useEffect(() => {
     setSelectAll(false);
@@ -166,6 +170,21 @@ export default function MembersList({ membersDetails, members, setMembers, acces
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
   };
 
+  const handleSorting = (e: any) => {
+    const value = e.target.value;
+    setSelectedValue(value);
+
+    let newData = [...currentPosts];
+    if (value === "givenName") {
+      newData.sort((a, b) => a.name.givenName.localeCompare(b.name.givenName));
+    } else if (value === "surName") {
+      newData.sort((a, b) => a.name.familyName.localeCompare(b.name.familyName));
+    } else {
+      newData.sort((a, b) => a.meta.created.localeCompare(b.meta.created));
+    }
+    setSortedData(newData);
+  };
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -218,10 +237,10 @@ export default function MembersList({ membersDetails, members, setMembers, acces
             </div>
             <div className="flex-between">
               <label htmlFor="sortOrder">Sort rows</label>
-              <select id="sortOrder">
-                <option>Latest (default)</option>
-                <option>Given name (ABC)</option>
-                <option>Surname (ABC)</option>
+              <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
+                <option value="">Latest (default)</option>
+                <option value="givenName">Given name (ABC)</option>
+                <option value="surName">Surname (ABC)</option>
               </select>
             </div>
           </div>
@@ -241,7 +260,7 @@ export default function MembersList({ membersDetails, members, setMembers, acces
               </tr>
             </thead>
             <tbody>
-              {currentPosts?.map((member: any, index: number) => (
+              {sortedData?.map((member: any, index: number) => (
                 <tr key={member.id}>
                   <td>
                     <span className="flex-between">
