@@ -1,6 +1,101 @@
 {
+  "addToGroup-addButton": {
+    "string": "Add"
+  },
+  "addToGroup-emptyValidation": {
+    "string": "Required"
+  },
+  "addToGroup-givenName": {
+    "string": "Given name*"
+  },
+  "addToGroup-heading": {
+    "string": "Add student to organisation"
+  },
+  "addToGroup-listItem1": {
+    "string": "Enter the given name and surname for each student, one at a time."
+  },
+  "addToGroup-listItem2": {
+    "string": "Write the name so that you can distinguish the identity of the person even if there are several students with identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
+  },
+  "addToGroup-listItem3": {
+    "string": "When you click ADD the student will be added to the organisation as shown in the table below."
+  },
+  "addToGroup-listItem4": {
+    "string": "transfer it to whatever external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+  },
+  "addToGroup-listItem4Strong": {
+    "string": "Note the corresponding EPPN/username and password which appears in the table"
+  },
+  "addToGroup-ninValidation": {
+    "string": "It is not allowed to save a national ID number"
+  },
+  "addToGroup-surname": {
+    "string": "Surname*"
+  },
   "intro-heading": {
     "string": "Welcome to Managing Accounts using eduID"
+  },
+  "intro-lead": {
+    "string": "In the forms below you can manage your organisations group by adding students as members, to create the unique username - EPPN - and the password that they will need to be able to perform the Digital National Exam."
+  },
+  "manageGroup-copiedEppnDialog": {
+    "string": "Copied EPPN"
+  },
+  "manageGroup-copiedRowButton": {
+    "string": "Copied row"
+  },
+  "manageGroup-copyEppnDialog": {
+    "string": "Copy EPPN"
+  },
+  "manageGroup-copyRowButton": {
+    "string": "Copy row"
+  },
+  "manageGroup-eppnColumn": {
+    "string": "EPPN/username"
+  },
+  "manageGroup-givenNameColumn": {
+    "string": "Given name"
+  },
+  "manageGroup-heading": {
+    "string": "Manage added students"
+  },
+  "manageGroup-listItem1": {
+    "string": "You can select by using the corresponding checkboxes and copy several/all entire rows at once, or just the individual EPPN/username with the copy icon next to it."
+  },
+  "manageGroup-listItem2": {
+    "string": "If you get a new password by clicking NEW PASSWORD, it must be used by the student for the exam, as the previous password will be invalid."
+  },
+  "manageGroup-listItem3": {
+    "string": "If you need to make changes to added students, sort the table by entry-order or names, select row/s and click the REMOVE-button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
+  },
+  "manageGroup-newPasswordLink": {
+    "string": "New password"
+  },
+  "manageGroup-passwordColumn": {
+    "string": "Password"
+  },
+  "manageGroup-removeMembersDialogHeading": {
+    "string": "Remove students in organisation"
+  },
+  "manageGroup-removeMembersDialogParagraph": {
+  },
+  "manageGroup-removeRowButton": {
+    "string": "Remove row"
+  },
+  "manageGroup-rowButtonsLabel": {
+    "string": "Edit selected rows:"
+  },
+  "manageGroup-selectAllCheckbox": {
+    "string": "All"
+  },
+  "manageGroup-showAllButton": {
+    "string": "show all"
+  },
+  "manageGroup-showLessButton": {
+    "string": "show less"
+  },
+  "manageGroup-surnameColumn": {
+    "string": "Surname"
   },
   "modal.close": {
     "developer_comment": "Notification modal close label",
