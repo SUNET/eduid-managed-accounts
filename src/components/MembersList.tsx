@@ -53,9 +53,13 @@ export default function MembersList({
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
 
+  const [selectedValue, setSelectedValue] = useState("");
+  const [sortedData, setSortedData] = useState(currentPosts);
+
   useEffect(() => {
     setCurrentPage(1);
-  }, []);
+    setSortedData(currentPosts);
+  }, [members]);
 
   useEffect(() => {
     setSelectAll(false);
@@ -192,6 +196,21 @@ export default function MembersList({
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
   }
 
+  const handleSorting = (e: any) => {
+    const value = e.target.value;
+    setSelectedValue(value);
+
+    let newData = [...currentPosts];
+    if (value === "givenName") {
+      newData.sort((a, b) => a.name.givenName.localeCompare(b.name.givenName));
+    } else if (value === "surName") {
+      newData.sort((a, b) => a.name.familyName.localeCompare(b.name.familyName));
+    } else {
+      newData.sort((a, b) => b.meta.created.localeCompare(a.meta.created));
+    }
+    setSortedData(newData);
+  };
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -221,49 +240,59 @@ export default function MembersList({
               />
             </li>
           </ol>
-          <div className="flex-between form-controls">
-            <label>
-              <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
-            </label>
-            <div className="buttons">
-              {membersDetails.length >= 11 &&
-                (showAll ? (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-secondary`}
-                    onClick={() => showLessMembers()}
-                  >
-                    <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
-                  </button>
-                ) : (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-primary`}
-                    onClick={() => showAllMembers()}
-                  >
-                    <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
-                    {membersDetails.length})
-                  </button>
-                ))}
+          <div className="form-controls">
+            <div className="flex-between">
+              <label>
+                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+              </label>
+              <div className="buttons">
+                {membersDetails.length >= 11 &&
+                  (showAll ? (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-secondary`}
+                      onClick={() => showLessMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
+                    </button>
+                  ) : (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-primary`}
+                      onClick={() => showAllMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                      {membersDetails.length})
+                    </button>
+                  ))}
 
-              <button
-                disabled={!isMemberSelected.length}
-                className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
-                onClick={() => copyToClipboardAllMembers()}
-              >
-                {copiedRowToClipboard ? (
-                  <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
-                ) : (
-                  <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
-                )}
-              </button>
-              <button
-                disabled={!isMemberSelected.length}
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleRemoveUsers()}
-              >
-                <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
-              </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
+                  onClick={() => copyToClipboardAllMembers()}
+                >
+                  {copiedRowToClipboard ? (
+                    <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
+                  ) : (
+                    <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
+                  )}
+                </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => handleRemoveUsers()}
+                >
+                  <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-between">
+              <label htmlFor="sortOrder">Sort rows</label>
+              <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
+                <option value="">Latest (default)</option>
+                <option value="givenName">Given name (ABC)</option>
+                <option value="surName">Surname (ABC)</option>
+              </select>
             </div>
           </div>
           <table className="group-management">
@@ -292,7 +321,7 @@ export default function MembersList({
               </tr>
             </thead>
             <tbody>
-              {currentPosts?.map((member: any, index: number) => (
+              {sortedData?.map((member: any, index: number) => (
                 <tr key={member.id}>
                   <td>
                     <span className="flex-between">
