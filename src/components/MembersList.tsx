@@ -21,6 +21,7 @@ export interface MembersDetailsTypes {
   name: { familyName: string; givenName: string };
   phoneNumbers: [];
   schemas: [];
+  password?: string;
 }
 
 export interface MembersListTypes {
@@ -30,12 +31,15 @@ export interface MembersListTypes {
   accessToken: string;
 }
 
-export default function MembersList({ membersDetails, members, setMembers, accessToken }: MembersListTypes) {
-  console.log("membersDetails", membersDetails);
-  console.log("members", members);
+export default function MembersList({
+  membersDetails,
+  members,
+  setMembers,
+  accessToken,
+}: MembersListTypes): JSX.Element {
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
-  const isMemberSelected = members.filter((member: any) => member.selected);
+  const isMemberSelected = members.filter((member) => member.selected);
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const dispatch = useAppDispatch();
@@ -58,11 +62,11 @@ export default function MembersList({ membersDetails, members, setMembers, acces
     setMembers(membersDetails.map((member: MembersDetailsTypes) => ({ ...member, selected: false })));
   }, [membersDetails]);
 
-  const copyToClipboardAllMembers = () => {
+  function copyToClipboardAllMembers() {
     const memberGivenName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.givenName);
     const memberFamilyName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.familyName);
     const memberEPPN = isMemberSelected.map((member: MembersDetailsTypes) => member.externalId);
-    const memberPassword = isMemberSelected.map((member: any) => member.password);
+    const memberPassword = isMemberSelected.map((member: MembersDetailsTypes) => member.password);
 
     const membersArray = [];
 
@@ -86,9 +90,9 @@ export default function MembersList({ membersDetails, members, setMembers, acces
     setTimeout(() => {
       setCopiedRowToClipboard(false);
     }, 1000);
-  };
+  }
 
-  const copyToClipboard = (id: string) => {
+  function copyToClipboard(id: string) {
     const TempText = document.createElement("input");
     TempText.value = id;
     document.body.appendChild(TempText);
@@ -104,29 +108,29 @@ export default function MembersList({ membersDetails, members, setMembers, acces
       (document.getElementById(`icon-check ${id}`) as HTMLInputElement).style.display = "none";
       setTooltipCopied(false);
     }, 1000);
-  };
+  }
 
-  const handleSelectAll = () => {
+  function handleSelectAll() {
     setSelectAll((prevState) => !prevState);
 
-    const updatedMembers = members.map((member: any) => ({
+    const updatedMembers = members.map((member) => ({
       ...member,
       selected: !selectAll,
     }));
 
     setMembers(updatedMembers);
-  };
+  }
 
-  const handleSelect = (id: string) => {
+  function handleSelect(id: string) {
     setMembers((prevMembers: any) =>
       prevMembers.map((member: any) => (member.id === id ? { ...member, selected: !member.selected } : member))
     );
     setSelectAll(false);
-  };
-  const selectedUserIds = isMemberSelected?.map((user: any) => user.id) || [];
+  }
+  const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
-  const removeSelectedUser = async () => {
-    const currentUsers = managedAccountsDetails?.members?.filter((user: any) => !selectedUserIds.includes(user.value));
+  async function removeSelectedUser() {
+    const currentUsers = managedAccountsDetails?.members?.filter((user) => !selectedUserIds.includes(user.value));
     const putGroupResponse = await dispatch(
       putGroup({
         result: {
@@ -138,10 +142,10 @@ export default function MembersList({ membersDetails, members, setMembers, acces
     );
 
     if (putGroup.fulfilled.match(putGroupResponse)) {
-      const memberToBeRemoved = membersDetails?.filter((user: any) => selectedUserIds.includes(user.id));
+      const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
       if (memberToBeRemoved && memberToBeRemoved.length > 0) {
         await Promise.all(
-          memberToBeRemoved.map(async (user: any) => {
+          memberToBeRemoved.map(async (user) => {
             const userToDelete = {
               id: user.id,
               version: user.meta.version,
@@ -157,36 +161,36 @@ export default function MembersList({ membersDetails, members, setMembers, acces
         console.warn("No matching users found to be removed.");
       }
     }
-  };
+  }
 
-  const showAllMembers = () => {
+  function showAllMembers() {
     setCurrentPage(1);
     setPostsPerPage(membersDetails.length);
     setShowAll(true);
-  };
+  }
 
-  const showLessMembers = () => {
+  function showLessMembers() {
     setCurrentPage(1);
     setPostsPerPage(10);
     setShowAll(false);
-  };
+  }
 
-  const handleRemoveUsers = () => {
+  function handleRemoveUsers() {
     if (selectedUserIds.length >= 2) {
       setShowModal(true);
     } else {
       removeSelectedUser();
     }
-  };
+  }
 
-  const generateNewPassword = (id: string) => {
+  function generateNewPassword(id: string) {
     const generatedPassword = fakePassword();
-    const memberWithGeneratedPassword = membersDetails.map((member: any) =>
+    const memberWithGeneratedPassword = membersDetails.map((member) =>
       member.id === id ? { ...member, password: generatedPassword } : member
     );
 
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
-  };
+  }
 
   return (
     <Fragment>

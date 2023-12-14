@@ -7,7 +7,7 @@ import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
 
 export default function Callback() {
   const dispatch = useAppDispatch();
-  const [accessToken, setAccessToken] = useState<any>();
+  const [accessToken, setAccessToken] = useState<string>();
 
   // Get "InteractionResponse" from LocalStorage
   const value = localStorage.getItem(INTERACTION_RESPONSE) ?? "";
@@ -50,9 +50,8 @@ export default function Callback() {
   const continueRequest = async () => {
     if (interactions && interactRef) {
       const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
-      console.log("[postContinueRequest]", response);
       if (postContinueRequest.fulfilled.match(response)) {
-        setAccessToken(response.payload.access_token);
+        setAccessToken(response.payload.access_token.value);
       }
     }
   };
