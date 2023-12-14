@@ -18,7 +18,7 @@ export interface Group {
 
 export interface AllGroupsResponse {
   groups: Group[];
-  Resources: any;
+  Resources: [{ id: string; displayName: string }];
 }
 
 export interface GroupsSearchResponse {
