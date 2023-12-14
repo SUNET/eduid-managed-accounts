@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { UserResponse } from "typescript-clients/scim";
 import { fakeEPPN } from "../common/testEPPNData";
-import { baseURL, createScimRequest, handleErrorResponse, scimHeaders } from "./scimGroupsRequest";
+import { baseURL, handleErrorResponse, scimHeaders } from "./scimGroupsRequest";
 
 export const postUser = createAsyncThunk<
   UserResponse, // return type
@@ -16,7 +16,6 @@ export const postUser = createAsyncThunk<
   try {
     if (args.accessToken) {
       const headers = scimHeaders(args.accessToken);
-      const scimRequest = createScimRequest(args.familyName);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
         externalId: fakeEPPN(),
@@ -25,11 +24,12 @@ export const postUser = createAsyncThunk<
           givenName: args.givenName,
         },
       };
-      const scimResponse = await fetch(baseURL + "Users", {
-        ...scimRequest,
-        headers,
+      const scimRequest = {
+        headers: headers,
+        method: "POST",
         body: JSON.stringify(payload),
-      });
+      };
+      const scimResponse = await fetch(baseURL + "Users", scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
@@ -51,11 +51,11 @@ export const getUserDetails = createAsyncThunk<
   try {
     if (args.accessToken) {
       const headers = scimHeaders(args.accessToken);
-      const scimRequest = createScimRequest();
-      const scimResponse = await fetch(baseURL + "Users/" + args.id, {
-        ...scimRequest,
-        headers,
-      });
+      const scimRequest = {
+        headers: headers,
+        method: "GET",
+      };
+      const scimResponse = await fetch(baseURL + "Users/" + args.id, scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
@@ -76,20 +76,12 @@ export const deleteUser = createAsyncThunk<
 >("auth/deleteUser", async (args, thunkAPI) => {
   try {
     if (args.accessToken) {
-      const headers = {
-        "Content-Type": "application/scim+json",
-        Authorization: `Bearer ${args.accessToken}`,
-        "If-Match": args.user.version,
-      };
+      const headers = { ...scimHeaders(args.accessToken), "If-Match": args.user.version };
       const scimRequest = {
-        headers: scimHeaders,
+        headers: headers,
         method: "DELETE",
       };
-
-      const scimResponse = await fetch(baseURL + "Users/" + args.user.id, {
-        ...scimRequest,
-        headers,
-      });
+      const scimResponse = await fetch(baseURL + "Users/" + args.user.id, scimRequest);
       if (scimResponse.ok) {
         console.log("Successfully deleted user");
         return args.user;
