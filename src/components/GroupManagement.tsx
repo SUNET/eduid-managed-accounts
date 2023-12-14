@@ -135,6 +135,10 @@ export default function GroupManagement() {
   };
 
   const [members, setMembers] = useState<any[]>([]);
+  const [showMore, setShowMore] = useState(true);
+  function toggleShowMore() {
+    setShowMore(!showMore);
+  }
 
   return (
     <>
@@ -157,40 +161,62 @@ export default function GroupManagement() {
         <h2>
           <FormattedMessage defaultMessage="Add student to organisation" id="addToGroup-heading" />
         </h2>
-        <ol className="listed-steps">
-          <li>
-            <FormattedMessage
-              defaultMessage="Enter the given name and surname for each student, one at a time."
-              id="addToGroup-listItem1"
-            />
-          </li>
-          <li>
-            <FormattedMessage
-              defaultMessage="Write the name so that you can distinguish the identity of the person even if there are several students
-              with identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
-              id="addToGroup-listItem2"
-            />
-          </li>
-          <li>
-            <FormattedMessage
-              defaultMessage="When you click ADD the student will be added to the organisation as shown in the table below."
-              id="addToGroup-listItem3"
-            />
-          </li>
-          <li>
-            <strong>
-              <FormattedMessage
-                defaultMessage="Note the corresponding EPPN/username and password which appears in the table"
-                id="addToGroup-listItem4Strong"
-              />
-            </strong>
-            ,&nbsp;
-            <FormattedMessage
-              defaultMessage="transfer it to whatever external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
-              id="addToGroup-listItem4"
-            />
-          </li>
-        </ol>
+        <p>Add every student in this form, to create their username and password.</p>
+        {showMore ? (
+          <button
+            type="button"
+            aria-label={showMore ? "hide instructions" : "show instructions"}
+            className="btn btn-link"
+            onClick={toggleShowMore}
+          >
+            <FormattedMessage defaultMessage="READ MORE" id="addToGroup-showList" />
+          </button>
+        ) : (
+          <>
+            <button
+              type="button"
+              aria-label={showMore ? "hide instructions" : "show instructions"}
+              className="btn btn-link"
+              onClick={toggleShowMore}
+            >
+              <FormattedMessage defaultMessage="READ LESS" id="addToGroup-hideList" />
+            </button>
+            <ol className="listed-steps">
+              <li>
+                <FormattedMessage
+                  defaultMessage="Enter the given name and surname for each student, one at a time."
+                  id="addToGroup-listItem1"
+                />
+              </li>
+              <li>
+                <FormattedMessage
+                  defaultMessage="Write the name so that you can distinguish the identity of the person even if there are several students
+                 with identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
+                  id="addToGroup-listItem2"
+                />
+              </li>
+              <li>
+                <FormattedMessage
+                  defaultMessage="When you click ADD the student will be added to the organisation as shown in the table below."
+                  id="addToGroup-listItem3"
+                />
+              </li>
+              <li>
+                <strong>
+                  <FormattedMessage
+                    defaultMessage="Note the corresponding EPPN/username and password which appears in the table"
+                    id="addToGroup-listItem4Strong"
+                  />
+                </strong>
+                ,&nbsp;
+                <FormattedMessage
+                  defaultMessage="transfer it to whatever external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+                  id="addToGroup-listItem4"
+                />
+              </li>
+            </ol>
+          </>
+        )}
 
         <Form
           validate={validatePersonalData}
