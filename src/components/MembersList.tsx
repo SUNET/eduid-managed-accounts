@@ -196,8 +196,8 @@ export default function MembersList({
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
   }
 
-  const handleSorting = (e: any) => {
-    const value = e.target.value;
+  const handleSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target?.value;
     setSelectedValue(value);
 
     let newData = [...currentPosts];
