@@ -6,7 +6,7 @@ import { initLocalStorage, INTERACTION_RESPONSE } from "../initLocalStorage";
  *
  * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-redirect-based-interaction
  */
-export function StartSession() {
+export function StartSession(): JSX.Element {
   // for debugging/development
   localStorage.clear();
 

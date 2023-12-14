@@ -25,7 +25,7 @@ const Footer = (): JSX.Element => {
     language = translateTo[0][1];
   }
 
-  const changeLanguage = (e: any) => {
+  function changeLanguage(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
     if (locale) {
       dispatch(
@@ -35,7 +35,7 @@ const Footer = (): JSX.Element => {
         })
       );
     }
-  };
+  }
 
   return (
     <footer key="0" id="footer">

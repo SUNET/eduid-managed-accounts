@@ -12,7 +12,7 @@ interface NotificationModalProps {
   acceptButtonText: React.ReactNode;
 }
 
-function NotificationModal(props: NotificationModalProps) {
+function NotificationModal(props: NotificationModalProps): JSX.Element {
   function handlePress(event: React.KeyboardEvent<HTMLDivElement>) {
     event.preventDefault();
     if (event.key === "Enter") {

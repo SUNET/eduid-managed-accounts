@@ -9,14 +9,22 @@ import { getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
-import MembersList from "./MembersList";
+import MembersList, { MembersDetailsTypes } from "./MembersList";
 
 //TODO: change to GROUP_NAME  = "managed-accounts";
 export const GROUP_NAME = "Test Group 1";
 
-export default function GroupManagement() {
+interface ValidatePersonalData {
+  [key: string]: string;
+}
+
+interface ErrorsType {
+  [key: string]: React.ReactNode;
+}
+
+export default function GroupManagement(): JSX.Element {
   let data = useLocation();
-  const accessToken = data.state.accessToken.value;
+  const accessToken = data.state.accessToken;
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
@@ -32,7 +40,7 @@ export default function GroupManagement() {
       try {
         dispatch(getUsersSlice.actions.initialize());
         dispatch(getGroupsSlice.actions.initialize());
-        const result: any = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME, accessToken: accessToken }));
+        const result = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME, accessToken: accessToken }));
         if (getGroupsSearch.fulfilled.match(result)) {
           if (!result.payload.Resources?.length) {
             dispatch(createGroup({ displayName: GROUP_NAME, accessToken: accessToken }));
@@ -44,11 +52,11 @@ export default function GroupManagement() {
               const members = response.payload.members;
               if (members) {
                 await Promise.all(
-                  members?.map(async (member: any) => {
+                  members?.map(async (member: GroupMember) => {
                     await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
                   })
                 );
-                dispatch(getUsersSlice.actions.sortMembers());
+                dispatch(getUsersSlice.actions.sortByLatest());
               }
             }
           }
@@ -60,7 +68,7 @@ export default function GroupManagement() {
     initializeManagedAccountsGroup();
   }, []);
 
-  const addUser = async (values: any) => {
+  const addUser = async (values: { given_name: string; surname: string }) => {
     if (values.given_name && values.surname) {
       try {
         const createdUserResponse = await dispatch(
@@ -113,8 +121,8 @@ export default function GroupManagement() {
     }
   }
 
-  const validatePersonalData = (values: any) => {
-    const errors: any = {};
+  const validatePersonalData = (values: ValidatePersonalData) => {
+    const errors: ErrorsType = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
         // check if the input is empty
@@ -134,7 +142,7 @@ export default function GroupManagement() {
     return errors;
   };
 
-  const [members, setMembers] = useState<any[]>([]);
+  const [members, setMembers] = useState<Array<MembersDetailsTypes & { selected: boolean }>>([]);
 
   return (
     <>
@@ -194,8 +202,8 @@ export default function GroupManagement() {
 
         <Form
           validate={validatePersonalData}
-          onSubmit={(e) => addUser(e)}
-          render={({ handleSubmit, form, submitting, pristine, values, invalid }) => (
+          onSubmit={addUser}
+          render={({ handleSubmit, form, submitting, invalid }) => (
             <form
               onSubmit={async (event) => {
                 await handleSubmit(event);
