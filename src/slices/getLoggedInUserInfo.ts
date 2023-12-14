@@ -1,11 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface GetLoggedInUserInfoState {
-  loggedInUser: {};
+  loggedInUser: {
+    user: {
+      attributes: {
+        displayName: string;
+        eduPersonAssurance: string[];
+        eduPersonEntitlement: string[];
+        eduPersonTargetedID: string;
+        givenName: string;
+        mail: string;
+        sn: string;
+      };
+    };
+  };
 }
 
 export const initialState: GetLoggedInUserInfoState = {
-  loggedInUser: {},
+  loggedInUser: {
+    user: {
+      attributes: {
+        displayName: "",
+        eduPersonAssurance: [],
+        eduPersonEntitlement: [],
+        eduPersonTargetedID: "",
+        givenName: "",
+        mail: "",
+        sn: "",
+      },
+    },
+  },
 };
 
 export const getPersonalDataSlice = createSlice({

@@ -28,7 +28,7 @@ export default function GroupManagement(): JSX.Element {
   const accessToken = payload.access_token.value;
   const value = payload.subject.assertions[0].value;
   const parsedUserInfo = JSON.parse(value);
-  console.log("parsedUserInfo", parsedUserInfo);
+
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
@@ -159,7 +159,13 @@ export default function GroupManagement(): JSX.Element {
       {/* <Splash showChildren={managedAccountsDetails.id}> */}
       <section className="intro">
         <h1>
-          <FormattedMessage defaultMessage="Welcome to Managing Accounts using eduID" id="intro-heading" />
+          <FormattedMessage
+            defaultMessage="Welcome {user}"
+            id="intro-heading"
+            values={{
+              user: parsedUserInfo.attributes.displayName,
+            }}
+          />
         </h1>
         <div className="lead">
           <p>
