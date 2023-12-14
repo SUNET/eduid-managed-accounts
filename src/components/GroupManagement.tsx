@@ -8,6 +8,7 @@ import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
+import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
 import MembersList, { MembersDetailsTypes } from "./MembersList";
 
@@ -22,11 +23,21 @@ interface ErrorsType {
 }
 
 export default function GroupManagement(): JSX.Element {
-  let data = useLocation();
-  const accessToken = data.state.accessToken;
+  const location = useLocation();
+  const payload = location.state;
+  const accessToken = payload.access_token.value;
+  const value = payload.subject.assertions[0].value;
+  const parsedUserInfo = JSON.parse(value);
+  console.log("parsedUserInfo", parsedUserInfo);
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
+
+  useEffect(() => {
+    if (parsedUserInfo) {
+      dispatch(getLoggedInUserInfoSlice.actions.updateUserInfo({ user: parsedUserInfo }));
+    }
+  }, [parsedUserInfo]);
 
   /**
    * Without user interaction
