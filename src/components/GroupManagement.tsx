@@ -11,8 +11,7 @@ import getGroupsSlice from "../slices/getGroups";
 import getUsersSlice from "../slices/getUsers";
 import MembersList, { MembersDetailsTypes } from "./MembersList";
 
-//TODO: change to GROUP_NAME  = "managed-accounts";
-export const GROUP_NAME = "Test Group 1";
+export const GROUP_NAME = "Managed Accounts";
 
 interface ValidatePersonalData {
   [key: string]: string;
