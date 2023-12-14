@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Meta } from "typescript-clients/scim";
-import { putGroup } from "../apis/scimGroupsRequest";
+import { getGroupDetails } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -127,40 +127,46 @@ export default function MembersList({
     );
     setSelectAll(false);
   }
+
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
-    const currentUsers = managedAccountsDetails?.members?.filter((user) => !selectedUserIds.includes(user.value));
-    const putGroupResponse = await dispatch(
-      putGroup({
-        result: {
-          ...managedAccountsDetails,
-          members: currentUsers,
-        },
-        accessToken: accessToken,
-      })
-    );
+    // update to new DELETE function from backend
+    // 1 - DELETE Users / (backend will remove them from Groups)
+    // 2 - getGroupDetails - for updating "version" in state
+    // const currentUsers = managedAccountsDetails?.members?.filter((user) => !selectedUserIds.includes(user.value));
+    // const putGroupResponse = await dispatch(
+    //   putGroup({
+    //     result: {
+    //       ...managedAccountsDetails,
+    //       members: currentUsers,
+    //     },
+    //     accessToken: accessToken,
+    //   })
+    // );
 
-    if (putGroup.fulfilled.match(putGroupResponse)) {
-      const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
-      if (memberToBeRemoved && memberToBeRemoved.length > 0) {
-        await Promise.all(
-          memberToBeRemoved.map(async (user) => {
-            const userToDelete = {
-              id: user.id,
-              version: user.meta.version,
-            };
+    // if (putGroup.fulfilled.match(putGroupResponse)) {
+    const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
+    if (memberToBeRemoved && memberToBeRemoved.length > 0) {
+      await Promise.all(
+        memberToBeRemoved.map(async (user) => {
+          const userToDelete = {
+            id: user.id,
+            version: user.meta.version,
+          };
 
-            const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
-            if (deleteUser.fulfilled.match(deleteUserResponse)) {
-              setShowModal(false);
-            }
-          })
-        );
-      } else {
-        console.warn("No matching users found to be removed.");
-      }
+          const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
+          if (deleteUser.fulfilled.match(deleteUserResponse)) {
+            setShowModal(false);
+            // here update Group state version
+            dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+          }
+        })
+      );
+    } else {
+      console.warn("No matching users found to be removed.");
     }
+    // }
   }
 
   function showAllMembers() {
