@@ -27,7 +27,6 @@ export const postContinueRequest = createAsyncThunk<
   { interactions: InteractionsTypes; interactRef: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {
-  console.log("args,", args);
   try {
     if (args.interactions) {
       const access_token_calculated = await getSHA256Hash(args.interactions.continue.access_token.value);

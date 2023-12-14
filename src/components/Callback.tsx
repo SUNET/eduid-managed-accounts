@@ -47,7 +47,6 @@ export default function Callback() {
    * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-continuing-a-grant-request
    *
    * */
-  // let token: any;
   const continueRequest = async () => {
     if (interactions && interactRef) {
       const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
