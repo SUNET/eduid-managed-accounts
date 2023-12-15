@@ -158,11 +158,11 @@ export default function MembersList({
           const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
           if (deleteUser.fulfilled.match(deleteUserResponse)) {
             setShowModal(false);
-            // here update Group state version
-            dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
           }
         })
       );
+      // here update Group state version
+      dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
     } else {
       console.warn("No matching users found to be removed.");
     }
