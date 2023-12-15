@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Meta } from "typescript-clients/scim";
-import { putGroup } from "../apis/scimGroupsRequest";
+import { getGroupDetails } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -127,39 +127,25 @@ export default function MembersList({
     );
     setSelectAll(false);
   }
+
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
-    const currentUsers = managedAccountsDetails?.members?.filter((user) => !selectedUserIds.includes(user.value));
-    const putGroupResponse = await dispatch(
-      putGroup({
-        result: {
-          ...managedAccountsDetails,
-          members: currentUsers,
-        },
-        accessToken: accessToken,
-      })
-    );
-
-    if (putGroup.fulfilled.match(putGroupResponse)) {
-      const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
-      if (memberToBeRemoved && memberToBeRemoved.length > 0) {
-        await Promise.all(
-          memberToBeRemoved.map(async (user) => {
-            const userToDelete = {
-              id: user.id,
-              version: user.meta.version,
-            };
-
-            const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
-            if (deleteUser.fulfilled.match(deleteUserResponse)) {
-              setShowModal(false);
-            }
-          })
-        );
-      } else {
-        console.warn("No matching users found to be removed.");
+    const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
+    if (memberToBeRemoved && memberToBeRemoved.length > 0) {
+      for (const member of memberToBeRemoved) {
+        const userToDelete = {
+          id: member.id,
+          version: member.meta.version,
+        };
+        const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
+        if (deleteUser.fulfilled.match(deleteUserResponse)) {
+          setShowModal(false);
+        }
       }
+      dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    } else {
+      console.warn("No matching users found to be removed.");
     }
   }
 
