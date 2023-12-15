@@ -15,7 +15,7 @@
     "string": "Läs mindre om att lägga till elever"
   },
   "addToGroup-listItem1": {
-    "string": "Skriv in förnamn och efternamn för varje student, en i taget."
+    "string": "Skriv in förnamn och efternamn för varje elev, en i taget."
   },
   "addToGroup-listItem2": {
     "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer för detta syfte."
