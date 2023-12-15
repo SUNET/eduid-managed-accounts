@@ -78,6 +78,9 @@
     "string": "If you get a new password by clicking the NEW PASSWORD link, it must be used by the student for the exam, as the previous password will be invalid."
   },
   "manageGroup-listItem3": {
+    "string": "If you need to make changes to added students, select the appropriate row/s and click the REMOVE ROW button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
+  },
+  "manageGroup-listItem4": {
     "string": "To find a student you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
   },
   "manageGroup-newPasswordLink": {

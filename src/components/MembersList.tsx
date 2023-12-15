@@ -257,7 +257,7 @@ export default function MembersList({
                 <li>
                   <FormattedMessage
                     defaultMessage="To find a student you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
-                    id="manageGroup-listItem3"
+                    id="manageGroup-listItem4"
                   />
                 </li>
               </ol>
