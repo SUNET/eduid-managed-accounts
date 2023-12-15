@@ -133,7 +133,7 @@ export default function MembersList({
     const currentUsers = managedAccountsDetails?.members?.filter((user) => !selectedUserIds.includes(user.value));
     const putGroupResponse = await dispatch(
       putGroup({
-        result: {
+        group: {
           ...managedAccountsDetails,
           members: currentUsers,
         },

@@ -89,7 +89,7 @@ export default function GroupManagement(): JSX.Element {
 
           await dispatch(
             putGroup({
-              result: {
+              group: {
                 ...managedAccountsDetails,
                 members: newMembersList,
               },
@@ -107,13 +107,13 @@ export default function GroupManagement(): JSX.Element {
     // 0 -filter out all non-digits
     const inputNumbers = params.replace(/\D/g, "");
     // 1 - if less than 10 digits, return false
-    const ID_NUMBER_MAX_LENGTH = 10;
-    if (inputNumbers.length < ID_NUMBER_MAX_LENGTH) {
+    const ID_NUMBER_MIN_LENGTH = 10;
+    if (inputNumbers.length < ID_NUMBER_MIN_LENGTH) {
       return false;
     } else {
       // 2 - else, test the first 10 characters and personnummer library
       for (let i = 0; i < inputNumbers.length - 10 + 1; i++) {
-        if (Personnummer.valid(inputNumbers.substring(i, i + ID_NUMBER_MAX_LENGTH))) {
+        if (Personnummer.valid(inputNumbers.substring(i, i + ID_NUMBER_MIN_LENGTH))) {
           return true;
         }
       }

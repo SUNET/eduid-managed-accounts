@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, AppRootState } from "init-app";
 import { GroupResponse } from "typescript-clients/scim";
+import { AppDispatch, AppRootState } from "../init-app";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
@@ -122,17 +122,18 @@ export const getGroupDetails = createAsyncThunk<
 
 export const putGroup = createAsyncThunk<
   GroupResponse, // return type
-  { result: any; accessToken: string }, // args type
+  { group: any; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
   try {
     if (args.accessToken) {
-      const headers = { ...scimHeaders(args.accessToken), "If-Match": args.result.meta.version };
+      console.log("INPUT putGroup args", args);
+      const headers = { ...scimHeaders(args.accessToken), "If-Match": args.group.meta.version };
       // arg.result is the same response from getGroup. It is needed to clear properties that are not needed
-      delete args.result.meta;
-      delete args.result.schemas;
+      delete args.group.meta;
+      delete args.group.schemas;
       const payload = {
-        ...args.result,
+        ...args.group,
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
       };
       const scimRequest = {
@@ -140,13 +141,25 @@ export const putGroup = createAsyncThunk<
         method: "PUT",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(baseURL + "Groups/" + args.result.id, scimRequest);
+      const scimResponse = await fetch(baseURL + "Groups/" + args.group.id, scimRequest);
+      const json_response = await scimResponse.json();
       if (scimResponse.ok) {
-        const json_response = await scimResponse.json();
         return json_response;
+      } else if (scimResponse.status === 400 && json_response.detail === "Version mismatch") {
+        // case of "version mismatch"
+        console.log("Version mismatch");
+        // update group Version
+        const getGroupResponse = await thunkAPI.dispatch(
+          getGroupDetails({ id: args.group.id, accessToken: args.accessToken })
+        );
+        console.log("RETRY putGroup", getGroupResponse.payload);
+        // retry
+        if (getGroupDetails.fulfilled.match(getGroupResponse)) {
+          return await thunkAPI.dispatch(putGroup({ group: getGroupResponse.payload, accessToken: args.accessToken }));
+        }
       } else {
-        const result = await scimResponse.json();
-        return await handleErrorResponse(result);
+        console.log("ERROR COMES HERE", json_response);
+        return await handleErrorResponse(json_response);
       }
     }
   } catch (error) {
