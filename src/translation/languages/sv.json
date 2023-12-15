@@ -15,7 +15,7 @@
     "string": "Läs mindre om att lägga till elever"
   },
   "addToGroup-listItem1": {
-    "string": "Skriv in förnamn och efternamn för varje student, en i taget."
+    "string": "Skriv in förnamn och efternamn för varje elev, en i taget."
   },
   "addToGroup-listItem2": {
     "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer för detta syfte."
@@ -33,7 +33,7 @@
     "string": "Det är inte tillåtet att spara personnummer"
   },
   "addToGroup-paragraph": {
-    "string": "Lägg till varje student genom att använda det här formuläret, för att skapa deras användarnamn och lösenord."
+    "string": "Lägg till varje elev genom att använda det här formuläret, för att skapa deras användarnamn och lösenord."
   },
   "addToGroup-showList": {
     "string": "Läs mer om att lägga till elever"
@@ -66,13 +66,13 @@
     "string": "Förnamn"
   },
   "manageGroup-heading": {
-    "string": "Hantera tillagda studenter"
+    "string": "Hantera tillagda elever"
   },
   "manageGroup-hideList": {
     "string": "Läs mindre om att hantera tillagda elever"
   },
   "manageGroup-listItem1": {
-    "string": "Du kan välja elever genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet m.h.a. kopierings-ikonen intill."
+    "string": "Du kan välja elever genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet med kopierings-ikonen intill."
   },
   "manageGroup-listItem2": {
     "string": "Om du skapar ett nytt lösenord genom att klicka på länken NYTT LÖSENORD, så måste det användas av eleven vid provtillfället, eftersom det tidigare lösenordet genast blir ogiltigt."
