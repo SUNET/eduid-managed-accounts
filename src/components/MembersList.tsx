@@ -1,5 +1,5 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faChevronDown, faChevronUp, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -167,6 +167,11 @@ export default function MembersList({ membersDetails, members, setMembers, acces
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
   };
 
+  const [showMore, setShowMore] = useState(true);
+  function toggleShowMore() {
+    setShowMore(!showMore);
+  }
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -175,27 +180,64 @@ export default function MembersList({ membersDetails, members, setMembers, acces
           <h2>
             <FormattedMessage defaultMessage="Manage added students" id="manageGroup-heading" />
           </h2>
-
-          <ol className="listed-steps">
-            <li>
-              <FormattedMessage
-                defaultMessage="You can select by using the corresponding checkboxes and copy several/all entire rows at once, or just the individual EPPN/username with the copy icon next to it."
-                id="manageGroup-listItem1"
-              />
-            </li>
-            <li>
-              <FormattedMessage
-                defaultMessage="If you get a new password by clicking NEW PASSWORD, it must be used by the student for the exam, as the previous password will be invalid."
-                id="manageGroup-listItem2"
-              />
-            </li>
-            <li>
-              <FormattedMessage
-                defaultMessage="If you need to make changes to added students, sort the table by entry-order or names, select row/s and click the REMOVE-button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
-                id="manageGroup-listItem3"
-              />
-            </li>
-          </ol>
+          <p>
+            <FormattedMessage
+              defaultMessage="Copy or note down the corresponding EPPN/username and password for each student during the session in which it was added."
+              id="manageGroup-paragraph"
+            />
+          </p>
+          {showMore ? (
+            <button
+              type="button"
+              aria-label={showMore ? "hide instructions" : "show instructions"}
+              className="btn btn-link"
+              onClick={toggleShowMore}
+            >
+              <FormattedMessage defaultMessage="READ MORE ON HOW TO MANAGE ADDED STUDENTS" id="manageGroup-showList" />
+              <FontAwesomeIcon icon={faChevronDown as IconProp} />
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                aria-label={showMore ? "hide instructions" : "show instructions"}
+                className="btn btn-link"
+                onClick={toggleShowMore}
+              >
+                <FormattedMessage
+                  defaultMessage="READ LESS ON HOW TO MANAGE ADDED STUDENTS"
+                  id="manageGroup-hideList"
+                />
+                <FontAwesomeIcon icon={faChevronUp as IconProp} />
+              </button>
+              <ol className="listed-steps">
+                <li>
+                  <FormattedMessage
+                    defaultMessage="You can select students by using the corresponding checkboxes and copy several/all entire rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it."
+                    id="manageGroup-listItem1"
+                  />
+                </li>
+                <li>
+                  <FormattedMessage
+                    defaultMessage="If you get a new password by clicking the NEW PASSWORD link, it must be used by the student for the exam, as the previous password will be invalid."
+                    id="manageGroup-listItem2"
+                  />
+                </li>
+                <li>
+                  <FormattedMessage
+                    defaultMessage="If you need to make changes to added students, select the appropriate row/s and click the REMOVE ROW button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
+                    id="manageGroup-listItem3"
+                  />
+                </li>
+                <li>
+                  <FormattedMessage
+                    defaultMessage="To find a student you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
+                    id="manageGroup-listItem3"
+                  />
+                </li>
+              </ol>
+            </>
+          )}
           <div className="flex-between form-controls">
             <label>
               <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
