@@ -2,7 +2,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Personnummer from "personnummer";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage } from "react-intl";
 import { useLocation } from "react-router";
@@ -150,6 +150,8 @@ export default function GroupManagement(): JSX.Element {
     setShowMore(!showMore);
   }
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <>
       {/* <Splash showChildren={managedAccountsDetails.id}> */}
@@ -243,6 +245,7 @@ export default function GroupManagement(): JSX.Element {
               onSubmit={async (event) => {
                 await handleSubmit(event);
                 form.reset();
+                inputRef.current?.focus();
               }}
             >
               <div className="flex-between">
@@ -252,7 +255,7 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="givenName">
                         <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
                       </label>
-                      <input type="text" {...input} placeholder="given name" id="givenName" />
+                      <input type="text" {...input} placeholder="given name" id="givenName" ref={inputRef} autoFocus />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
