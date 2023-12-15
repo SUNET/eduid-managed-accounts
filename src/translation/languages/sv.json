@@ -84,7 +84,7 @@
     "string": "Nytt lösenord"
   },
   "manageGroup-paragraph": {
-    "string": "Kopiera eller notera varje elevs EPPN/användarnamn och lösenord under samma inloggade session som det skapas."
+    "string": "Kopiera eller notera varje elevs EPPN/användarnamn och lösenord under samma session som det skapas."
   },
   "manageGroup-passwordColumn": {
     "string": "Lösenord"
