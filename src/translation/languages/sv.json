@@ -11,6 +11,9 @@
   "addToGroup-heading": {
     "string": "Lägg till elev till organisationen"
   },
+  "addToGroup-hideList": {
+    "string": "Läs mindre om att lägga till elever"
+  },
   "addToGroup-listItem1": {
     "string": "Skriv in förnamn och efternamn för varje student, en i taget."
   },
@@ -18,16 +21,22 @@
     "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer för detta syfte."
   },
   "addToGroup-listItem3": {
-    "string": "När du klickar på LÄGG TILL så läggs eleven till organisationen som tabellen nedan visar."
+    "string": "När du klickar på knappen LÄGG TILL så läggs eleven till organisationen och visas i en tabell nedan, i sektionen \"Hantera tillagda elever\"."
   },
   "addToGroup-listItem4": {
     "string": "överför till lämpligt externt format, eftersom det inte går att återse samma lösenord efter denna inloggade session."
   },
   "addToGroup-listItem4Strong": {
-    "string": "Notera det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
+    "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
   },
   "addToGroup-ninValidation": {
     "string": "Det är inte tillåtet att spara personnummer"
+  },
+  "addToGroup-paragraph": {
+    "string": "Lägg till varje student genom att använda det här formuläret, för att skapa deras användarnamn och lösenord."
+  },
+  "addToGroup-showList": {
+    "string": "Läs mer om att lägga till elever"
   },
   "addToGroup-surname": {
     "string": "Efternamn*"
@@ -36,7 +45,7 @@
     "string": "Välkommen till Hantera Konton med eduID"
   },
   "intro-lead": {
-    "string": "I formulären nedan kan du hantera din organisations grupp genom att lägga till elever som medlemmar, för att skapa det unika användarnamn - EPPN - och lösenord, som de behöver för att kunna genomföra Digitala Nationella Provet."
+    "string": "I formulären nedan kan du hantera din organisations konton genom att lägga till elever som medlemmar, för att skapa det unika användarnamn - EPPN - och lösenord, som de behöver för att kunna genomföra Digitala Nationella Provet."
   },
   "manageGroup-copiedEppnDialog": {
     "string": "EPPN kopierat"
@@ -59,17 +68,23 @@
   "manageGroup-heading": {
     "string": "Hantera tillagda studenter"
   },
+  "manageGroup-hideList": {
+    "string": "Läs mindre om att hantera tillagda elever"
+  },
   "manageGroup-listItem1": {
-    "string": "Du kan välja genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt, eller bara det individuella EPPN/användarnamnet m.h.a. kopierings-ikonen intill."
+    "string": "Du kan välja elever genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet m.h.a. kopierings-ikonen intill."
   },
   "manageGroup-listItem2": {
-    "string": "Om du skapar ett nytt lösenord genom att klicka NYTT LÖSENORD, så måste det användas av eleven vid provtillfället, eftersom det tidigare lösenordet genast blir ogiltigt."
+    "string": "Om du skapar ett nytt lösenord genom att klicka på länken NYTT LÖSENORD, så måste det användas av eleven vid provtillfället, eftersom det tidigare lösenordet genast blir ogiltigt."
   },
   "manageGroup-listItem3": {
-    "string": "Om du behöver göra förändringar av tillagda elever, kan du sortera tabellordningen enligt senaste eller namn, välj rad/rader och klicka på TA BORT-knappen, varefter eleven kan läggas till igen på samma sätt - men med nytt EPPN/användarnamn och lösenord."
+    "string": "För att hitta en elev kan tabellordningen sorteras på tilläggningstillfälle eller namn, använd paginerings-pilarna under eller visa hela tabellen genom att klicka påknappen VISA ALLA ifall tabellen består av flera sidor."
   },
   "manageGroup-newPasswordLink": {
     "string": "Nytt lösenord"
+  },
+  "manageGroup-paragraph": {
+    "string": "Kopiera eller notera varje elevs EPPN/användarnamn och lösenord under samma inloggade session som det skapas."
   },
   "manageGroup-passwordColumn": {
     "string": "Lösenord"
@@ -93,6 +108,9 @@
   },
   "manageGroup-showLessButton": {
     "string": "visa färre"
+  },
+  "manageGroup-showList": {
+    "string": "Läs mer om att hantera tillagda elever"
   },
   "manageGroup-surnameColumn": {
     "string": "Efternamn"
