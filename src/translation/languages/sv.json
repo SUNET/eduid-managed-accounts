@@ -72,7 +72,7 @@
     "string": "Läs mindre om att hantera tillagda elever"
   },
   "manageGroup-listItem1": {
-    "string": "Du kan välja elever genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet m.h.a. kopierings-ikonen intill."
+    "string": "Du kan välja elever genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet med kopierings-ikonen intill."
   },
   "manageGroup-listItem2": {
     "string": "Om du skapar ett nytt lösenord genom att klicka på länken NYTT LÖSENORD, så måste det användas av eleven vid provtillfället, eftersom det tidigare lösenordet genast blir ogiltigt."
