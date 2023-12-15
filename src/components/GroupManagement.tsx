@@ -2,15 +2,16 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Personnummer from "personnummer";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage } from "react-intl";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getGroupsSlice from "../slices/getGroups";
+import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
 import MembersList, { MembersDetailsTypes } from "./MembersList";
 
@@ -25,11 +26,29 @@ interface ErrorsType {
 }
 
 export default function GroupManagement(): JSX.Element {
-  let data = useLocation();
-  const accessToken = data.state.accessToken;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const locationState = location.state;
+
+  const accessToken = locationState?.access_token?.value;
+  const value = locationState?.subject.assertions[0].value;
+  const parsedUserInfo = value ? JSON.parse(value) : null;
+
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
+
+  useEffect(() => {
+    if (parsedUserInfo) {
+      dispatch(getLoggedInUserInfoSlice.actions.updateUserInfo({ user: parsedUserInfo }));
+    }
+  }, [parsedUserInfo]);
+
+  useEffect(() => {
+    if (locationState === null) {
+      return navigate("/");
+    }
+  }, [navigate, locationState]);
 
   /**
    * Without user interaction
@@ -44,7 +63,7 @@ export default function GroupManagement(): JSX.Element {
         dispatch(getGroupsSlice.actions.initialize());
         const result = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME, accessToken: accessToken }));
         if (getGroupsSearch.fulfilled.match(result)) {
-          if (!result.payload.Resources?.length) {
+          if (!result.payload?.Resources?.length) {
             dispatch(createGroup({ displayName: GROUP_NAME, accessToken: accessToken }));
           } else if (result.payload.Resources?.length === 1) {
             const response = await dispatch(
@@ -68,7 +87,7 @@ export default function GroupManagement(): JSX.Element {
       }
     };
     initializeManagedAccountsGroup();
-  }, []);
+  }, [dispatch, accessToken]);
 
   const addUser = async (values: { given_name: string; surname: string }) => {
     if (values.given_name && values.surname) {
@@ -152,12 +171,21 @@ export default function GroupManagement(): JSX.Element {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  if (locationState === null) {
+    return <></>;
+  }
+
   return (
-    <>
-      {/* <Splash showChildren={managedAccountsDetails.id}> */}
+    <React.Fragment>
       <section className="intro">
         <h1>
-          <FormattedMessage defaultMessage="Welcome to Managing Accounts using eduID" id="intro-heading" />
+          <FormattedMessage
+            defaultMessage="Welcome {user}"
+            id="intro-heading"
+            values={{
+              user: parsedUserInfo.attributes.displayName,
+            }}
+          />
         </h1>
         <div className="lead">
           <p>
@@ -289,7 +317,9 @@ export default function GroupManagement(): JSX.Element {
           membersDetails={membersDetails}
         />
       </section>
-    </>
+
+      {/* <Splash showChildren={managedAccountsDetails.id}> */}
+    </React.Fragment>
     // </Splash>
   );
 }
