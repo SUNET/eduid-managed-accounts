@@ -78,6 +78,9 @@
     "string": "Om du skapar ett nytt lösenord genom att klicka på länken NYTT LÖSENORD, så måste det användas av eleven vid provtillfället, eftersom det tidigare lösenordet genast blir ogiltigt."
   },
   "manageGroup-listItem3": {
+    "string": "Om du behöver göra förändringar av tillagda elever, kan du sortera tabellordningen enligt senaste eller namn, välj rad/rader och klicka på TA BORT-knappen, varefter eleven kan läggas till igen på samma sätt - men med nytt EPPN/användarnamn och lösenord."
+  },
+  "manageGroup-listItem4": {
     "string": "För att hitta en elev kan tabellordningen sorteras på tilläggningstillfälle eller namn, använd paginerings-pilarna under eller visa hela tabellen genom att klicka påknappen VISA ALLA ifall tabellen består av flera sidor."
   },
   "manageGroup-newPasswordLink": {
