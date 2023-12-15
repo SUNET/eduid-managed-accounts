@@ -11,22 +11,6 @@ export const scimHeaders = (token: string) => {
   };
 };
 
-export function createScimRequest(body?: string) {
-  const scimRequest = {
-    headers: scimHeaders,
-    method: body ? "POST" : "GET",
-  };
-  return scimRequest;
-}
-
-function putRequest() {
-  const scimRequest = {
-    headers: scimHeaders,
-    method: "PUT",
-  };
-  return scimRequest;
-}
-
 export interface Group {
   id: string;
   displayName: string;
@@ -34,7 +18,7 @@ export interface Group {
 
 export interface AllGroupsResponse {
   groups: Group[];
-  Resources: any;
+  Resources: [{ id: string; displayName: string }];
 }
 
 export interface GroupsSearchResponse {
@@ -56,17 +40,17 @@ export const createGroup = createAsyncThunk<
   try {
     if (args.accessToken) {
       const headers = scimHeaders(args.accessToken);
-      const scimRequest = createScimRequest(args.accessToken);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
         displayName: args.displayName,
         members: [],
       };
-      const scimResponse = await fetch(baseURL + "Groups/", {
-        ...scimRequest,
-        headers,
+      const scimRequest = {
+        headers: headers,
+        method: "POST",
         body: JSON.stringify(payload),
-      });
+      };
+      const scimResponse = await fetch(baseURL + "Groups/", scimRequest);
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
@@ -87,16 +71,16 @@ export const getGroupsSearch = createAsyncThunk<
   try {
     if (args.accessToken) {
       const headers = scimHeaders(args.accessToken);
-      const scimRequest = createScimRequest(args.searchFilter);
       const payload = {
         schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
         filter: `displayName eq "${args.searchFilter}"`,
       };
-      const scimResponse = await fetch(baseURL + "Groups/.search", {
-        ...scimRequest,
-        headers,
+      const scimRequest = {
+        headers: headers,
+        method: "POST",
         body: JSON.stringify(payload),
-      });
+      };
+      const scimResponse = await fetch(baseURL + "Groups/.search", scimRequest);
       if (scimResponse.ok) {
         const scimResponseJSON = await scimResponse.json();
         return scimResponseJSON;
@@ -118,11 +102,11 @@ export const getGroupDetails = createAsyncThunk<
   try {
     if (args.accessToken) {
       const headers = scimHeaders(args.accessToken);
-      const scimRequest = createScimRequest();
-      const scimResponse = await fetch(baseURL + "Groups/" + args.id, {
-        ...scimRequest,
-        headers,
-      });
+      const scimRequest = {
+        headers: headers,
+        method: "GET",
+      };
+      const scimResponse = await fetch(baseURL + "Groups/" + args.id, scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
@@ -143,23 +127,20 @@ export const putGroup = createAsyncThunk<
 >("auth/putGroup", async (args, thunkAPI) => {
   try {
     if (args.accessToken) {
-      const headers = {
-        "Content-Type": "application/scim+json",
-        Authorization: `Bearer ${args.accessToken}`,
-        "If-Match": args.result.meta.version,
-      };
-      const scimRequest = putRequest();
+      const headers = { ...scimHeaders(args.accessToken), "If-Match": args.result.meta.version };
+      // arg.result is the same response from getGroup. It is needed to clear properties that are not needed
       delete args.result.meta;
       delete args.result.schemas;
       const payload = {
         ...args.result,
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
       };
-      const scimResponse = await fetch(baseURL + "Groups/" + args.result.id, {
-        ...scimRequest,
-        headers,
+      const scimRequest = {
+        headers: headers,
+        method: "PUT",
         body: JSON.stringify(payload),
-      });
+      };
+      const scimResponse = await fetch(baseURL + "Groups/" + args.result.id, scimRequest);
       if (scimResponse.ok) {
         const json_response = await scimResponse.json();
         return json_response;
