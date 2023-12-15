@@ -81,7 +81,7 @@
     "string": "Om du behöver göra förändringar av tillagda elever, välj rad/rader och klicka på knappen TA BORT RAD, varefter eleven kan läggas till igen på samma sätt - men med nytt EPPN/användarnamn och lösenord."
   },
   "manageGroup-listItem4": {
-    "string": "För att hitta en elev kan tabellordningen sorteras på tilläggningstillfälle eller namn, använd paginerings-pilarna under eller visa hela tabellen genom att klicka påknappen VISA ALLA ifall tabellen består av flera sidor."
+    "string": "För att hitta en elev kan tabellordningen sorteras på tilläggningstillfälle eller namn, använd paginerings-pilarna under eller visa hela tabellen genom att klicka på knappen VISA ALLA ifall tabellen består av flera sidor."
   },
   "manageGroup-newPasswordLink": {
     "string": "Nytt lösenord"
