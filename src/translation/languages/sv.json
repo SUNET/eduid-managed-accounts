@@ -33,7 +33,7 @@
     "string": "Det är inte tillåtet att spara personnummer"
   },
   "addToGroup-paragraph": {
-    "string": "Lägg till varje student genom att använda det här formuläret, för att skapa deras användarnamn och lösenord."
+    "string": "Lägg till varje elev genom att använda det här formuläret, för att skapa deras användarnamn och lösenord."
   },
   "addToGroup-showList": {
     "string": "Läs mer om att lägga till elever"
