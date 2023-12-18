@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Meta } from "typescript-clients/scim";
-import { putGroup } from "../apis/scimGroupsRequest";
+import { getGroupDetails } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -138,36 +138,21 @@ export default function MembersList({
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
-    const currentUsers = managedAccountsDetails?.members?.filter((user) => !selectedUserIds.includes(user.value));
-    const putGroupResponse = await dispatch(
-      putGroup({
-        result: {
-          ...managedAccountsDetails,
-          members: currentUsers,
-        },
-        accessToken: accessToken,
-      })
-    );
-
-    if (putGroup.fulfilled.match(putGroupResponse)) {
-      const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
-      if (memberToBeRemoved && memberToBeRemoved.length > 0) {
-        await Promise.all(
-          memberToBeRemoved.map(async (user) => {
-            const userToDelete = {
-              id: user.id,
-              version: user.meta.version,
-            };
-
-            const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
-            if (deleteUser.fulfilled.match(deleteUserResponse)) {
-              setShowModal(false);
-            }
-          })
-        );
-      } else {
-        console.warn("No matching users found to be removed.");
+    const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
+    if (memberToBeRemoved && memberToBeRemoved.length > 0) {
+      for (const member of memberToBeRemoved) {
+        const userToDelete = {
+          id: member.id,
+          version: member.meta.version,
+        };
+        const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
+        if (deleteUser.fulfilled.match(deleteUserResponse)) {
+          setShowModal(false);
+        }
       }
+      dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    } else {
+      console.warn("No matching users found to be removed.");
     }
   }
 
@@ -282,52 +267,51 @@ export default function MembersList({
               </ol>
             </>
           )}
-          <div className="form-controls">
-            <div className="flex-between">
-              <label>
-                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
-              </label>
-              <div className="buttons">
-                {membersDetails.length >= 11 &&
-                  (showAll ? (
-                    <button
-                      disabled={!membersDetails.length}
-                      className={`btn btn-sm btn-secondary`}
-                      onClick={() => showLessMembers()}
-                    >
-                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
-                    </button>
-                  ) : (
-                    <button
-                      disabled={!membersDetails.length}
-                      className={`btn btn-sm btn-primary`}
-                      onClick={() => showAllMembers()}
-                    >
-                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
-                      {membersDetails.length})
-                    </button>
-                  ))}
+          <div className="flex-between form-controls">
+            <label>
+              <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+            </label>
+            <div className="buttons">
+              {membersDetails.length >= 11 &&
+                (showAll ? (
+                  <button
+                    disabled={!membersDetails.length}
+                    className={`btn btn-sm btn-secondary`}
+                    onClick={() => showLessMembers()}
+                  >
+                    <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
+                  </button>
+                ) : (
+                  <button
+                    disabled={!membersDetails.length}
+                    className={`btn btn-sm btn-primary`}
+                    onClick={() => showAllMembers()}
+                  >
+                    <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                    {membersDetails.length})
+                  </button>
+                ))}
 
-                <button
-                  disabled={!isMemberSelected.length}
-                  className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
-                  onClick={() => copyToClipboardAllMembers()}
-                >
-                  {copiedRowToClipboard ? (
-                    <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
-                  ) : (
-                    <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
-                  )}
-                </button>
-                <button
-                  disabled={!isMemberSelected.length}
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => handleRemoveUsers()}
-                >
-                  <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
-                </button>
-              </div>
+              <button
+                disabled={!isMemberSelected.length}
+                className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
+                onClick={() => copyToClipboardAllMembers()}
+              >
+                {copiedRowToClipboard ? (
+                  <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
+                ) : (
+                  <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
+                )}
+              </button>
+              <button
+                disabled={!isMemberSelected.length}
+                className="btn btn-secondary btn-sm"
+                onClick={() => handleRemoveUsers()}
+              >
+                <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
+              </button>
             </div>
+
             <div className="flex-between">
               <label htmlFor="sortOrder">Sort rows</label>
               <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
