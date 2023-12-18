@@ -11,7 +11,6 @@ const managedAccountsApp = combineReducers({
   members: getUsersReducer,
   personalData: getPersonalDataReducer,
   notifications: notificationsSlice.reducer,
-  // fetchInteractionResponse: fetchInteractionResponseReducer,
 });
 
 export default managedAccountsApp;
