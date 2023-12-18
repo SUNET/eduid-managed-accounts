@@ -60,7 +60,7 @@ export async function initLocalStorage() {
           start: [StartInteractionMethod.REDIRECT],
           finish: {
             method: FinishInteractionMethod.REDIRECT,
-            uri: "http://localhost:5173/redirect", // TODO: redirect url, TO BE FIXED
+            uri: "http://localhost:5173/callback", // TODO: redirect url, TO BE FIXED
             nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
           },
         },
