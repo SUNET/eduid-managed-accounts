@@ -267,51 +267,52 @@ export default function MembersList({
               </ol>
             </>
           )}
-          <div className="flex-between form-controls">
-            <label>
-              <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
-            </label>
-            <div className="buttons">
-              {membersDetails.length >= 11 &&
-                (showAll ? (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-secondary`}
-                    onClick={() => showLessMembers()}
-                  >
-                    <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
-                  </button>
-                ) : (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-primary`}
-                    onClick={() => showAllMembers()}
-                  >
-                    <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
-                    {membersDetails.length})
-                  </button>
-                ))}
+          <div className="form-controls">
+            <div className="flex-between">
+              <label>
+                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+              </label>
+              <div className="buttons">
+                {membersDetails.length >= 11 &&
+                  (showAll ? (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-secondary`}
+                      onClick={() => showLessMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
+                    </button>
+                  ) : (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-primary`}
+                      onClick={() => showAllMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                      {membersDetails.length})
+                    </button>
+                  ))}
 
-              <button
-                disabled={!isMemberSelected.length}
-                className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
-                onClick={() => copyToClipboardAllMembers()}
-              >
-                {copiedRowToClipboard ? (
-                  <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
-                ) : (
-                  <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
-                )}
-              </button>
-              <button
-                disabled={!isMemberSelected.length}
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleRemoveUsers()}
-              >
-                <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
-              </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
+                  onClick={() => copyToClipboardAllMembers()}
+                >
+                  {copiedRowToClipboard ? (
+                    <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
+                  ) : (
+                    <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
+                  )}
+                </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => handleRemoveUsers()}
+                >
+                  <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
+                </button>
+              </div>
             </div>
-
             <div className="flex-between">
               <label htmlFor="sortOrder">Sort rows</label>
               <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
