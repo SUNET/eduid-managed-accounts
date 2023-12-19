@@ -10,6 +10,7 @@ import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
@@ -37,9 +38,10 @@ export default function GroupManagement(): JSX.Element {
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
+  const isLoaded = useAppSelector((state) => state.app.isLoaded);
 
   useEffect(() => {
-    if (parsedUserInfo) {
+    if (parsedUserInfo && !isLoaded) {
       dispatch(getLoggedInUserInfoSlice.actions.updateUserInfo({ user: parsedUserInfo }));
     }
   }, [parsedUserInfo]);
@@ -81,12 +83,19 @@ export default function GroupManagement(): JSX.Element {
               }
             }
           }
+          // when user get 401 error, it will redirect to login page
+        } else if (getGroupsSearch.rejected.match(result)) {
+          console.log("result", result);
+          // navigate("/");
         }
       } catch (error) {
         console.log("Error", error);
       }
     };
-    initializeManagedAccountsGroup();
+    if (!isLoaded) {
+      initializeManagedAccountsGroup();
+      dispatch(appSlice.actions.appIsLoaded());
+    }
   }, [dispatch, accessToken]);
 
   const addUser = async (values: { given_name: string; surname: string }) => {
