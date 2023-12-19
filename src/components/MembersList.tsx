@@ -61,7 +61,6 @@ export default function MembersList({
   }
 
   useEffect(() => {
-    setCurrentPage(1);
     setSortedData(members);
   }, [members]);
 
