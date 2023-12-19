@@ -44,6 +44,8 @@ export default function MembersList({
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedValue, setSelectedValue] = useState("");
+  const [sortedData, setSortedData] = useState(members);
 
   const [postsPerPage, setPostsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,11 +53,16 @@ export default function MembersList({
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = sortedData.slice(indexOfFirstPost, indexOfLastPost);
+
+  const [showMore, setShowMore] = useState(true);
+  function toggleShowMore() {
+    setShowMore(!showMore);
+  }
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, []);
+    setSortedData(members);
+  }, [members]);
 
   useEffect(() => {
     setSelectAll(false);
@@ -113,7 +120,7 @@ export default function MembersList({
   function handleSelectAll() {
     setSelectAll((prevState) => !prevState);
 
-    const updatedMembers = members.map((member) => ({
+    const updatedMembers = sortedData.map((member) => ({
       ...member,
       selected: !selectAll,
     }));
@@ -127,7 +134,6 @@ export default function MembersList({
     );
     setSelectAll(false);
   }
-
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
@@ -178,10 +184,20 @@ export default function MembersList({
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
   }
 
-  const [showMore, setShowMore] = useState(true);
-  function toggleShowMore() {
-    setShowMore(!showMore);
-  }
+  const handleSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target?.value;
+    setSelectedValue(value);
+
+    let newData = [...members];
+    if (value === "givenName") {
+      newData.sort((a, b) => a.name.givenName.toUpperCase().localeCompare(b.name.givenName, "sv"));
+    } else if (value === "surName") {
+      newData.sort((a, b) => a.name.familyName.toUpperCase().localeCompare(b.name.familyName, "sv"));
+    } else {
+      newData.sort((a, b) => b.meta.created.localeCompare(a.meta.created));
+    }
+    setSortedData(newData);
+  };
 
   return (
     <Fragment>
@@ -197,6 +213,7 @@ export default function MembersList({
               id="manageGroup-paragraph"
             />
           </p>
+
           {showMore ? (
             <button
               type="button"
@@ -249,49 +266,59 @@ export default function MembersList({
               </ol>
             </>
           )}
-          <div className="flex-between form-controls">
-            <label>
-              <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
-            </label>
-            <div className="buttons">
-              {membersDetails.length >= 11 &&
-                (showAll ? (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-secondary`}
-                    onClick={() => showLessMembers()}
-                  >
-                    <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
-                  </button>
-                ) : (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-primary`}
-                    onClick={() => showAllMembers()}
-                  >
-                    <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
-                    {membersDetails.length})
-                  </button>
-                ))}
+          <div className="form-controls">
+            <div className="flex-between">
+              <label>
+                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+              </label>
+              <div className="buttons">
+                {membersDetails.length >= 11 &&
+                  (showAll ? (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-secondary`}
+                      onClick={() => showLessMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
+                    </button>
+                  ) : (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-primary`}
+                      onClick={() => showAllMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                      {membersDetails.length})
+                    </button>
+                  ))}
 
-              <button
-                disabled={!isMemberSelected.length}
-                className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
-                onClick={() => copyToClipboardAllMembers()}
-              >
-                {copiedRowToClipboard ? (
-                  <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
-                ) : (
-                  <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
-                )}
-              </button>
-              <button
-                disabled={!isMemberSelected.length}
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleRemoveUsers()}
-              >
-                <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
-              </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
+                  onClick={() => copyToClipboardAllMembers()}
+                >
+                  {copiedRowToClipboard ? (
+                    <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
+                  ) : (
+                    <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
+                  )}
+                </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => handleRemoveUsers()}
+                >
+                  <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-between">
+              <label htmlFor="sortOrder">Sort rows</label>
+              <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
+                <option value="">Latest (default)</option>
+                <option value="givenName">Given name (ABC)</option>
+                <option value="surName">Surname (ABC)</option>
+              </select>
             </div>
           </div>
           <table className="group-management">
