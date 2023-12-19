@@ -10,18 +10,24 @@ export const postUser = createAsyncThunk<
     familyName: string;
     givenName: string;
     accessToken: string;
+    scope: string;
   }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/postUser", async (args, thunkAPI) => {
   try {
     if (args.accessToken) {
+      const eduIdEppn: string = fakeEPPN(); // what could be expected from eppn API
+      const organizerEppn: string = `${eduIdEppn.split("@")[0]}@${args.scope}`;
       const headers = scimHeaders(args.accessToken);
       const payload = {
-        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
-        externalId: fakeEPPN(),
+        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User", "https://scim.eduid.se/schema/nutid/user/v1"],
+        externalId: eduIdEppn,
         name: {
           familyName: args.familyName,
           givenName: args.givenName,
+        },
+        "https://scim.eduid.se/schema/nutid/user/v1": {
+          profiles: { connectIdp: { attributes: { eduPersonPrincipalName: organizerEppn } } },
         },
       };
       const scimRequest = {

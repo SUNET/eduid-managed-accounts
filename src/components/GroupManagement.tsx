@@ -92,11 +92,14 @@ export default function GroupManagement(): JSX.Element {
   const addUser = async (values: { given_name: string; surname: string }) => {
     if (values.given_name && values.surname) {
       try {
+        const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
+        const scope = eduPersonPrincipalName.split("@")[1];
         const createdUserResponse = await dispatch(
           postUser({
             familyName: values.surname,
             givenName: values.given_name,
             accessToken: accessToken,
+            scope: scope,
           })
         );
         if (postUser.fulfilled.match(createdUserResponse)) {

@@ -4,7 +4,7 @@ import { generateNonce } from "./CryptoUtils";
  * eppn: ma-abcd1234
  */
 export function fakeEPPN() {
-  const eppn: string = "ma-" + generateNonce(8);
+  const eppn: string = "ma-" + generateNonce(8) + "@eduid.se";
   return eppn;
 }
 
