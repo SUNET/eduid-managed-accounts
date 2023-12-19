@@ -109,10 +109,11 @@ export default function GroupManagement(): JSX.Element {
             display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
           };
 
+          // from here run again in case of "version mismatch"
           const newMembersList = managedAccountsDetails.members?.slice(); // copy array
           newMembersList?.push(newGroupMember);
 
-          await dispatch(
+          const response = await dispatch(
             putGroup({
               group: {
                 ...managedAccountsDetails,
@@ -121,6 +122,25 @@ export default function GroupManagement(): JSX.Element {
               accessToken: accessToken,
             })
           );
+          if (putGroup.rejected.match(response) && response.payload === "Failed with status 400: Version mismatch") {
+            const response2 = await dispatch(
+              getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken })
+            );
+            if (getGroupDetails.fulfilled.match(response2)) {
+              const newMembersList = response2.payload.members?.slice(); // copy array
+              newMembersList?.push(newGroupMember);
+
+              const response = await dispatch(
+                putGroup({
+                  group: {
+                    ...response2.payload,
+                    members: newMembersList,
+                  },
+                  accessToken: accessToken,
+                })
+              );
+            }
+          }
         }
       } catch (error) {
         console.log("error", error);

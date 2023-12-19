@@ -121,7 +121,7 @@ export const getGroupDetails = createAsyncThunk<
 });
 
 export const putGroup = createAsyncThunk<
-  GroupResponse, // return type
+  any, // return type
   { group: any; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
@@ -130,11 +130,11 @@ export const putGroup = createAsyncThunk<
       console.log("INPUT putGroup args", args);
       const headers = { ...scimHeaders(args.accessToken), "If-Match": args.group.meta.version };
       // arg.result is the same response from getGroup. It is needed to clear properties that are not needed
-      delete args.group.meta;
-      delete args.group.schemas;
+      if (args.group.meta) delete args.group.meta;
+      if (args.group.schemas) delete args.group.schemas;
       const payload = {
         ...args.group,
-        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
+        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"], // this is different from getGroup
       };
       const scimRequest = {
         headers: headers,
@@ -145,18 +145,6 @@ export const putGroup = createAsyncThunk<
       const json_response = await scimResponse.json();
       if (scimResponse.ok) {
         return json_response;
-      } else if (scimResponse.status === 400 && json_response.detail === "Version mismatch") {
-        // case of "version mismatch"
-        console.log("Version mismatch");
-        // update group Version
-        const getGroupResponse = await thunkAPI.dispatch(
-          getGroupDetails({ id: args.group.id, accessToken: args.accessToken })
-        );
-        console.log("RETRY putGroup", getGroupResponse.payload);
-        // retry
-        if (getGroupDetails.fulfilled.match(getGroupResponse)) {
-          return await thunkAPI.dispatch(putGroup({ group: getGroupResponse.payload, accessToken: args.accessToken }));
-        }
       } else {
         console.log("ERROR COMES HERE", json_response);
         return await handleErrorResponse(json_response);
