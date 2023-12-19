@@ -66,8 +66,12 @@ fieldset {
   margin-right: 1rem;
 }
 
-.listed-steps li {
-  margin-bottom: 0.75rem;
+.listed-steps {
+  margin-bottom: 1.5rem;
+
+  li {
+    margin-bottom: 0.75rem;
+  }
 }
 
 input {

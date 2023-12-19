@@ -195,6 +195,15 @@ export default function GroupManagement(): JSX.Element {
               id="intro-lead"
             />
           </p>
+          <div className="text-small">
+            <em>
+              <FormattedMessage
+                defaultMessage="The contents can be presented in either Swedish or English, you can choose language in the footer of this web page. 
+              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility as the forms will render better."
+                id="intro-leadEmphasis"
+              />
+            </em>
+          </div>
         </div>
       </section>
       <section>
@@ -203,10 +212,11 @@ export default function GroupManagement(): JSX.Element {
         </h2>
         <p>
           <FormattedMessage
-            defaultMessage="Add every student by using this form, to create their username and password."
+            defaultMessage="Add every student, either one at a time by using this form, or by importing a prepared excel-document with all the students already entered."
             id="addToGroup-paragraph"
           />
         </p>
+
         {showMore ? (
           <button
             type="button"
@@ -228,86 +238,156 @@ export default function GroupManagement(): JSX.Element {
               <FormattedMessage defaultMessage="READ LESS ON HOW TO ADD STUDENTS" id="addToGroup-hideList" />
               <FontAwesomeIcon icon={faChevronUp as IconProp} />
             </button>
+            <h3>
+              <FormattedMessage defaultMessage="Add student manually" id="addToGroup-headingManually" />
+            </h3>
             <ol className="listed-steps">
               <li>
                 <FormattedMessage
                   defaultMessage="Enter the given name and surname for each student, one at a time."
-                  id="addToGroup-listItem1"
+                  id="addToGroup-list1Item1"
                 />
               </li>
               <li>
                 <FormattedMessage
                   defaultMessage="Write the name so that you can distinguish the identity of the person even if there are students
                  with identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
-                  id="addToGroup-listItem2"
+                  id="addToGroup-list1Item2"
                 />
               </li>
               <li>
                 <FormattedMessage
                   defaultMessage='When you click the ADD button the student will be added to the organisation and appearing in a table below in the "Manage added students" section.'
-                  id="addToGroup-listItem3"
+                  id="addToGroup-list1Item3"
                 />
               </li>
               <li>
                 <strong>
                   <FormattedMessage
                     defaultMessage="Then note the corresponding EPPN/username and password which appears in the table"
-                    id="addToGroup-listItem4Strong"
+                    id="addToGroup-list1Item4Strong"
                   />
                 </strong>
                 ,&nbsp;
                 <FormattedMessage
                   defaultMessage="transfer it to an external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
-                  id="addToGroup-listItem4"
+                  id="addToGroup-list1Item4"
+                />
+              </li>
+            </ol>
+            <h3>
+              <FormattedMessage defaultMessage="Add student by file import" id="addToGroup-headingImport" />
+            </h3>
+            <ol className="listed-steps">
+              <li>
+                <FormattedMessage
+                  defaultMessage="Create a 2-column excel-document containing the given names and surnames of the students you wish to add. You can download the example file to fill in using the DOWNLOAD link."
+                  id="addToGroup-list2Item1"
+                />
+              </li>
+              <li>
+                <FormattedMessage
+                  defaultMessage='Import the prepared file by clicking on the IMPORT button. The students will be added to the organisation and appearing in a table below in the "Manage added students" section.'
+                  id="addToGroup-list2Item2"
+                />
+              </li>
+              <li>
+                <strong>
+                  <FormattedMessage
+                    defaultMessage="Then note the corresponding EPPN/username and password which appears in the table"
+                    id="addToGroup-list2Item3Strong"
+                  />
+                </strong>
+                ,&nbsp;
+                <FormattedMessage
+                  defaultMessage="transfer it to an external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+                  id="addToGroup-list2Item3"
                 />
               </li>
             </ol>
           </>
         )}
+        <article className="figure enter-student">
+          <h3>
+            <FormattedMessage defaultMessage="Add student manually" id="addToGroup-headingManually" />
+          </h3>
 
-        <Form
-          validate={validatePersonalData}
-          onSubmit={addUser}
-          render={({ handleSubmit, form, submitting, invalid }) => (
-            <form
-              onSubmit={async (event) => {
-                await handleSubmit(event);
-                form.reset();
-                inputRef.current?.focus();
-              }}
-            >
-              <div className="flex-between">
-                <Field name="given_name">
-                  {({ input, meta }) => (
-                    <fieldset>
-                      <label htmlFor="givenName">
-                        <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
-                      </label>
-                      <input type="text" {...input} placeholder="given name" id="givenName" ref={inputRef} autoFocus />
-                      {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
-                  )}
-                </Field>
+          <Form
+            validate={validatePersonalData}
+            onSubmit={addUser}
+            render={({ handleSubmit, form, submitting, invalid }) => (
+              <form
+                onSubmit={async (event) => {
+                  await handleSubmit(event);
+                  form.reset();
+                  inputRef.current?.focus();
+                }}
+              >
+                <div className="flex-between">
+                  <Field name="given_name">
+                    {({ input, meta }) => (
+                      <fieldset>
+                        <label htmlFor="givenName">
+                          <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
+                        </label>
+                        <input
+                          type="text"
+                          {...input}
+                          placeholder="given name"
+                          id="givenName"
+                          ref={inputRef}
+                          autoFocus
+                        />
+                        {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
+                      </fieldset>
+                    )}
+                  </Field>
 
-                <Field name="surname">
-                  {({ input, meta }) => (
-                    <fieldset>
-                      <label htmlFor="surName">
-                        <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
-                      </label>
-                      <input type="text" {...input} placeholder="surname" id="surName" />
-                      {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
-                  )}
-                </Field>
+                  <Field name="surname">
+                    {({ input, meta }) => (
+                      <fieldset>
+                        <label htmlFor="surName">
+                          <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
+                        </label>
+                        <input type="text" {...input} placeholder="surname" id="surName" />
+                        {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
+                      </fieldset>
+                    )}
+                  </Field>
 
-                <button disabled={submitting || invalid} className="btn btn-primary">
-                  <FormattedMessage defaultMessage="Add" id="addToGroup-addButton" />
-                </button>
-              </div>
-            </form>
-          )}
-        />
+                  <button disabled={submitting || invalid} className="btn btn-primary">
+                    <FormattedMessage defaultMessage="Add" id="addToGroup-addButton" />
+                  </button>
+                </div>
+              </form>
+            )}
+          />
+          <hr className="border-line"></hr>
+          <h3>
+            <FormattedMessage defaultMessage="Add student by file import" id="addToGroup-headingImport" />
+          </h3>
+          <fieldset className="flex-between">
+            <label>
+              <FormattedMessage
+                defaultMessage="Download spreadsheet to fill in or use as a guide:"
+                id="addToGroup-downloadLabel"
+              />
+            </label>
+            <a href="<a href='/path/to/excel/managed_student_accounts.xls' target='_blank' ">
+              <FormattedMessage defaultMessage="Download empty student document" id="addToGroup-downloadLink" />
+            </a>
+          </fieldset>
+          <fieldset className="flex-between">
+            <label>
+              <FormattedMessage defaultMessage="Upload filled in spreadsheet:" id="addToGroup-uploadLabel" />
+            </label>
+            <div className="buttons">
+              <button className="btn btn-primary btn-sm">
+                <FormattedMessage defaultMessage="Import entered student document" id="addToGroup-uploadButton" />
+              </button>
+            </div>
+          </fieldset>
+        </article>
       </section>
       <section>
         <MembersList

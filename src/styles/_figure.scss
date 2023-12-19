@@ -24,6 +24,18 @@ figure,
       padding: 0.5em;
     }
   }
+  &.enter-student {
+    text-align: left;
+    padding-bottom: 0 !important;
+    width: 100%;
+
+    input[type="text"] {
+      background: $bg-gray;
+    }
+    hr {
+      border-bottom-style: dashed;
+    }
+  }
 }
 
 .captcha-responsive {
