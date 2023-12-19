@@ -190,9 +190,9 @@ export default function MembersList({
 
     let newData = [...members];
     if (value === "givenName") {
-      newData.sort((a, b) => a.name.givenName.localeCompare(b.name.givenName));
+      newData.sort((a, b) => a.name.givenName.toUpperCase().localeCompare(b.name.givenName, "sv"));
     } else if (value === "surName") {
-      newData.sort((a, b) => a.name.familyName.localeCompare(b.name.familyName));
+      newData.sort((a, b) => a.name.familyName.toUpperCase().localeCompare(b.name.familyName, "sv"));
     } else {
       newData.sort((a, b) => b.meta.created.localeCompare(a.meta.created));
     }
