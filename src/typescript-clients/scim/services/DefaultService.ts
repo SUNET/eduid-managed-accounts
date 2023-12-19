@@ -76,6 +76,30 @@ export class DefaultService {
     }
 
     /**
+     * On Delete
+     * @param scimId
+     * @returns void
+     * @throws ApiError
+     */
+    public static onDeleteUsersScimIdDelete(
+        scimId: string,
+    ): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/Users/{scim_id}',
+            path: {
+                'scim_id': scimId,
+            },
+            errors: {
+                400: `Bad request`,
+                404: `Not found`,
+                422: `Validation Error`,
+                500: `Internal server error`,
+            },
+        });
+    }
+
+    /**
      * On Post
      * POST /Users  HTTP/1.1
      * Host: example.com
