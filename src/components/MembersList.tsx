@@ -1,10 +1,10 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faChevronDown, faChevronUp, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Meta } from "typescript-clients/scim";
-import { putGroup } from "../apis/scimGroupsRequest";
+import { getGroupDetails } from "../apis/scimGroupsRequest";
 import { deleteUser } from "../apis/scimUsersRequest";
 import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -44,6 +44,8 @@ export default function MembersList({
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedValue, setSelectedValue] = useState("");
+  const [sortedData, setSortedData] = useState(members);
 
   const [postsPerPage, setPostsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,11 +53,16 @@ export default function MembersList({
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = members.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = sortedData.slice(indexOfFirstPost, indexOfLastPost);
+
+  const [showMore, setShowMore] = useState(true);
+  function toggleShowMore() {
+    setShowMore(!showMore);
+  }
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, []);
+    setSortedData(members);
+  }, [members]);
 
   useEffect(() => {
     setSelectAll(false);
@@ -113,7 +120,7 @@ export default function MembersList({
   function handleSelectAll() {
     setSelectAll((prevState) => !prevState);
 
-    const updatedMembers = members.map((member) => ({
+    const updatedMembers = sortedData.map((member) => ({
       ...member,
       selected: !selectAll,
     }));
@@ -130,36 +137,21 @@ export default function MembersList({
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
-    const currentUsers = managedAccountsDetails?.members?.filter((user) => !selectedUserIds.includes(user.value));
-    const putGroupResponse = await dispatch(
-      putGroup({
-        group: {
-          ...managedAccountsDetails,
-          members: currentUsers,
-        },
-        accessToken: accessToken,
-      })
-    );
-
-    if (putGroup.fulfilled.match(putGroupResponse)) {
-      const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
-      if (memberToBeRemoved && memberToBeRemoved.length > 0) {
-        await Promise.all(
-          memberToBeRemoved.map(async (user) => {
-            const userToDelete = {
-              id: user.id,
-              version: user.meta.version,
-            };
-
-            const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
-            if (deleteUser.fulfilled.match(deleteUserResponse)) {
-              setShowModal(false);
-            }
-          })
-        );
-      } else {
-        console.warn("No matching users found to be removed.");
+    const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
+    if (memberToBeRemoved && memberToBeRemoved.length > 0) {
+      for (const member of memberToBeRemoved) {
+        const userToDelete = {
+          id: member.id,
+          version: member.meta.version,
+        };
+        const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
+        if (deleteUser.fulfilled.match(deleteUserResponse)) {
+          setShowModal(false);
+        }
       }
+      dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    } else {
+      console.warn("No matching users found to be removed.");
     }
   }
 
@@ -192,6 +184,21 @@ export default function MembersList({
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
   }
 
+  const handleSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target?.value;
+    setSelectedValue(value);
+
+    let newData = [...members];
+    if (value === "givenName") {
+      newData.sort((a, b) => a.name.givenName.toUpperCase().localeCompare(b.name.givenName, "sv"));
+    } else if (value === "surName") {
+      newData.sort((a, b) => a.name.familyName.toUpperCase().localeCompare(b.name.familyName, "sv"));
+    } else {
+      newData.sort((a, b) => b.meta.created.localeCompare(a.meta.created));
+    }
+    setSortedData(newData);
+  };
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -200,70 +207,118 @@ export default function MembersList({
           <h2>
             <FormattedMessage defaultMessage="Manage added students" id="manageGroup-heading" />
           </h2>
+          <p>
+            <FormattedMessage
+              defaultMessage="Copy or note down the corresponding EPPN/username and password for each student during the session in which it was added."
+              id="manageGroup-paragraph"
+            />
+          </p>
 
-          <ol className="listed-steps">
-            <li>
-              <FormattedMessage
-                defaultMessage="You can select by using the corresponding checkboxes and copy several/all entire rows at once, or just the individual EPPN/username with the copy icon next to it."
-                id="manageGroup-listItem1"
-              />
-            </li>
-            <li>
-              <FormattedMessage
-                defaultMessage="If you get a new password by clicking NEW PASSWORD, it must be used by the student for the exam, as the previous password will be invalid."
-                id="manageGroup-listItem2"
-              />
-            </li>
-            <li>
-              <FormattedMessage
-                defaultMessage="If you need to make changes to added students, sort the table by entry-order or names, select row/s and click the REMOVE-button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
-                id="manageGroup-listItem3"
-              />
-            </li>
-          </ol>
-          <div className="flex-between form-controls">
-            <label>
-              <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
-            </label>
-            <div className="buttons">
-              {membersDetails.length >= 11 &&
-                (showAll ? (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-secondary`}
-                    onClick={() => showLessMembers()}
-                  >
-                    <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
-                  </button>
-                ) : (
-                  <button
-                    disabled={!membersDetails.length}
-                    className={`btn btn-sm btn-primary`}
-                    onClick={() => showAllMembers()}
-                  >
-                    <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
-                    {membersDetails.length})
-                  </button>
-                ))}
+          {showMore ? (
+            <button
+              type="button"
+              aria-label={showMore ? "hide instructions" : "show instructions"}
+              className="btn btn-link"
+              onClick={toggleShowMore}
+            >
+              <FormattedMessage defaultMessage="READ MORE ON HOW TO MANAGE ADDED STUDENTS" id="manageGroup-showList" />
+              <FontAwesomeIcon icon={faChevronDown as IconProp} />
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                aria-label={showMore ? "hide instructions" : "show instructions"}
+                className="btn btn-link"
+                onClick={toggleShowMore}
+              >
+                <FormattedMessage
+                  defaultMessage="READ LESS ON HOW TO MANAGE ADDED STUDENTS"
+                  id="manageGroup-hideList"
+                />
+                <FontAwesomeIcon icon={faChevronUp as IconProp} />
+              </button>
+              <ol className="listed-steps">
+                <li>
+                  <FormattedMessage
+                    defaultMessage="You can select students by using the corresponding checkboxes and copy several/all entire rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it."
+                    id="manageGroup-listItem1"
+                  />
+                </li>
+                <li>
+                  <FormattedMessage
+                    defaultMessage="If you get a new password by clicking the NEW PASSWORD link, it must be used by the student for the exam, as the previous password will be invalid."
+                    id="manageGroup-listItem2"
+                  />
+                </li>
+                <li>
+                  <FormattedMessage
+                    defaultMessage="If you need to make changes to added students, select the appropriate row/s and click the REMOVE ROW button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
+                    id="manageGroup-listItem3"
+                  />
+                </li>
+                <li>
+                  <FormattedMessage
+                    defaultMessage="To find a student you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
+                    id="manageGroup-listItem4"
+                  />
+                </li>
+              </ol>
+            </>
+          )}
+          <div className="form-controls">
+            <div className="flex-between">
+              <label>
+                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+              </label>
+              <div className="buttons">
+                {membersDetails.length >= 11 &&
+                  (showAll ? (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-secondary`}
+                      onClick={() => showLessMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
+                    </button>
+                  ) : (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-primary`}
+                      onClick={() => showAllMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                      {membersDetails.length})
+                    </button>
+                  ))}
 
-              <button
-                disabled={!isMemberSelected.length}
-                className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
-                onClick={() => copyToClipboardAllMembers()}
-              >
-                {copiedRowToClipboard ? (
-                  <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
-                ) : (
-                  <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
-                )}
-              </button>
-              <button
-                disabled={!isMemberSelected.length}
-                className="btn btn-secondary btn-sm"
-                onClick={() => handleRemoveUsers()}
-              >
-                <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
-              </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
+                  onClick={() => copyToClipboardAllMembers()}
+                >
+                  {copiedRowToClipboard ? (
+                    <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
+                  ) : (
+                    <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
+                  )}
+                </button>
+                <button
+                  disabled={!isMemberSelected.length}
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => handleRemoveUsers()}
+                >
+                  <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-between">
+              <label htmlFor="sortOrder">Sort rows</label>
+              <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
+                <option value="">Latest (default)</option>
+                <option value="givenName">Given name (ABC)</option>
+                <option value="surName">Surname (ABC)</option>
+              </select>
             </div>
           </div>
           <table className="group-management">
