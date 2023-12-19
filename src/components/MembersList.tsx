@@ -56,7 +56,6 @@ export default function MembersList({
   const currentPosts = sortedData.slice(indexOfFirstPost, indexOfLastPost);
 
   useEffect(() => {
-    setCurrentPage(1);
     setSortedData(members);
   }, [members]);
 
