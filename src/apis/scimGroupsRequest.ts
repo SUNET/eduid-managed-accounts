@@ -137,8 +137,8 @@ export const putGroup = createAsyncThunk<
     if (args.accessToken) {
       const headers = { ...scimHeaders(args.accessToken), "If-Match": version };
       // arg.result is the same response from getGroup. It is needed to clear properties that are not needed
-      if (args.group.meta) delete args.group.meta;
-      if (args.group.schemas) delete args.group.schemas;
+      delete args.group.meta;
+      delete args.group.schemas;
       const payload = {
         ...args.group,
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"], // this is different from getGroup

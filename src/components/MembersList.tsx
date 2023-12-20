@@ -29,7 +29,7 @@ export interface MembersListTypes {
   members: Array<MembersDetailsTypes & { selected: boolean }>;
   setMembers: React.Dispatch<React.SetStateAction<any>>;
   accessToken: string;
-  handleGroupVersion: any;
+  handleGroupVersion(): void;
 }
 
 export default function MembersList({
