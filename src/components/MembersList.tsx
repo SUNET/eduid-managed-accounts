@@ -205,11 +205,11 @@ export default function MembersList({
         <Fragment>
           <hr className="border-line"></hr>
           <h2>
-            <FormattedMessage defaultMessage="Manage added students" id="manageGroup-heading" />
+            <FormattedMessage defaultMessage="Manage added accounts" id="manageGroup-heading" />
           </h2>
           <p>
             <FormattedMessage
-              defaultMessage="Copy or note down the corresponding EPPN/username and password for each student during the session in which it was added."
+              defaultMessage="Copy or note down the corresponding EPPN/username and password for each account during the session in which it was added."
               id="manageGroup-paragraph"
             />
           </p>
@@ -221,7 +221,7 @@ export default function MembersList({
               className="btn btn-link"
               onClick={toggleShowMore}
             >
-              <FormattedMessage defaultMessage="READ MORE ON HOW TO MANAGE ADDED STUDENTS" id="manageGroup-showList" />
+              <FormattedMessage defaultMessage="READ MORE ON HOW TO MANAGE ADDED ACCOUNTS" id="manageGroup-showList" />
               <FontAwesomeIcon icon={faChevronDown as IconProp} />
             </button>
           ) : (
@@ -233,7 +233,7 @@ export default function MembersList({
                 onClick={toggleShowMore}
               >
                 <FormattedMessage
-                  defaultMessage="READ LESS ON HOW TO MANAGE ADDED STUDENTS"
+                  defaultMessage="READ LESS ON HOW TO MANAGE ADDED ACCOUNTS"
                   id="manageGroup-hideList"
                 />
                 <FontAwesomeIcon icon={faChevronUp as IconProp} />
@@ -241,25 +241,25 @@ export default function MembersList({
               <ol className="listed-steps">
                 <li>
                   <FormattedMessage
-                    defaultMessage="You can select students by using the corresponding checkboxes and copy several/all entire rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it."
+                    defaultMessage="You can select accounts by using the corresponding checkboxes and copy several/all entire rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it."
                     id="manageGroup-listItem1"
                   />
                 </li>
                 <li>
                   <FormattedMessage
-                    defaultMessage="If you get a new password by clicking the NEW PASSWORD link, it must be used by the student for the exam, as the previous password will be invalid."
+                    defaultMessage="If you get a new password by clicking the NEW PASSWORD link, it must be used by the account holder (i.e. by the student for the exam), as the previous password will be invalid."
                     id="manageGroup-listItem2"
                   />
                 </li>
                 <li>
                   <FormattedMessage
-                    defaultMessage="If you need to make changes to added students, select the appropriate row/s and click the REMOVE ROW button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
+                    defaultMessage="If you need to make changes to added accounts, select the appropriate row/s and click the REMOVE ROW button, you can now add the account again if needed, in the same way - but with a new EPPN/username and password."
                     id="manageGroup-listItem3"
                   />
                 </li>
                 <li>
                   <FormattedMessage
-                    defaultMessage="To find a student you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
+                    defaultMessage="To find an account you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
                     id="manageGroup-listItem4"
                   />
                 </li>
@@ -416,13 +416,13 @@ export default function MembersList({
         id="remove-selected-users-modal"
         title={
           <FormattedMessage
-            defaultMessage="Remove students in organisation"
+            defaultMessage="Remove accounts from organisation"
             id="manageGroup-removeMembersDialogHeading"
           />
         }
         mainText={
           <FormattedMessage
-            defaultMessage={`Are you sure you want to delete ${isMemberSelected.length} students? If so, please press the OK button below.`}
+            defaultMessage={`Are you sure you want to delete ${isMemberSelected.length} accounts? If so, please press the OK button below.`}
             id="manageGroup-removeMembersDialogParagraph"
           />
         }
