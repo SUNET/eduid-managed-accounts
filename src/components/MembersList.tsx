@@ -29,6 +29,7 @@ export interface MembersListTypes {
   members: Array<MembersDetailsTypes & { selected: boolean }>;
   setMembers: React.Dispatch<React.SetStateAction<any>>;
   accessToken: string;
+  handleGroupVersion: any;
 }
 
 export default function MembersList({
@@ -36,6 +37,7 @@ export default function MembersList({
   members,
   setMembers,
   accessToken,
+  handleGroupVersion,
 }: MembersListTypes): JSX.Element {
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
@@ -137,6 +139,7 @@ export default function MembersList({
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
+    await handleGroupVersion();
     const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
     if (memberToBeRemoved && memberToBeRemoved.length > 0) {
       for (const member of memberToBeRemoved) {

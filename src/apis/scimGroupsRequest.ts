@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { GroupResponse } from "typescript-clients/scim";
 import { AppDispatch, AppRootState } from "../init-app";
-import getGroupsSlice from "../slices/getGroups";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
@@ -110,9 +109,9 @@ export const getGroupDetails = createAsyncThunk<
       const scimResponse = await fetch(baseURL + "Groups/" + args.id, scimRequest);
 
       if (scimResponse.ok) {
-        const scim = await scimResponse.json();
-        // return await scimResponse.json();
-        return await thunkAPI.dispatch(getGroupsSlice.actions.updateState(scim));
+        // const scim = await scimResponse.json();
+        return await scimResponse.json();
+        // return await thunkAPI.dispatch(getGroupsSlice.actions.updateState(scim));
       } else {
         const result = await scimResponse.json();
         return await handleErrorResponse(result);
@@ -133,9 +132,10 @@ export const putGroup = createAsyncThunk<
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
   try {
+    const state = thunkAPI.getState();
+    const version = state.groups.managedAccounts.meta.version;
     if (args.accessToken) {
-      console.log("INPUT putGroup args", args);
-      const headers = { ...scimHeaders(args.accessToken), "If-Match": args.group.meta.version };
+      const headers = { ...scimHeaders(args.accessToken), "If-Match": version };
       // arg.result is the same response from getGroup. It is needed to clear properties that are not needed
       if (args.group.meta) delete args.group.meta;
       if (args.group.schemas) delete args.group.schemas;
@@ -153,7 +153,6 @@ export const putGroup = createAsyncThunk<
       if (scimResponse.ok) {
         return json_response;
       } else {
-        console.log("ERROR COMES HERE", json_response);
         return await handleErrorResponse(json_response);
       }
     }

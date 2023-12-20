@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { putGroup } from "../apis/scimGroupsRequest";
 import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { fakePassword } from "../common/testEPPNData";
 
@@ -13,7 +12,7 @@ export const initialState: GetUsersState = {
 };
 
 export const getUsersSlice = createSlice({
-  name: "groups",
+  name: "users",
   initialState,
   reducers: {
     initialize: (state) => {
@@ -38,9 +37,6 @@ export const getUsersSlice = createSlice({
     });
     builder.addCase(deleteUser.fulfilled, (state, action) => {
       state.members = state.members?.filter((user) => user.id !== action.payload.id);
-    });
-    builder.addCase(putGroup.rejected, (state, action) => {
-      state.members = [];
     });
   },
 });
