@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { GroupResponse } from "typescript-clients/scim";
 import { AppDispatch, AppRootState } from "../init-app";
+import getGroupsSlice from "../slices/getGroups";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
@@ -109,7 +110,9 @@ export const getGroupDetails = createAsyncThunk<
       const scimResponse = await fetch(baseURL + "Groups/" + args.id, scimRequest);
 
       if (scimResponse.ok) {
-        return await scimResponse.json();
+        const scim = await scimResponse.json();
+        // return await scimResponse.json();
+        return await thunkAPI.dispatch(getGroupsSlice.actions.updateState(scim));
       } else {
         const result = await scimResponse.json();
         return await handleErrorResponse(result);
@@ -122,7 +125,11 @@ export const getGroupDetails = createAsyncThunk<
 
 export const putGroup = createAsyncThunk<
   any, // return type
-  { group: any; accessToken: string }, // args type
+  {
+    group: any;
+    accessToken: string;
+    // version: string
+  }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
   try {

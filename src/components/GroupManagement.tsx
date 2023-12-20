@@ -10,7 +10,6 @@ import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
 import { getUserDetails, postUser } from "../apis/scimUsersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
 import MembersList, { MembersDetailsTypes } from "./MembersList";
@@ -37,6 +36,7 @@ export default function GroupManagement(): JSX.Element {
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
+  console.log("managedAccountsDetails", managedAccountsDetails);
 
   useEffect(() => {
     if (parsedUserInfo) {
@@ -60,7 +60,7 @@ export default function GroupManagement(): JSX.Element {
     const initializeManagedAccountsGroup = async () => {
       try {
         dispatch(getUsersSlice.actions.initialize());
-        dispatch(getGroupsSlice.actions.initialize());
+        // dispatch(getGroupsSlice.actions.initialize());
         const result = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME, accessToken: accessToken }));
         if (getGroupsSearch.fulfilled.match(result)) {
           if (!result.payload?.Resources?.length) {
@@ -89,7 +89,9 @@ export default function GroupManagement(): JSX.Element {
     initializeManagedAccountsGroup();
   }, [dispatch, accessToken]);
 
-  const addUser = async (values: { given_name: string; surname: string }) => {
+  const addUser = async (values: any, version: string) => {
+    console.log("2");
+    // await handleGroupVersion();
     if (values.given_name && values.surname) {
       try {
         const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
@@ -109,9 +111,12 @@ export default function GroupManagement(): JSX.Element {
             display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
           };
 
-          // from here run again in case of "version mismatch"
-          const newMembersList = managedAccountsDetails.members?.slice(); // copy array
+          let newMembersList = managedAccountsDetails.members?.slice(); // copy array
+          console.log("newMembersList", newMembersList);
+
           newMembersList?.push(newGroupMember);
+          console.log("[state. version??]", managedAccountsDetails.meta.version);
+          // from here run again in case of "version mismatch"
 
           const response = await dispatch(
             putGroup({
@@ -119,48 +124,96 @@ export default function GroupManagement(): JSX.Element {
                 ...managedAccountsDetails,
                 members: newMembersList,
               },
+              // version: managedAccountsDetails.meta.version,
               accessToken: accessToken,
             })
           );
           // to here
+          // const response2 = await dispatch(
+          //   getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken })
+          // );
+          // console.log("response2", response2);
+          // if (getGroupDetails.fulfilled.match(response2)) {
+          //   // update membersDetails as in initializeManagedAccountsGroup()
+          //   const members = response2.payload.members;
+          //   if (members) {
+          //     await Promise.all(
+          //       members?.map(async (member: GroupMember) => {
+          //         await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+          //       })
+          //     );
+          //     dispatch(getUsersSlice.actions.sortByLatest());
+          //   }
+          //   const newMembersList = response2.payload.members?.slice(); // copy array
+          //   newMembersList?.push(newGroupMember);
 
-          if (putGroup.rejected.match(response) && response.payload === "Failed with status 400: Version mismatch") {
-            const response2 = await dispatch(
-              getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken })
-            );
-            if (getGroupDetails.fulfilled.match(response2)) {
-              // update membersDetails as in initializeManagedAccountsGroup()
-              const members = response2.payload.members;
-              if (members) {
-                await Promise.all(
-                  members?.map(async (member: GroupMember) => {
-                    await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-                  })
-                );
-                dispatch(getUsersSlice.actions.sortByLatest());
-              }
-              console.log("members", members);
-              const newMembersList = response2.payload.members?.slice(); // copy array
-              newMembersList?.push(newGroupMember);
-              console.log("newMembersList", newMembersList);
+          //   const response = await dispatch(
+          //     putGroup({
+          //       group: {
+          //         ...response2.payload,
+          //         members: newMembersList,
+          //       },
+          //       accessToken: accessToken,
+          //     })
+          //   );
+          // }
 
-              const response = await dispatch(
-                putGroup({
-                  group: {
-                    ...response2.payload,
-                    members: newMembersList,
-                  },
-                  accessToken: accessToken,
-                })
-              );
-            }
-          }
+          // if (putGroup.rejected.match(response) && response.payload === "Failed with status 400: Version mismatch") {
+          //   // const response2 = await dispatch(
+          //   //   getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken })
+          //   // );
+          //   // if (getGroupDetails.fulfilled.match(response2)) {
+          //   //   // update membersDetails as in initializeManagedAccountsGroup()
+          //   //   const members = response2.payload.members;
+          //   //   if (members) {
+          //   //     await Promise.all(
+          //   //       members?.map(async (member: GroupMember) => {
+          //   //         await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+          //   //       })
+          //   //     );
+          //   //     dispatch(getUsersSlice.actions.sortByLatest());
+          //   //   }
+          //   //   const newMembersList = response2.payload.members?.slice(); // copy array
+          //   //   newMembersList?.push(newGroupMember);
+          //   //   const response = await dispatch(
+          //   //     putGroup({
+          //   //       group: {
+          //   //         ...response2.payload,
+          //   //         members: newMembersList,
+          //   //       },
+          //   //       accessToken: accessToken,
+          //   //     })
+          //   //   );
+          //   // }
+          // }
         }
       } catch (error) {
         console.log("error", error);
       }
     }
   };
+
+  async function handleGroupVersion(values: any) {
+    const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    console.log("1");
+    if (getGroupDetails.fulfilled.match(response)) {
+      if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
+        await dispatch(getUsersSlice.actions.initialize());
+        const members = response.payload.members;
+        if (members) {
+          await Promise.all(
+            members?.map(async (member: GroupMember) => {
+              await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+            })
+          );
+          dispatch(getUsersSlice.actions.sortByLatest());
+        }
+      }
+      const version = response.payload.meta.version;
+      console.log("correct version", version);
+      return await addUser(values, version);
+    }
+  }
 
   function containsNationalIDNumber(params: string) {
     // 0 -filter out all non-digits
@@ -304,7 +357,7 @@ export default function GroupManagement(): JSX.Element {
 
         <Form
           validate={validatePersonalData}
-          onSubmit={addUser}
+          onSubmit={handleGroupVersion}
           render={({ handleSubmit, form, submitting, invalid }) => (
             <form
               onSubmit={async (event) => {
