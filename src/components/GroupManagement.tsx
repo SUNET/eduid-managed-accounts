@@ -139,9 +139,10 @@ export default function GroupManagement(): JSX.Element {
                 );
                 dispatch(getUsersSlice.actions.sortByLatest());
               }
-
+              console.log("members", members);
               const newMembersList = response2.payload.members?.slice(); // copy array
               newMembersList?.push(newGroupMember);
+              console.log("newMembersList", newMembersList);
 
               const response = await dispatch(
                 putGroup({
