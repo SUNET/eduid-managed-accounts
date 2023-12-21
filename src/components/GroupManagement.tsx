@@ -89,10 +89,8 @@ export default function GroupManagement(): JSX.Element {
               }
             }
           }
-          // when user get 401 error, it will redirect to login page
         } else if (getGroupsSearch.rejected.match(result)) {
-          console.log("result", result);
-          // navigate("/");
+          // when user get 401 error, it will redirect to login page or landing page
         }
       } catch (error) {
         console.log("Error", error);
