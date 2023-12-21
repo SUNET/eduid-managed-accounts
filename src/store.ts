@@ -13,7 +13,6 @@ const managedAccountsApp = combineReducers({
   personalData: getPersonalDataReducer,
   notifications: notificationsSlice.reducer,
   app: appReducer,
-  // fetchInteractionResponse: fetchInteractionResponseReducer,
 });
 
 export default managedAccountsApp;

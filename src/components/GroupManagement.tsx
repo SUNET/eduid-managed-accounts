@@ -101,11 +101,14 @@ export default function GroupManagement(): JSX.Element {
   const addUser = async (values: { given_name: string; surname: string }) => {
     if (values.given_name && values.surname) {
       try {
+        const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
+        const scope = eduPersonPrincipalName.split("@")[1];
         const createdUserResponse = await dispatch(
           postUser({
             familyName: values.surname,
             givenName: values.given_name,
             accessToken: accessToken,
+            scope: scope,
           })
         );
         if (postUser.fulfilled.match(createdUserResponse)) {
@@ -199,7 +202,7 @@ export default function GroupManagement(): JSX.Element {
         <div className="lead">
           <p>
             <FormattedMessage
-              defaultMessage="In the forms below you can manage your organisations accounts by adding students as members, to create the unique username -
+              defaultMessage="In the forms below you can manage your organisations accounts by adding students, to create their individual account with a unique username -
             EPPN - and the password that they will need to be able to perform the Digital National Exam."
               id="intro-lead"
             />
@@ -208,11 +211,11 @@ export default function GroupManagement(): JSX.Element {
       </section>
       <section>
         <h2>
-          <FormattedMessage defaultMessage="Add student to organisation" id="addToGroup-heading" />
+          <FormattedMessage defaultMessage="Add account to organisation" id="addToGroup-heading" />
         </h2>
         <p>
           <FormattedMessage
-            defaultMessage="Add every student by using this form, to create their username and password."
+            defaultMessage="Add every account by using this form, to create the username and password."
             id="addToGroup-paragraph"
           />
         </p>
@@ -223,7 +226,7 @@ export default function GroupManagement(): JSX.Element {
             className="btn btn-link"
             onClick={toggleShowMore}
           >
-            <FormattedMessage defaultMessage="READ MORE ON HOW TO ADD STUDENTS" id="addToGroup-showList" />
+            <FormattedMessage defaultMessage="READ MORE ON HOW TO ADD ACCOUNTS" id="addToGroup-showList" />
             <FontAwesomeIcon icon={faChevronDown as IconProp} />
           </button>
         ) : (
@@ -234,26 +237,26 @@ export default function GroupManagement(): JSX.Element {
               className="btn btn-link"
               onClick={toggleShowMore}
             >
-              <FormattedMessage defaultMessage="READ LESS ON HOW TO ADD STUDENTS" id="addToGroup-hideList" />
+              <FormattedMessage defaultMessage="READ LESS ON HOW TO ADD ACCOUNTS" id="addToGroup-hideList" />
               <FontAwesomeIcon icon={faChevronUp as IconProp} />
             </button>
             <ol className="listed-steps">
               <li>
                 <FormattedMessage
-                  defaultMessage="Enter the given name and surname for each student, one at a time."
+                  defaultMessage="Enter the given name and surname for each account, one at a time."
                   id="addToGroup-listItem1"
                 />
               </li>
               <li>
                 <FormattedMessage
-                  defaultMessage="Write the name so that you can distinguish the identity of the person even if there are students
-                 with identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
+                  defaultMessage="Write the name so that you can distinguish the identity of the person even if there are 
+                identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
                   id="addToGroup-listItem2"
                 />
               </li>
               <li>
                 <FormattedMessage
-                  defaultMessage='When you click the ADD button the student will be added to the organisation and appearing in a table below in the "Manage added students" section.'
+                  defaultMessage='When you click the ADD button the account will be added to the organisation and appearing in a table below in the "Manage added accounts" section.'
                   id="addToGroup-listItem3"
                 />
               </li>

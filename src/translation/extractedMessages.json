@@ -9,19 +9,19 @@
     "string": "Given name*"
   },
   "addToGroup-heading": {
-    "string": "Add student to organisation"
+    "string": "Add account to organisation"
   },
   "addToGroup-hideList": {
-    "string": "READ LESS ON HOW TO ADD STUDENTS"
+    "string": "READ LESS ON HOW TO ADD ACCOUNTS"
   },
   "addToGroup-listItem1": {
-    "string": "Enter the given name and surname for each student, one at a time."
+    "string": "Enter the given name and surname for each account, one at a time."
   },
   "addToGroup-listItem2": {
-    "string": "Write the name so that you can distinguish the identity of the person even if there are students with identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
+    "string": "Write the name so that you can distinguish the identity of the person even if there are identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
   },
   "addToGroup-listItem3": {
-    "string": "When you click the ADD button the student will be added to the organisation and appearing in a table below in the \"Manage added students\" section."
+    "string": "When you click the ADD button the account will be added to the organisation and appearing in a table below in the \"Manage added accounts\" section."
   },
   "addToGroup-listItem4": {
     "string": "transfer it to an external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
@@ -33,19 +33,19 @@
     "string": "It is not allowed to save a national ID number"
   },
   "addToGroup-paragraph": {
-    "string": "Add every student by using this form, to create their username and password."
+    "string": "Add every account by using this form, to create the username and password."
   },
   "addToGroup-showList": {
-    "string": "READ MORE ON HOW TO ADD STUDENTS"
+    "string": "READ MORE ON HOW TO ADD ACCOUNTS"
   },
   "addToGroup-surname": {
     "string": "Surname*"
   },
   "intro-heading": {
-    "string": "Welcome to Managing Accounts using eduID"
+    "string": "Welcome {user}"
   },
   "intro-lead": {
-    "string": "In the forms below you can manage your organisations accounts by adding students as members, to create the unique username - EPPN - and the password that they will need to be able to perform the Digital National Exam."
+    "string": "In the forms below you can manage your organisations accounts by adding students, to create their individual account with a unique username - EPPN - and the password that they will need to be able to perform the Digital National Exam."
   },
   "manageGroup-copiedEppnDialog": {
     "string": "Copied EPPN"
@@ -66,34 +66,34 @@
     "string": "Given name"
   },
   "manageGroup-heading": {
-    "string": "Manage added students"
+    "string": "Manage added accounts"
   },
   "manageGroup-hideList": {
-    "string": "READ LESS ON HOW TO MANAGE ADDED STUDENTS"
+    "string": "READ LESS ON HOW TO MANAGE ADDED ACCOUNTS"
   },
   "manageGroup-listItem1": {
-    "string": "You can select students by using the corresponding checkboxes and copy several/all entire rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it."
+    "string": "You can select accounts by using the corresponding checkboxes and copy several/all entire rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it."
   },
   "manageGroup-listItem2": {
-    "string": "If you get a new password by clicking the NEW PASSWORD link, it must be used by the student for the exam, as the previous password will be invalid."
+    "string": "If you get a new password by clicking the NEW PASSWORD link, it must be used by the account holder (i.e. by the student for the exam), as the previous password will be invalid."
   },
   "manageGroup-listItem3": {
-    "string": "If you need to make changes to added students, select the appropriate row/s and click the REMOVE ROW button, you can now add the student again if needed, in the same way - but with a new EPPN/username and password."
+    "string": "If you need to make changes to added accounts, select the appropriate row/s and click the REMOVE ROW button, you can now add the account again if needed, in the same way - but with a new EPPN/username and password."
   },
   "manageGroup-listItem4": {
-    "string": "To find a student you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
+    "string": "To find an account you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
   },
   "manageGroup-newPasswordLink": {
     "string": "New password"
   },
   "manageGroup-paragraph": {
-    "string": "Copy or note down the corresponding EPPN/username and password for each student during the session in which it was added."
+    "string": "Copy or note down the corresponding EPPN/username and password for each account during the session in which it was added."
   },
   "manageGroup-passwordColumn": {
     "string": "Password"
   },
   "manageGroup-removeMembersDialogHeading": {
-    "string": "Remove students in organisation"
+    "string": "Remove accounts from organisation"
   },
   "manageGroup-removeMembersDialogParagraph": {
   },
@@ -113,7 +113,7 @@
     "string": "show less"
   },
   "manageGroup-showList": {
-    "string": "READ MORE ON HOW TO MANAGE ADDED STUDENTS"
+    "string": "READ MORE ON HOW TO MANAGE ADDED ACCOUNTS"
   },
   "manageGroup-surnameColumn": {
     "string": "Surname"
