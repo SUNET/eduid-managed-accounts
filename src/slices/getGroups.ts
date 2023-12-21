@@ -41,9 +41,6 @@ export const getGroupsSlice = createSlice({
         members: [],
       };
     },
-    updateState: (state, action) => {
-      state.managedAccounts = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(createGroup.fulfilled, (state, action) => {
