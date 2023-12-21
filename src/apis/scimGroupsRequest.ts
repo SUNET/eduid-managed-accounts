@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, AppRootState } from "init-app";
 import { GroupResponse } from "typescript-clients/scim";
+import { AppDispatch, AppRootState } from "../init-app";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
@@ -110,6 +110,7 @@ export const getGroupDetails = createAsyncThunk<
 
       if (scimResponse.ok) {
         return await scimResponse.json();
+        // return await thunkAPI.dispatch(getGroupsSlice.actions.updateState(scim));
       } else {
         const result = await scimResponse.json();
         return await handleErrorResponse(result);
@@ -122,31 +123,35 @@ export const getGroupDetails = createAsyncThunk<
 
 export const putGroup = createAsyncThunk<
   GroupResponse, // return type
-  { result: any; accessToken: string }, // args type
+  {
+    group: any;
+    accessToken: string;
+  }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
   try {
+    const state = thunkAPI.getState();
+    const version = state.groups.managedAccounts.meta.version;
     if (args.accessToken) {
-      const headers = { ...scimHeaders(args.accessToken), "If-Match": args.result.meta.version };
+      const headers = { ...scimHeaders(args.accessToken), "If-Match": version };
       // arg.result is the same response from getGroup. It is needed to clear properties that are not needed
-      delete args.result.meta;
-      delete args.result.schemas;
+      delete args.group.meta;
+      delete args.group.schemas;
       const payload = {
-        ...args.result,
-        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"],
+        ...args.group,
+        schemas: ["urn:ietf:params:scim:schemas:core:2.0:User"], // this is different from getGroup
       };
       const scimRequest = {
         headers: headers,
         method: "PUT",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(baseURL + "Groups/" + args.result.id, scimRequest);
+      const scimResponse = await fetch(baseURL + "Groups/" + args.group.id, scimRequest);
+      const json_response = await scimResponse.json();
       if (scimResponse.ok) {
-        const json_response = await scimResponse.json();
         return json_response;
       } else {
-        const result = await scimResponse.json();
-        return await handleErrorResponse(result);
+        return await handleErrorResponse(json_response);
       }
     }
   } catch (error) {
