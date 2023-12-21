@@ -109,7 +109,6 @@ export const getGroupDetails = createAsyncThunk<
       const scimResponse = await fetch(baseURL + "Groups/" + args.id, scimRequest);
 
       if (scimResponse.ok) {
-        // const scim = await scimResponse.json();
         return await scimResponse.json();
         // return await thunkAPI.dispatch(getGroupsSlice.actions.updateState(scim));
       } else {
@@ -123,11 +122,10 @@ export const getGroupDetails = createAsyncThunk<
 });
 
 export const putGroup = createAsyncThunk<
-  any, // return type
+  GroupResponse, // return type
   {
     group: any;
     accessToken: string;
-    // version: string
   }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/putGroup", async (args, thunkAPI) => {
