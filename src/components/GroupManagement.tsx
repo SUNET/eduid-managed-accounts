@@ -45,6 +45,12 @@ export default function GroupManagement(): JSX.Element {
   }, [parsedUserInfo]);
 
   useEffect(() => {
+    if (!membersDetails.length) {
+      dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    }
+  }, [membersDetails]);
+
+  useEffect(() => {
     if (locationState === null) {
       return navigate("/");
     }
@@ -89,7 +95,8 @@ export default function GroupManagement(): JSX.Element {
     initializeManagedAccountsGroup();
   }, [dispatch, accessToken]);
 
-  const addUser = async (values: { given_name: string; surname: string }) => {
+  async function addUser(values: any) {
+    await handleGroupVersion();
     if (values.given_name && values.surname) {
       try {
         const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
@@ -109,12 +116,14 @@ export default function GroupManagement(): JSX.Element {
             display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
           };
 
-          const newMembersList = managedAccountsDetails.members?.slice(); // copy array
-          newMembersList?.push(newGroupMember);
+          let newMembersList = await managedAccountsDetails.members?.slice(); // copy array
 
-          await dispatch(
+          await newMembersList?.push(newGroupMember);
+          // from here run again in case of "version mismatch"
+
+          const response = await dispatch(
             putGroup({
-              result: {
+              group: {
                 ...managedAccountsDetails,
                 members: newMembersList,
               },
@@ -126,19 +135,37 @@ export default function GroupManagement(): JSX.Element {
         console.log("error", error);
       }
     }
-  };
+  }
+
+  async function handleGroupVersion() {
+    const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    if (getGroupDetails.fulfilled.match(response)) {
+      if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
+        await dispatch(getUsersSlice.actions.initialize());
+        const members = response.payload.members;
+        if (members) {
+          await Promise.all(
+            members?.map(async (member: GroupMember) => {
+              await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+            })
+          );
+          await dispatch(getUsersSlice.actions.sortByLatest());
+        }
+      }
+    }
+  }
 
   function containsNationalIDNumber(params: string) {
     // 0 -filter out all non-digits
     const inputNumbers = params.replace(/\D/g, "");
     // 1 - if less than 10 digits, return false
-    const ID_NUMBER_MAX_LENGTH = 10;
-    if (inputNumbers.length < ID_NUMBER_MAX_LENGTH) {
+    const ID_NUMBER_MIN_LENGTH = 10;
+    if (inputNumbers.length < ID_NUMBER_MIN_LENGTH) {
       return false;
     } else {
       // 2 - else, test the first 10 characters and personnummer library
       for (let i = 0; i < inputNumbers.length - 10 + 1; i++) {
-        if (Personnummer.valid(inputNumbers.substring(i, i + ID_NUMBER_MAX_LENGTH))) {
+        if (Personnummer.valid(inputNumbers.substring(i, i + ID_NUMBER_MIN_LENGTH))) {
           return true;
         }
       }
@@ -314,6 +341,7 @@ export default function GroupManagement(): JSX.Element {
       </section>
       <section>
         <MembersList
+          handleGroupVersion={handleGroupVersion}
           accessToken={accessToken}
           members={members}
           setMembers={setMembers}

@@ -12,7 +12,7 @@ export const initialState: GetUsersState = {
 };
 
 export const getUsersSlice = createSlice({
-  name: "groups",
+  name: "users",
   initialState,
   reducers: {
     initialize: (state) => {
