@@ -368,7 +368,7 @@ export default function MembersList({
                   <td>{member.name.givenName}</td>
                   <td>{member.name.familyName}</td>
                   <td>
-                    {member.externalId}
+                    {member.externalId.split("@")[0]}
                     <button
                       id="clipboard"
                       className="icon-only copybutton"
