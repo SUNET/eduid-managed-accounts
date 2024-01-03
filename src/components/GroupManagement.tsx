@@ -1,6 +1,7 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ExcelJS from "exceljs";
 import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
@@ -212,6 +213,39 @@ export default function GroupManagement(): JSX.Element {
     return <></>;
   }
 
+  async function excelImport(e: any) {
+    e.preventDefault();
+
+    const wb = new ExcelJS.Workbook();
+    const reader = new FileReader();
+    var file = document.getElementById("excelFile");
+    reader.readAsArrayBuffer(file.files[0]);
+    reader.onload = () => {
+      const buffer = reader.result;
+      wb.xlsx.load(buffer).then((workbook) => {
+        console.log(workbook, "workbook instance");
+        // check/find right sheet name
+        workbook.eachSheet((sheet, id) => {
+          // 1 - skip the first row that contains headers
+          // 2 - for each row :
+          //      - read "Given name" and "Surname" columns (VALIDATE DATA?)
+          //      - create/POST a new user with these values
+          sheet.eachRow((row, rowIndex) => {
+            console.log(row.values, rowIndex);
+            if (rowIndex > 1) {
+              const values = {
+                given_name: row.getCell(1).value,
+                surname: row.getCell(2).value,
+              };
+              console.log("values", values);
+              // addUser(values);
+            }
+          });
+        });
+      });
+    };
+  }
+
   return (
     <React.Fragment>
       <section className="intro">
@@ -345,6 +379,16 @@ export default function GroupManagement(): JSX.Element {
             </form>
           )}
         />
+        <hr className="border-line"></hr>
+        <p>
+          <FormattedMessage defaultMessage="Import via Excel" id="excel-import" />
+        </p>
+        <form onSubmit={excelImport} id="testForm">
+          <input type="file" name="excelFile" id="excelFile" />
+          <button type="submit" className="btn btn-primary">
+            <FormattedMessage defaultMessage="Create via Excel" id="excel-import" />
+          </button>
+        </form>
       </section>
       <section>
         <MembersList
