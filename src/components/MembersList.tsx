@@ -218,7 +218,6 @@ export default function MembersList({
 
     // read the data from state
     members.forEach((member) => {
-      console.log(member);
       worksheet.addRow({
         "given-name": member.name.givenName,
         surname: member.name.familyName,
