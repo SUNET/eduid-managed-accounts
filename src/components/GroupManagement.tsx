@@ -218,18 +218,19 @@ export default function GroupManagement(): JSX.Element {
 
     const wb = new ExcelJS.Workbook();
     const reader = new FileReader();
-    var file = document.getElementById("excelFile");
+    const file = document.getElementById("excelFile");
     reader.readAsArrayBuffer(file.files[0]);
     reader.onload = () => {
       const buffer = reader.result;
       wb.xlsx.load(buffer).then((workbook) => {
         console.log(workbook, "workbook instance");
         // check/find right sheet name
-        workbook.eachSheet((sheet, id) => {
+        workbook.eachSheet(async (sheet, id) => {
           // 1 - skip the first row that contains headers
           // 2 - for each row :
           //      - read "Given name" and "Surname" columns (VALIDATE DATA?)
           //      - create/POST a new user with these values
+          let newNames: any[] = [];
           sheet.eachRow((row, rowIndex) => {
             console.log(row.values, rowIndex);
             if (rowIndex > 1) {
@@ -238,9 +239,15 @@ export default function GroupManagement(): JSX.Element {
                 surname: row.getCell(2).value,
               };
               console.log("values", values);
-              // addUser(values);
+              newNames.push(values);
             }
           });
+          console.log("newNames", newNames);
+          // sequentially add users
+          for (const name of newNames) {
+            console.log("new Name", name);
+            await addUser(name);
+          }
         });
       });
     };
