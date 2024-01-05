@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createGroup, getGroupDetails, putGroup } from "../apis/scimGroupsRequest";
+import { createGroup, getGroupDetails, putGroup } from "../apis/scim/groupsRequest";
 import { GroupResponse, SCIMResourceType } from "../typescript-clients/scim";
 
 interface GetGroupsState {

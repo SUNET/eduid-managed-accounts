@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { CompactSign, importJWK } from "jose";
-import { getSHA256Hash } from "../common/CryptoUtils";
-import { ContinueAccessToken, ContinueRequest, SubjectAssertion } from "../typescript-clients/gnap";
+import { getSHA256Hash } from "../../common/CryptoUtils";
+import { ContinueAccessToken, ContinueRequest, SubjectAssertion } from "../../typescript-clients/gnap";
 
 interface PostContinueRequestResponse {
   access_token: ContinueAccessToken;
