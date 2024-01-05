@@ -150,7 +150,7 @@ export const putGroup = createAsyncThunk<
       if (scimResponse.ok) {
         return jsonResponse;
       } else {
-        return await handleErrorResponse(jsonResponse);
+        return await handleErrorResponse(scimResponse);
       }
     }
   } catch (error) {
@@ -158,7 +158,7 @@ export const putGroup = createAsyncThunk<
   }
 });
 
-export const handleErrorResponse = async (response: ErrorResponse) => {
+export const handleErrorResponse = async (response: any) => {
   const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
   if (response.status === 401) {
     window.location.href = "/";
