@@ -183,8 +183,8 @@ export default function GroupManagement(): JSX.Element {
     const errors: ErrorsType = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
-        // check if the input is empty
-        if (!values[inputName]) {
+        // check if the input is empty or it contains only spaces
+        if (!values[inputName] || !values[inputName].trim()) {
           errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {
