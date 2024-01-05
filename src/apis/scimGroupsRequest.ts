@@ -27,7 +27,7 @@ export interface GroupsSearchResponse {
 }
 
 export interface ErrorResponse {
-  status: string;
+  status: number;
   detail: string;
   message: string;
 }
@@ -110,7 +110,6 @@ export const getGroupDetails = createAsyncThunk<
 
       if (scimResponse.ok) {
         return await scimResponse.json();
-        // return await thunkAPI.dispatch(getGroupsSlice.actions.updateState(scim));
       } else {
         const result = await scimResponse.json();
         return await handleErrorResponse(result);
@@ -147,11 +146,11 @@ export const putGroup = createAsyncThunk<
         body: JSON.stringify(payload),
       };
       const scimResponse = await fetch(baseURL + "Groups/" + args.group.id, scimRequest);
-      const json_response = await scimResponse.json();
+      const jsonResponse = await scimResponse.json();
       if (scimResponse.ok) {
-        return json_response;
+        return jsonResponse;
       } else {
-        return await handleErrorResponse(json_response);
+        return await handleErrorResponse(scimResponse);
       }
     }
   } catch (error) {
@@ -159,7 +158,10 @@ export const putGroup = createAsyncThunk<
   }
 });
 
-export const handleErrorResponse = async (response: ErrorResponse) => {
+export const handleErrorResponse = async (response: any) => {
   const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
+  if (response.status === 401) {
+    window.location.href = "/";
+  }
   throw errorMessage;
 };
