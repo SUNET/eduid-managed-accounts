@@ -57,7 +57,7 @@
     "string": "För att hantera din organisation behöver du först logga in."
   },
   "landing-paragraph-2": {
-    "string": "Fortsätt genom att klicka på länken nedan för att gå till rätt inloggningstjänst för dig, därefter kommer du automatiskt att vidarebefordras tillbaka till denna tjänst, för att kunna börja hantera dina konton."
+    "string": "Fortsätt genom att klicka på länken nedan för att gå till rätt inloggningstjänst för dig, därefter kommer du automatiskt att dirigeras tillbaka till denna tjänst, för att kunna börja hantera dina konton."
   },
   "manageGroup-copiedEppnDialog": {
     "string": "EPPN kopierat"
