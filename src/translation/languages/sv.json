@@ -47,6 +47,18 @@
   "intro-lead": {
     "string": "I formulären nedan kan du hantera din organisations konton genom att lägga till elever, för att skapa deras individuella konton med unika användarnamn - EPPN - och lösenord, som de behöver för att kunna genomföra Digitala Nationella Provet."
   },
+  "landing-header": {
+    "string": "Välkommen till Hantera Konton med eduID"
+  },
+  "landing-link": {
+    "string": "Gå till inloggningstjänst"
+  },
+  "landing-paragraph-1": {
+    "string": "För att hantera din organisation behöver du först logga in."
+  },
+  "landing-paragraph-2": {
+    "string": "Fortsätt genom att klicka på länken nedan för att gå till rätt inloggningstjänst för dig, därefter kommer du automatiskt att  vidarebefordras tillbaka till denna tjänst, för att kunna börja hantera dina konton."
+  },
   "manageGroup-copiedEppnDialog": {
     "string": "EPPN kopierat"
   },
