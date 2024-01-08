@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteUser, getUserDetails, postUser } from "../apis/scimUsersRequest";
+import { deleteUser, getUserDetails, postUser } from "../apis/scim/usersRequest";
 import { fakePassword } from "../common/testEPPNData";
 
 interface GetUsersState {

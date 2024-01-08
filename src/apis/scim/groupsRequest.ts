@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { GroupResponse } from "typescript-clients/scim";
-import { AppDispatch, AppRootState } from "../init-app";
+import { GroupResponse, ListResponse } from "typescript-clients/scim";
+import { AppDispatch, AppRootState } from "../../init-app";
+import { handleErrorResponse } from "./error";
 
 export const baseURL = "https://api.eduid.docker/scim/";
 
@@ -10,27 +11,6 @@ export const scimHeaders = (token: string) => {
     Authorization: `Bearer ${token}`,
   };
 };
-
-export interface Group {
-  id: string;
-  displayName: string;
-}
-
-export interface AllGroupsResponse {
-  groups: Group[];
-  Resources: [{ id: string; displayName: string }];
-}
-
-export interface GroupsSearchResponse {
-  totalResults: number;
-  Resources: [{ id: string; displayName: string }];
-}
-
-export interface ErrorResponse {
-  status: number;
-  detail: string;
-  message: string;
-}
 
 export const createGroup = createAsyncThunk<
   GroupResponse, // return type
@@ -64,7 +44,7 @@ export const createGroup = createAsyncThunk<
 });
 
 export const getGroupsSearch = createAsyncThunk<
-  GroupsSearchResponse, // return type
+  ListResponse, // return type
   { searchFilter: string; accessToken: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
@@ -150,18 +130,10 @@ export const putGroup = createAsyncThunk<
       if (scimResponse.ok) {
         return jsonResponse;
       } else {
-        return await handleErrorResponse(scimResponse);
+        return await handleErrorResponse(jsonResponse);
       }
     }
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
 });
-
-export const handleErrorResponse = async (response: any) => {
-  const errorMessage = `Failed with status ${response.status}: ${response.message || response.detail}`;
-  if (response.status === 401) {
-    window.location.href = "/";
-  }
-  throw errorMessage;
-};
