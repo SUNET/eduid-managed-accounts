@@ -1,4 +1,4 @@
-import { CompactSign, JWK } from "jose";
+import { CompactSign, JWK, KeyLike } from "jose";
 import {
   AccessTokenFlags,
   AccessTokenRequest,
@@ -11,7 +11,7 @@ import {
   SubjectAssertionFormat,
 } from "../../typescript-clients/gnap";
 
-export async function requestAccess(alg: string, publicJwk: JWK, privateKey: JWK, nonce: string) {
+export async function requestAccess(alg: string, publicJwk: JWK, privateKey: KeyLike, nonce: string) {
   const TRANSACTION_URL = "https://api.eduid.docker/auth/transaction";
   const REDIRECT_URL = "http://localhost:5173/callback";
 
