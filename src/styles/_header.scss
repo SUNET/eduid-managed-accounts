@@ -21,7 +21,16 @@ header#header {
       height: 34px;
     }
   }
-
+  .header-user {
+    text-align: right;
+    font-family: $inter-bold;
+    svg {
+      padding-right: 5px;
+    }
+    button {
+      height: auto;
+    }
+  }
   .header-nav {
     button {
       @media (max-width: $bp-sm) {
@@ -49,19 +58,6 @@ header#header {
         &:hover {
           color: $txt-orange;
         }
-      }
-    }
-
-    .header-user {
-      text-transform: lowercase;
-      font-family: $inter-light;
-      background: none;
-      box-shadow: none;
-
-      svg {
-        padding-left: 5px;
-        font-size: 1.25rem;
-        color: $txt-gray;
       }
     }
 
