@@ -8,8 +8,8 @@ import { Field, Form } from "react-final-form";
 import { FormattedMessage } from "react-intl";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
-import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scimGroupsRequest";
-import { getUserDetails, postUser } from "../apis/scimUsersRequest";
+import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
+import { getUserDetails, postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
@@ -184,8 +184,8 @@ export default function GroupManagement(): JSX.Element {
     const errors: ErrorsType = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
-        // check if the input is empty
-        if (!values[inputName]) {
+        // check if the input is empty or it contains only spaces
+        if (!values[inputName] || !values[inputName].trim()) {
           errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { postContinueRequest } from "../apis/continueRequest";
+import { postContinueRequest } from "../apis/gnap/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
 import { useAppDispatch } from "../hooks";
 import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";

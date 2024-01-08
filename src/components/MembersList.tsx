@@ -5,8 +5,8 @@ import ExcelJS from "exceljs";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Meta } from "typescript-clients/scim";
-import { getGroupDetails } from "../apis/scimGroupsRequest";
-import { deleteUser } from "../apis/scimUsersRequest";
+import { getGroupDetails } from "../apis/scim/groupsRequest";
+import { deleteUser } from "../apis/scim/usersRequest";
 import { fakePassword } from "../common/testEPPNData";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -70,7 +70,14 @@ export default function MembersList({
 
   useEffect(() => {
     setSelectAll(false);
-    setMembers(membersDetails.map((member: MembersDetailsTypes) => ({ ...member, selected: false })));
+    setMembers(
+      membersDetails.map((member: MembersDetailsTypes) => {
+        if (member.password) {
+          return { ...member, selected: true };
+        }
+        return { ...member, selected: false };
+      })
+    );
   }, [membersDetails]);
 
   function copyToClipboardAllMembers() {
