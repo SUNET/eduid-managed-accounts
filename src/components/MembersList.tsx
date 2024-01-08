@@ -224,7 +224,7 @@ export default function MembersList({
     worksheet.getRow(1).font = { bold: true };
 
     // read the data from state
-    members.forEach((member) => {
+    isMemberSelected.forEach((member) => {
       worksheet.addRow({
         "given-name": member.name.givenName,
         surname: member.name.familyName,
@@ -317,7 +317,11 @@ export default function MembersList({
               <label>
                 <FormattedMessage defaultMessage="Export in Excel:" id="manageGroup-rowButtonsLabel" />
               </label>
-              <button className={`btn btn-sm btn-primary`} onClick={() => exportExcel()}>
+              <button
+                disabled={!isMemberSelected.length}
+                className={`btn btn-sm btn-primary`}
+                onClick={() => exportExcel()}
+              >
                 <FormattedMessage defaultMessage="Download Excel" id="manageGroup-showLessButton" />
               </button>
             </div>
