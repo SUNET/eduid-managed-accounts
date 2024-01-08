@@ -68,7 +68,14 @@ export default function MembersList({
 
   useEffect(() => {
     setSelectAll(false);
-    setMembers(membersDetails.map((member: MembersDetailsTypes) => ({ ...member, selected: false })));
+    setMembers(
+      membersDetails.map((member: MembersDetailsTypes) => {
+        if (member.password) {
+          return { ...member, selected: true };
+        }
+        return { ...member, selected: false };
+      })
+    );
   }, [membersDetails]);
 
   function copyToClipboardAllMembers() {
