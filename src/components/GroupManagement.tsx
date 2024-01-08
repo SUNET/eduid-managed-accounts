@@ -103,6 +103,19 @@ export default function GroupManagement(): JSX.Element {
     }
   }, [dispatch, accessToken]);
 
+  /**
+   * Prepare addUser() to create multiple accounts at the same time.
+   *
+   * If >1 users are added:
+   *  - 1. create each user (POST Users)
+   *    - 1a. save each response in a temporary array. Wait for PUT Groups be successful to add them to MembersDetails state
+   *    - 1b. prepare an array newGroupMembers: GroupMember[] to be used for PUT Groups
+   *  - 2. with one single request, update the Group with all the new users
+   *    - 2a. with the response, update Group state
+   *    - 2b. push each POST User response in MemberDetails state (this as a consequence of successful PUT Groups)
+   *
+   * @param values
+   */
   async function addUser(values: any) {
     await handleGroupVersion();
     if (values.given_name && values.surname) {
@@ -127,7 +140,6 @@ export default function GroupManagement(): JSX.Element {
           let newMembersList = await managedAccountsDetails.members?.slice(); // copy array
 
           await newMembersList?.push(newGroupMember);
-          // from here run again in case of "version mismatch"
 
           const response = await dispatch(
             putGroup({
@@ -143,6 +155,11 @@ export default function GroupManagement(): JSX.Element {
         console.log("error", error);
       }
     }
+  }
+
+  function handleAddUser(values: any) {
+    console.log("handleAddUser");
+    addUser(values);
   }
 
   async function handleGroupVersion() {
@@ -345,7 +362,7 @@ export default function GroupManagement(): JSX.Element {
 
         <Form
           validate={validatePersonalData}
-          onSubmit={addUser}
+          onSubmit={handleAddUser}
           render={({ handleSubmit, form, submitting, invalid }) => (
             <form
               onSubmit={async (event) => {
