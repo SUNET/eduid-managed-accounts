@@ -234,7 +234,7 @@ export default function MembersList({
     });
 
     // download the file
-    workbook.xlsx.writeBuffer().then(function (buffer: Blob) {
+    workbook.xlsx.writeBuffer().then(function (buffer) {
       const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const url = window.URL.createObjectURL(blob);
       const anchor = document.createElement("a");
