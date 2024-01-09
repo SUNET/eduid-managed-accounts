@@ -108,58 +108,58 @@ export default function GroupManagement(): JSX.Element {
    *
    * If >1 users are added:
    *  - 1. create each user (POST Users)
-   *    - 1a. save each response in a temporary array. Wait for PUT Groups be successful to add them to MembersDetails state
+   *    - 1a. postUser() extraReducer adds user to state
    *    - 1b. prepare an array newGroupMembers: GroupMember[] to be used for PUT Groups
    *  - 2. with one single request, update the Group with all the new users
-   *    - 2a. with the response, update Group state
-   *    - 2b. push each POST User response in MemberDetails state (this as a consequence of successful PUT Groups)
+   *    - 2a.  update Group state with newGroupMembers
    *
-   * @param values
+   * @param names
    */
-  async function addUser(values: any) {
+  async function addUser(names: { given_name: string; surname: string }[]) {
     await handleGroupVersion();
-    if (values.given_name && values.surname) {
+    let newMembersList: GroupMember[] = []; // for PUT Groups
+    for (const name of names) {
       try {
         const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
         const scope = eduPersonPrincipalName.split("@")[1];
         const createdUserResponse = await dispatch(
           postUser({
-            familyName: values.surname,
-            givenName: values.given_name,
+            familyName: name.surname,
+            givenName: name.given_name,
             accessToken: accessToken,
             scope: scope,
           })
         );
+        // TODO: create EPPN and password request
         if (postUser.fulfilled.match(createdUserResponse)) {
           const newGroupMember: GroupMember = {
             $ref: createdUserResponse.payload.meta?.location,
             value: createdUserResponse.payload.id,
             display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
           };
-
-          let newMembersList = await managedAccountsDetails.members?.slice(); // copy array
-
-          await newMembersList?.push(newGroupMember);
-
-          const response = await dispatch(
-            putGroup({
-              group: {
-                ...managedAccountsDetails,
-                members: newMembersList,
-              },
-              accessToken: accessToken,
-            })
-          );
+          newMembersList.push(newGroupMember);
         }
       } catch (error) {
         console.log("error", error);
       }
     }
+
+    // update group with new members
+    let newMembersListCopy = managedAccountsDetails.members?.slice(); // copy array
+    const updatedMembersList = newMembersListCopy?.concat(newMembersList);
+    const response = await dispatch(
+      putGroup({
+        group: {
+          ...managedAccountsDetails,
+          members: updatedMembersList,
+        },
+        accessToken: accessToken,
+      })
+    );
   }
 
   function handleAddUser(values: any) {
-    console.log("handleAddUser");
-    addUser(values);
+    addUser([values]);
   }
 
   async function handleGroupVersion() {
@@ -240,7 +240,6 @@ export default function GroupManagement(): JSX.Element {
     reader.onload = () => {
       const buffer = reader.result;
       wb.xlsx.load(buffer).then((workbook) => {
-        console.log(workbook, "workbook instance");
         // check/find right sheet name
         workbook.eachSheet(async (sheet, id) => {
           // 1 - skip the first row that contains headers
@@ -249,22 +248,15 @@ export default function GroupManagement(): JSX.Element {
           //      - create/POST a new user with these values
           let newNames: any[] = [];
           sheet.eachRow((row, rowIndex) => {
-            console.log(row.values, rowIndex);
             if (rowIndex > 1) {
-              const values = {
+              const name = {
                 given_name: row.getCell(1).value,
                 surname: row.getCell(2).value,
               };
-              console.log("values", values);
-              newNames.push(values);
+              newNames.push(name);
             }
           });
-          console.log("newNames", newNames);
-          // sequentially add users
-          for (const name of newNames) {
-            console.log("new Name", name);
-            await addUser(name);
-          }
+          await addUser(newNames);
         });
       });
     };
