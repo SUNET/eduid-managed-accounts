@@ -1,7 +1,6 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ExcelJS from "exceljs";
 import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
@@ -103,63 +102,46 @@ export default function GroupManagement(): JSX.Element {
     }
   }, [dispatch, accessToken]);
 
-  /**
-   * Prepare addUser() to create multiple accounts at the same time.
-   *
-   * If >1 users are added:
-   *  - 1. create each user (POST Users)
-   *    - 1a. postUser() extraReducer adds user to state
-   *    - 1b. prepare an array newGroupMembers: GroupMember[] to be used for PUT Groups
-   *  - 2. with one single request, update the Group with all the new users
-   *    - 2a.  update Group state with newGroupMembers
-   *
-   * @param names
-   */
-  async function addUser(names: { given_name: string; surname: string }[]) {
+  async function addUser(values: any) {
     await handleGroupVersion();
-    let newMembersList: GroupMember[] = []; // for PUT Groups
-    for (const name of names) {
+    if (values.given_name && values.surname) {
       try {
         const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
         const scope = eduPersonPrincipalName.split("@")[1];
         const createdUserResponse = await dispatch(
           postUser({
-            familyName: name.surname,
-            givenName: name.given_name,
+            familyName: values.surname,
+            givenName: values.given_name,
             accessToken: accessToken,
             scope: scope,
           })
         );
-        // TODO: create EPPN and password request
         if (postUser.fulfilled.match(createdUserResponse)) {
           const newGroupMember: GroupMember = {
             $ref: createdUserResponse.payload.meta?.location,
             value: createdUserResponse.payload.id,
             display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
           };
-          newMembersList.push(newGroupMember);
+
+          let newMembersList = await managedAccountsDetails.members?.slice(); // copy array
+
+          await newMembersList?.push(newGroupMember);
+          // from here run again in case of "version mismatch"
+
+          const response = await dispatch(
+            putGroup({
+              group: {
+                ...managedAccountsDetails,
+                members: newMembersList,
+              },
+              accessToken: accessToken,
+            })
+          );
         }
       } catch (error) {
         console.log("error", error);
       }
     }
-
-    // update group with new members
-    let newMembersListCopy = managedAccountsDetails.members?.slice(); // copy array
-    const updatedMembersList = newMembersListCopy?.concat(newMembersList);
-    const response = await dispatch(
-      putGroup({
-        group: {
-          ...managedAccountsDetails,
-          members: updatedMembersList,
-        },
-        accessToken: accessToken,
-      })
-    );
-  }
-
-  function handleAddUser(values: any) {
-    addUser([values]);
   }
 
   async function handleGroupVersion() {
@@ -228,41 +210,6 @@ export default function GroupManagement(): JSX.Element {
 
   if (locationState === null) {
     return <></>;
-  }
-
-  async function excelImport(e: any) {
-    e.preventDefault();
-
-    const wb = new ExcelJS.Workbook();
-    const reader = new FileReader();
-    const file = document.getElementById("excelFile") as HTMLInputElement;
-    if (!file?.files) {
-      return;
-    }
-    reader.readAsArrayBuffer(file.files[0]);
-    reader.onload = () => {
-      const buffer = reader.result as ArrayBuffer;
-      wb.xlsx.load(buffer).then((workbook) => {
-        // check/find right sheet name
-        workbook.eachSheet(async (sheet, id) => {
-          // 1 - skip the first row that contains headers
-          // 2 - for each row :
-          //      - read "Given name" and "Surname" columns (VALIDATE DATA?)
-          //      - create/POST a new user with these values
-          let newNames: any[] = [];
-          sheet.eachRow((row, rowIndex) => {
-            if (rowIndex > 1) {
-              const name = {
-                given_name: row.getCell(1).value,
-                surname: row.getCell(2).value,
-              };
-              newNames.push(name);
-            }
-          });
-          await addUser(newNames);
-        });
-      });
-    };
   }
 
   return (
@@ -357,7 +304,7 @@ export default function GroupManagement(): JSX.Element {
 
         <Form
           validate={validatePersonalData}
-          onSubmit={handleAddUser}
+          onSubmit={addUser}
           render={({ handleSubmit, form, submitting, invalid }) => (
             <form
               onSubmit={async (event) => {
@@ -398,16 +345,6 @@ export default function GroupManagement(): JSX.Element {
             </form>
           )}
         />
-        <hr className="border-line"></hr>
-        <p>
-          <FormattedMessage defaultMessage="Import via Excel" id="excel-import" />
-        </p>
-        <form onSubmit={excelImport} id="testForm">
-          <input type="file" name="excelFile" id="excelFile" />
-          <button type="submit" className="btn btn-primary">
-            <FormattedMessage defaultMessage="Create via Excel" id="excel-import" />
-          </button>
-        </form>
       </section>
       <section>
         <MembersList
