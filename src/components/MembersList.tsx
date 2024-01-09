@@ -1,12 +1,14 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCheck, faChevronDown, faChevronUp, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ExcelJS from "exceljs";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Meta } from "typescript-clients/scim";
 import { getGroupDetails } from "../apis/scim/groupsRequest";
 import { deleteUser } from "../apis/scim/usersRequest";
 import { fakePassword } from "../common/testEPPNData";
+import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { getUsersSlice } from "../slices/getUsers";
 import NotificationModal from "./NotificationModal";
@@ -209,6 +211,39 @@ export default function MembersList({
     setSortedData(newData);
   };
 
+  function exportExcel() {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
+    worksheet.columns = [
+      { header: "Given name", key: "given-name" },
+      { header: "Surname", key: "surname" },
+      { header: "EPPN", key: "eppn" },
+      { header: "Password", key: "password" },
+    ];
+    worksheet.getRow(1).font = { bold: true };
+
+    // read the data from state
+    isMemberSelected.forEach((member) => {
+      worksheet.addRow({
+        "given-name": member.name.givenName,
+        surname: member.name.familyName,
+        eppn: member.externalId,
+        password: member.password,
+      });
+    });
+
+    // download the file
+    workbook.xlsx.writeBuffer().then(function (buffer) {
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `EPPN-${currentDateTimeToString()}.xls`; // maybe use Scope as file name?
+      anchor.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
   return (
     <Fragment>
       {membersDetails.length > 0 && (
@@ -277,6 +312,18 @@ export default function MembersList({
             </>
           )}
           <div className="form-controls">
+            <div className="flex-between">
+              <label>
+                <FormattedMessage defaultMessage="Export in Excel:" id="manageGroup-rowButtonsLabel" />
+              </label>
+              <button
+                disabled={!isMemberSelected.length}
+                className={`btn btn-sm btn-primary`}
+                onClick={() => exportExcel()}
+              >
+                <FormattedMessage defaultMessage="Download Excel" id="manageGroup-showLessButton" />
+              </button>
+            </div>
             <div className="flex-between">
               <label>
                 <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
