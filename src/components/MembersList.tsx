@@ -314,41 +314,23 @@ export default function MembersList({
           <div className="form-controls">
             <div className="flex-between">
               <label>
-                <FormattedMessage defaultMessage="Export in Excel:" id="manageGroup-rowButtonsLabel" />
+                <FormattedMessage defaultMessage="Export selected rows to Excel:" id="manageGroup-rowButtonsLabel" />
               </label>
-              <button
-                disabled={!isMemberSelected.length}
-                className={`btn btn-sm btn-primary`}
-                onClick={() => exportExcel()}
-              >
-                <FormattedMessage defaultMessage="Download Excel" id="manageGroup-showLessButton" />
-              </button>
+              <div className="buttons">
+                <button
+                  disabled={!isMemberSelected.length}
+                  className={`btn btn-sm btn-primary`}
+                  onClick={() => exportExcel()}
+                >
+                  <FormattedMessage defaultMessage="Download Excel" id="manageGroup-showLessButton" />
+                </button>
+              </div>
             </div>
             <div className="flex-between">
               <label>
                 <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
               </label>
               <div className="buttons">
-                {membersDetails.length >= 11 &&
-                  (showAll ? (
-                    <button
-                      disabled={!membersDetails.length}
-                      className={`btn btn-sm btn-secondary`}
-                      onClick={() => showLessMembers()}
-                    >
-                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
-                    </button>
-                  ) : (
-                    <button
-                      disabled={!membersDetails.length}
-                      className={`btn btn-sm btn-primary`}
-                      onClick={() => showAllMembers()}
-                    >
-                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
-                      {membersDetails.length})
-                    </button>
-                  ))}
-
                 <button
                   disabled={!isMemberSelected.length}
                   className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
@@ -370,12 +352,33 @@ export default function MembersList({
               </div>
             </div>
             <div className="flex-between">
-              <label htmlFor="sortOrder">Sort rows</label>
-              <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
-                <option value="">Latest (default)</option>
-                <option value="givenName">Given name (ABC)</option>
-                <option value="surName">Surname (ABC)</option>
-              </select>
+              <label htmlFor="sortOrder">Show rows:</label>
+              <div className="buttons">
+                {membersDetails.length >= 11 &&
+                  (showAll ? (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-secondary`}
+                      onClick={() => showLessMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
+                    </button>
+                  ) : (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-primary`}
+                      onClick={() => showAllMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                      {membersDetails.length})
+                    </button>
+                  ))}
+                <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
+                  <option value="">Latest (default)</option>
+                  <option value="givenName">Given name (ABC)</option>
+                  <option value="surName">Surname (ABC)</option>
+                </select>
+              </div>
             </div>
           </div>
           <table className="group-management">
