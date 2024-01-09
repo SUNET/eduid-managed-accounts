@@ -235,31 +235,33 @@ export default function GroupManagement(): JSX.Element {
 
     const wb = new ExcelJS.Workbook();
     const reader = new FileReader();
-    const file = document.getElementById("excelFile");
-    reader.readAsArrayBuffer(file.files[0]);
-    reader.onload = () => {
-      const buffer = reader.result;
-      wb.xlsx.load(buffer).then((workbook) => {
-        // check/find right sheet name
-        workbook.eachSheet(async (sheet, id) => {
-          // 1 - skip the first row that contains headers
-          // 2 - for each row :
-          //      - read "Given name" and "Surname" columns (VALIDATE DATA?)
-          //      - create/POST a new user with these values
-          let newNames: any[] = [];
-          sheet.eachRow((row, rowIndex) => {
-            if (rowIndex > 1) {
-              const name = {
-                given_name: row.getCell(1).value,
-                surname: row.getCell(2).value,
-              };
-              newNames.push(name);
-            }
+    const file = document.getElementById("excelFile") as HTMLInputElement;
+    if (file && file.files?.length) {
+      reader.readAsArrayBuffer(file.files[0]);
+      reader.onload = () => {
+        const buffer = reader.result as ArrayBuffer;
+        wb.xlsx.load(buffer).then((workbook) => {
+          // check/find right sheet name
+          workbook.eachSheet(async (sheet, id) => {
+            // 1 - skip the first row that contains headers
+            // 2 - for each row :
+            //      - read "Given name" and "Surname" columns (VALIDATE DATA?)
+            //      - create/POST a new user with these values
+            let newNames: any[] = [];
+            sheet.eachRow((row, rowIndex) => {
+              if (rowIndex > 1) {
+                const name = {
+                  given_name: row.getCell(1).value,
+                  surname: row.getCell(2).value,
+                };
+                newNames.push(name);
+              }
+            });
+            await addUser(newNames);
           });
-          await addUser(newNames);
         });
-      });
-    };
+      };
+    }
   }
 
   return (
