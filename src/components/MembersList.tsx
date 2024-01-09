@@ -212,7 +212,6 @@ export default function MembersList({
   };
 
   function exportExcel() {
-    console.log("Export Excel function");
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
     worksheet.columns = [
