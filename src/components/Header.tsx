@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import appSlice from "../slices/appReducers";
 
 export function Header(): JSX.Element {
   const loggedInUser = useAppSelector((state) => state.personalData.loggedInUser);
@@ -14,8 +13,7 @@ export function Header(): JSX.Element {
   const dispatch = useAppDispatch();
 
   function logout() {
-    navigate("/");
-    dispatch(appSlice.actions.appIsLoaded(false));
+    navigate("/", { replace: true, state: undefined });
   }
 
   if (userMail) {

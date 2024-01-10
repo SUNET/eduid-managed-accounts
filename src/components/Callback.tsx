@@ -35,7 +35,7 @@ export default function Callback() {
         const hashCalculated = await getSHA256Hash(hashBaseString);
         if (hashCalculated === hashURL) {
           await continueRequest();
-        }
+        } else navigate("/");
       } catch {
         console.log("error");
       }

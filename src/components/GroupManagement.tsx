@@ -5,7 +5,7 @@ import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage } from "react-intl";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
 import { getUserDetails, postUser } from "../apis/scim/usersRequest";
@@ -28,7 +28,7 @@ interface ErrorsType {
 
 export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
