@@ -47,6 +47,18 @@
   "intro-lead": {
     "string": "In the forms below you can manage your organisations accounts by adding students, to create their individual account with a unique username - EPPN - and the password that they will need to be able to perform the Digital National Exam."
   },
+  "landing-header": {
+    "string": "Welcome to Managed Accounts with eduID"
+  },
+  "landing-link": {
+    "string": "Go to login service"
+  },
+  "landing-paragraph-1": {
+    "string": "To manage your organisation you first need to log in."
+  },
+  "landing-paragraph-2": {
+    "string": "Continue by pressing the link below to log in at your appropriate service, after which you will automatically be redirected back to this service, to start managing your account."
+  },
   "manageGroup-copiedEppnDialog": {
     "string": "Copied EPPN"
   },
