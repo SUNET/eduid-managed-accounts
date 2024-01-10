@@ -232,6 +232,15 @@ export default function GroupManagement(): JSX.Element {
               id="intro-lead"
             />
           </p>
+          <div className="text-small">
+            <em>
+              <FormattedMessage
+                defaultMessage="The contents can be presented in Swedish or English, choose language in the footer of this web page. 
+              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility of the forms."
+                id="intro-leadEmphasis"
+              />
+            </em>
+          </div>
         </div>
       </section>
       <section>
