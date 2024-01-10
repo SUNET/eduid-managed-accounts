@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface GetLoggedInUserInfoState {
   loggedInUser: {
-    user: {
+    user?: {
       attributes: {
         displayName: string;
         eduPersonAssurance: string[];
@@ -38,6 +38,9 @@ export const getPersonalDataSlice = createSlice({
   reducers: {
     updateUserInfo: (state, action) => {
       state.loggedInUser = action.payload;
+    },
+    initialize: (state) => {
+      state.loggedInUser = {};
     },
   },
 });
