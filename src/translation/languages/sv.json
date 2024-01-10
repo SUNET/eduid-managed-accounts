@@ -21,10 +21,10 @@
     "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer för detta syfte."
   },
   "addToGroup-listItem3": {
-    "string": "När du klickar på knappen LÄGG TILL så läggs kontot till organisationen och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\"."
+    "string": "När du klickar på knappen LÄGG TILL så läggs kontot till organisationen med skapat användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
   },
   "addToGroup-listItem4": {
-    "string": "överför till lämpligt externt format, eftersom det inte går att återse samma lösenord efter denna inloggade session."
+    "string": "överför till lämpligt externt format, t.ex. genom att exportera till Excel eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session."
   },
   "addToGroup-listItem4Strong": {
     "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
@@ -46,6 +46,9 @@
   },
   "intro-lead": {
     "string": "I formulären nedan kan du hantera din organisations konton genom att lägga till elever, för att skapa deras individuella konton med unika användarnamn - EPPN - och lösenord, som de behöver för att kunna genomföra Digitala Nationella Provet."
+  },
+  "intro-leadEmphasis": {
+    "string": "Innehållet kan presenteras på svenska eller engelska, välj språk i sidfoten. Användning av tjänsten lämpar sig bäst i större format, t.ex. inte på mobila enheter, för bästa läsbarhet av formulären. "
   },
   "landing-header": {
     "string": "Välkommen till Hantera Konton med eduID"
@@ -71,8 +74,17 @@
   "manageGroup-copyRowButton": {
     "string": "Kopiera rad"
   },
+  "manageGroup-editLabel": {
+    "string": "Ändra valda rader:"
+  },
   "manageGroup-eppnColumn": {
     "string": "EPPN/användarnamn"
+  },
+  "manageGroup-exportButton": {
+    "string": "Ladda ned Excel-fil"
+  },
+  "manageGroup-exportLabel": {
+    "string": "Exportera valda rader till Excel:"
   },
   "manageGroup-givenNameColumn": {
     "string": "Förnamn"
@@ -84,22 +96,28 @@
     "string": "Läs mindre om att hantera tillagda konton"
   },
   "manageGroup-listItem1": {
-    "string": "Du kan välja konton genom att markera tillhörande checkboxar och kopiera flera/alla hela rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet med kopierings-ikonen intill."
+    "string": "Välj konton genom att klicka i tillhörande checkbox för varje rad, en i taget eller alla. Notera: konton som lagts till under sessionen - med tillgängliga lösenord, är förvalda."
   },
   "manageGroup-listItem2": {
-    "string": "Om du skapar ett nytt lösenord genom att klicka på länken NYTT LÖSENORD, så måste det användas av kontohavaren (d.v.s. eleven vid provtillfället), eftersom det tidigare lösenordet genast blir ogiltigt."
+    "string": "Exportera alla valda rader till en ny Excel-fil genom att klicka på LADDA NED EXCEL-FIL för att spara lokalt."
   },
   "manageGroup-listItem3": {
-    "string": "Om du behöver göra förändringar av tillagda konton, välj rad/rader och klicka på knappen TA BORT RAD, varefter kontot kan läggas till igen på samma sätt - men med nytt EPPN/användarnamn och lösenord."
+    "string": "Kopiera flera/alla hela rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet med kopierings-ikonen intill. Hela användarnamnet med scope inkluderas vid kopiering och export."
   },
   "manageGroup-listItem4": {
+    "string": "Om du skapar ett nytt lösenord genom att klicka på länken NYTT LÖSENORD, så måste det användas av kontohavaren (d.v.s. eleven vid provtillfället), eftersom det tidigare lösenordet genast blir ogiltigt."
+  },
+  "manageGroup-listItem5": {
+    "string": "Om du behöver göra förändringar av tillagda konton, välj rad/rader och klicka på knappen TA BORT RAD, varefter kontot kan läggas till igen på samma sätt - men med nytt EPPN/användarnamn och lösenord."
+  },
+  "manageGroup-listItem6": {
     "string": "För att hitta ett konto kan tabellordningen sorteras på tilläggningstillfälle eller namn, använd paginerings-pilarna under eller visa hela tabellen genom att klicka på knappen VISA ALLA ifall tabellen består av flera sidor."
   },
   "manageGroup-newPasswordLink": {
     "string": "Nytt lösenord"
   },
   "manageGroup-paragraph": {
-    "string": "Kopiera eller notera varje kontos EPPN/användarnamn och lösenord under samma session som det skapas."
+    "string": "Exportera, kopiera eller notera varje kontos EPPN/användarnamn och lösenord under samma session som det skapas."
   },
   "manageGroup-passwordColumn": {
     "string": "Lösenord"
@@ -112,14 +130,23 @@
   "manageGroup-removeRowButton": {
     "string": "Ta bort rad"
   },
-  "manageGroup-rowButtonsLabel": {
-    "string": "Ändra valda rader:"
-  },
   "manageGroup-selectAllCheckbox": {
     "string": "Alla"
   },
+  "manageGroup-selectOptionGivenName": {
+    "string": "Förnamn (ABC)"
+  },
+  "manageGroup-selectOptionLatest": {
+    "string": "Senaste (default)"
+  },
+  "manageGroup-selectOptionSurname": {
+    "string": "Efternamn (ABC)"
+  },
   "manageGroup-showAllButton": {
     "string": "visa alla"
+  },
+  "manageGroup-showLabel": {
+    "string": "Visa/sortera rader:"
   },
   "manageGroup-showLessButton": {
     "string": "visa färre"
