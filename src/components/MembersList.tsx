@@ -392,7 +392,7 @@ export default function MembersList({
                     <FormattedMessage defaultMessage="Latest (default)" id="manageGroup-selectOptionLatest" />
                   </option>
                   <option value="givenName">
-                    <FormattedMessage defaultMessage="Given name (ABC)" id="manageGroup-selectOptionSurname" />
+                    <FormattedMessage defaultMessage="Given name (ABC)" id="manageGroup-selectOptionGivenName" />
                   </option>
                   <option value="surName">
                     <FormattedMessage defaultMessage="Surname (ABC)" id="manageGroup-selectOptionSurname" />
