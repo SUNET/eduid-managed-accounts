@@ -102,7 +102,7 @@
     "string": "Exportera alla valda rader till en ny Excel-fil genom att klicka på LADDA NED EXCEL-FIL för att spara lokalt."
   },
   "manageGroup-listItem3": {
-    "string": "Kopiera flera/alla hela rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet med kopierings-ikonen intill. Hela användarnamnet med scope inkluderas vid kopiering och export."
+    "string": "Kopiera flera/alla hela valda rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet med kopierings-ikonen intill. Hela användarnamnet med scope inkluderas vid kopiering och export."
   },
   "manageGroup-listItem4": {
     "string": "Om du skapar ett nytt lösenord genom att klicka på länken NYTT LÖSENORD, så måste det användas av kontohavaren (d.v.s. eleven vid provtillfället), eftersom det tidigare lösenordet genast blir ogiltigt."
