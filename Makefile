@@ -12,6 +12,8 @@ node_modules: package-lock.json
 
 build: node_modules
 	npx vite build
+	git branch --show-current > dist/revision.txt
+	git describe --always >> dist/revision.txt; git log -n 1 >> build/revision.txt
 
 translation:
 	npm run translations:extract
