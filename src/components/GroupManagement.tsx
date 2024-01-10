@@ -31,14 +31,14 @@ export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
   const locationState = location.state;
 
-  const accessToken = locationState?.access_token?.value;
-  const value = locationState?.subject.assertions[0].value;
-  const parsedUserInfo = value ? JSON.parse(value) : null;
-
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
+  const accessTokenState = useAppSelector((state) => state.app.accessToken);
+  const accessToken = accessTokenState?.access_token?.value;
+  const value = accessTokenState?.subject.assertions[0].value;
+  const parsedUserInfo = value ? JSON.parse(value) : null;
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -53,10 +53,10 @@ export default function GroupManagement(): JSX.Element {
   }, [membersDetails]);
 
   useEffect(() => {
-    if (locationState === null) {
-      return navigate("/");
+    if (accessTokenState === undefined) {
+      navigate("/");
     }
-  }, [navigate, locationState]);
+  }, [navigate, accessTokenState]);
 
   /**
    * Without user interaction
@@ -98,7 +98,7 @@ export default function GroupManagement(): JSX.Element {
     };
     if (!isLoaded) {
       initializeManagedAccountsGroup();
-      dispatch(appSlice.actions.appIsLoaded());
+      dispatch(appSlice.actions.appIsLoaded(true));
     }
   }, [dispatch, accessToken]);
 
@@ -208,7 +208,7 @@ export default function GroupManagement(): JSX.Element {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  if (locationState === null) {
+  if (accessTokenState === undefined) {
     return <></>;
   }
 

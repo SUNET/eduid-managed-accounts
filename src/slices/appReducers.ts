@@ -2,18 +2,23 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface AppState {
   isLoaded: boolean;
+  accessToken: any;
 }
 
 export const initialState: AppState = {
   isLoaded: false,
+  accessToken: null,
 };
 
 export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    appIsLoaded: (state) => {
-      state.isLoaded = true;
+    appIsLoaded: (state, action) => {
+      state.isLoaded = action.payload;
+    },
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
     },
   },
 });
