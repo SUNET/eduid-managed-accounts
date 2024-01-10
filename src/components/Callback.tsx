@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { postContinueRequest } from "../apis/gnap/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
 import { useAppDispatch } from "../hooks";
-import appSlice from "../slices/appReducers";
 import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
 
 export default function Callback() {
@@ -53,11 +52,11 @@ export default function Callback() {
     if (interactions && interactRef) {
       const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
       if (postContinueRequest.fulfilled.match(response)) {
-        navigate("/scim");
-        dispatch(appSlice.actions.setAccessToken(response.payload));
+        navigate("/scim", {
+          state: response.payload,
+        });
       }
     }
   };
-
   return <></>;
 }
