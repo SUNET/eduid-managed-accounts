@@ -99,7 +99,7 @@
     "string": "Du kan välja konton genom att klicka i tillhörande checkbox för varje rad, en i taget eller alla. Obs: konton som lagts till under sessionen - med tillgängliga lösenord, är förvalda."
   },
   "manageGroup-listItem2": {
-    "string": "Exportera alla valda rader till en ny Excel-fil genom att klicka på LADDA NED EXCEL-FIL för att spara lokalt."
+    "string": "Du kan exportera alla valda rader till en ny Excel-fil genom att klicka på LADDA NED EXCEL-FIL för att spara lokalt."
   },
   "manageGroup-listItem3": {
     "string": "Kopiera flera/alla hela valda rader samtidigt genom att klicka på knappen KOPIERA RAD, eller bara kopiera det individuella EPPN/användarnamnet med kopierings-ikonen intill. Hela användarnamnet med scope inkluderas vid kopiering och export."
