@@ -203,12 +203,14 @@ export default function GroupManagement(): JSX.Element {
   function toggleShowMore() {
     setShowMore(!showMore);
   }
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   if (accessTokenState === undefined) {
     return <></>;
   }
+
+  const eduPersonPrincipalName = parsedUserInfo.attributes.eduPersonPrincipalName.indexOf("@");
+  const scope = parsedUserInfo.attributes.eduPersonPrincipalName.slice(eduPersonPrincipalName + 1);
 
   return (
     <React.Fragment>
@@ -222,6 +224,8 @@ export default function GroupManagement(): JSX.Element {
             }}
           />
         </h1>
+
+        {scope}
         <div className="lead">
           <p>
             <FormattedMessage
