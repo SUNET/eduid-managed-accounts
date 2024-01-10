@@ -25,9 +25,13 @@ header#header {
     font-family: $inter-bold;
     svg {
       padding-right: 5px;
+      margin-left: 0;
     }
     button {
       height: auto;
+    }
+    @media (max-width: $bp-sm) {
+      text-align: left;
     }
   }
   .header-nav {

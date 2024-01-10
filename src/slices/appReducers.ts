@@ -7,7 +7,7 @@ interface AppState {
 
 export const initialState: AppState = {
   isLoaded: false,
-  accessToken: null,
+  accessToken: undefined,
 };
 
 export const appSlice = createSlice({
@@ -18,6 +18,9 @@ export const appSlice = createSlice({
       state.isLoaded = action.payload;
     },
     setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+    },
+    saveAccessToken: (state, action) => {
       state.accessToken = action.payload;
     },
   },
