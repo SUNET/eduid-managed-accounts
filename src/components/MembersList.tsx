@@ -254,7 +254,7 @@ export default function MembersList({
           </h2>
           <p>
             <FormattedMessage
-              defaultMessage="Copy or note down the corresponding EPPN/username and password for each account during the session in which it was added."
+              defaultMessage="Export, copy or note down the corresponding EPPN/username and password for every account during the session in which it was added."
               id="manageGroup-paragraph"
             />
           </p>
@@ -286,26 +286,38 @@ export default function MembersList({
               <ol className="listed-steps">
                 <li>
                   <FormattedMessage
-                    defaultMessage="You can select accounts by using the corresponding checkboxes and copy several/all entire rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it."
+                    defaultMessage="You can select accounts by using the corresponding checkbox for each row, one by one or all. Note: the accounts added in the current session - with a retrievable password, are pre-selected."
                     id="manageGroup-listItem1"
                   />
                 </li>
                 <li>
                   <FormattedMessage
-                    defaultMessage="If you get a new password by clicking the NEW PASSWORD link, it must be used by the account holder (i.e. by the student for the exam), as the previous password will be invalid."
+                    defaultMessage="You can export all selected accounts to a new Excel file by clicking DOWNLOAD EXCEL, to save or edit locally."
                     id="manageGroup-listItem2"
                   />
                 </li>
                 <li>
                   <FormattedMessage
-                    defaultMessage="If you need to make changes to added accounts, select the appropriate row/s and click the REMOVE ROW button, you can now add the account again if needed, in the same way - but with a new EPPN/username and password."
+                    defaultMessage="You can copy several/all entire selected rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it. When copying and exporting, the full scope will be included as the username, not just the EPPN."
                     id="manageGroup-listItem3"
                   />
                 </li>
                 <li>
                   <FormattedMessage
-                    defaultMessage="To find an account you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
+                    defaultMessage="If you get a new password by clicking the NEW PASSWORD link, it must be used by the account holder (i.e. by the student for the exam), as the previous password will be invalid."
                     id="manageGroup-listItem4"
+                  />
+                </li>
+                <li>
+                  <FormattedMessage
+                    defaultMessage="If you need to make changes to added accounts, select the appropriate row/s and click the REMOVE ROW button, you can now add the account again if needed, in the same way - but with a new EPPN/username and password."
+                    id="manageGroup-listItem5"
+                  />
+                </li>
+                <li>
+                  <FormattedMessage
+                    defaultMessage="To find an account you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
+                    id="manageGroup-listItem6"
                   />
                 </li>
               </ol>
@@ -314,41 +326,23 @@ export default function MembersList({
           <div className="form-controls">
             <div className="flex-between">
               <label>
-                <FormattedMessage defaultMessage="Export in Excel:" id="manageGroup-rowButtonsLabel" />
+                <FormattedMessage defaultMessage="Export selected rows to Excel:" id="manageGroup-exportLabel" />
               </label>
-              <button
-                disabled={!isMemberSelected.length}
-                className={`btn btn-sm btn-primary`}
-                onClick={() => exportExcel()}
-              >
-                <FormattedMessage defaultMessage="Download Excel" id="manageGroup-showLessButton" />
-              </button>
+              <div className="buttons">
+                <button
+                  disabled={!isMemberSelected.length}
+                  className={`btn btn-sm btn-primary`}
+                  onClick={() => exportExcel()}
+                >
+                  <FormattedMessage defaultMessage="Download Excel" id="manageGroup-exportButton" />
+                </button>
+              </div>
             </div>
             <div className="flex-between">
               <label>
-                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-editLabel" />
               </label>
               <div className="buttons">
-                {membersDetails.length >= 11 &&
-                  (showAll ? (
-                    <button
-                      disabled={!membersDetails.length}
-                      className={`btn btn-sm btn-secondary`}
-                      onClick={() => showLessMembers()}
-                    >
-                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
-                    </button>
-                  ) : (
-                    <button
-                      disabled={!membersDetails.length}
-                      className={`btn btn-sm btn-primary`}
-                      onClick={() => showAllMembers()}
-                    >
-                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
-                      {membersDetails.length})
-                    </button>
-                  ))}
-
                 <button
                   disabled={!isMemberSelected.length}
                   className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
@@ -370,12 +364,41 @@ export default function MembersList({
               </div>
             </div>
             <div className="flex-between">
-              <label htmlFor="sortOrder">Sort rows</label>
-              <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
-                <option value="">Latest (default)</option>
-                <option value="givenName">Given name (ABC)</option>
-                <option value="surName">Surname (ABC)</option>
-              </select>
+              <label htmlFor="sortOrder">
+                <FormattedMessage defaultMessage="Show/sort rows:" id="manageGroup-showLabel" />
+              </label>
+              <div className="buttons">
+                {membersDetails.length >= 11 &&
+                  (showAll ? (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-secondary`}
+                      onClick={() => showLessMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
+                    </button>
+                  ) : (
+                    <button
+                      disabled={!membersDetails.length}
+                      className={`btn btn-sm btn-secondary`}
+                      onClick={() => showAllMembers()}
+                    >
+                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
+                      {membersDetails.length})
+                    </button>
+                  ))}
+                <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
+                  <option value="">
+                    <FormattedMessage defaultMessage="Latest (default)" id="manageGroup-selectOptionLatest" />
+                  </option>
+                  <option value="givenName">
+                    <FormattedMessage defaultMessage="Given name (ABC)" id="manageGroup-selectOptionGivenName" />
+                  </option>
+                  <option value="surName">
+                    <FormattedMessage defaultMessage="Surname (ABC)" id="manageGroup-selectOptionSurname" />
+                  </option>
+                </select>
+              </div>
             </div>
           </div>
           <table className="group-management">

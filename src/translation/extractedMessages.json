@@ -21,10 +21,10 @@
     "string": "Write the name so that you can distinguish the identity of the person even if there are identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
   },
   "addToGroup-listItem3": {
-    "string": "When you click the ADD button the account will be added to the organisation and appearing in a table below in the \"Manage added accounts\" section."
+    "string": "When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the \"Manage added accounts\" section, where the newly added accounts will be pre-selected."
   },
   "addToGroup-listItem4": {
-    "string": "transfer it to an external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+    "string": "transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
   },
   "addToGroup-listItem4Strong": {
     "string": "Then note the corresponding EPPN/username and password which appears in the table"
@@ -46,6 +46,9 @@
   },
   "intro-lead": {
     "string": "In the forms below you can manage your organisations accounts by adding students, to create their individual account with a unique username - EPPN - and the password that they will need to be able to perform the Digital National Exam."
+  },
+  "intro-leadEmphasis": {
+    "string": "The contents can be presented in Swedish or English, choose language in the footer of this web page. You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility of the forms."
   },
   "landing-header": {
     "string": "Welcome to Managed Accounts with eduID"
@@ -71,8 +74,17 @@
   "manageGroup-copyRowButton": {
     "string": "Copy row"
   },
+  "manageGroup-editLabel": {
+    "string": "Edit selected rows:"
+  },
   "manageGroup-eppnColumn": {
     "string": "EPPN/username"
+  },
+  "manageGroup-exportButton": {
+    "string": "Download Excel"
+  },
+  "manageGroup-exportLabel": {
+    "string": "Export selected rows to Excel:"
   },
   "manageGroup-givenNameColumn": {
     "string": "Given name"
@@ -84,22 +96,28 @@
     "string": "READ LESS ON HOW TO MANAGE ADDED ACCOUNTS"
   },
   "manageGroup-listItem1": {
-    "string": "You can select accounts by using the corresponding checkboxes and copy several/all entire rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it."
+    "string": "You can select accounts by using the corresponding checkbox for each row, one by one or all. Note: the accounts added in the current session - with a retrievable password, are pre-selected."
   },
   "manageGroup-listItem2": {
-    "string": "If you get a new password by clicking the NEW PASSWORD link, it must be used by the account holder (i.e. by the student for the exam), as the previous password will be invalid."
+    "string": "You can export all selected accounts to a new Excel file by clicking DOWNLOAD EXCEL, to save or edit locally."
   },
   "manageGroup-listItem3": {
-    "string": "If you need to make changes to added accounts, select the appropriate row/s and click the REMOVE ROW button, you can now add the account again if needed, in the same way - but with a new EPPN/username and password."
+    "string": "You can copy several/all entire selected rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it. When copying and exporting, the full scope will be included as the username, not just the EPPN."
   },
   "manageGroup-listItem4": {
+    "string": "If you get a new password by clicking the NEW PASSWORD link, it must be used by the account holder (i.e. by the student for the exam), as the previous password will be invalid."
+  },
+  "manageGroup-listItem5": {
+    "string": "If you need to make changes to added accounts, select the appropriate row/s and click the REMOVE ROW button, you can now add the account again if needed, in the same way - but with a new EPPN/username and password."
+  },
+  "manageGroup-listItem6": {
     "string": "To find an account you can sort the table by entry-order or names, use the pagination arrows underneath or show the entire table by clicking the SHOW ALL button, if your table is spanning several pages."
   },
   "manageGroup-newPasswordLink": {
     "string": "New password"
   },
   "manageGroup-paragraph": {
-    "string": "Copy or note down the corresponding EPPN/username and password for each account during the session in which it was added."
+    "string": "Export, copy or note down the corresponding EPPN/username and password for every account during the session in which it was added."
   },
   "manageGroup-passwordColumn": {
     "string": "Password"
@@ -112,14 +130,23 @@
   "manageGroup-removeRowButton": {
     "string": "Remove row"
   },
-  "manageGroup-rowButtonsLabel": {
-    "string": "Edit selected rows:"
-  },
   "manageGroup-selectAllCheckbox": {
     "string": "All"
   },
+  "manageGroup-selectOptionGivenName": {
+    "string": "Given name (ABC)"
+  },
+  "manageGroup-selectOptionLatest": {
+    "string": "Latest (default)"
+  },
+  "manageGroup-selectOptionSurname": {
+    "string": "Surname (ABC)"
+  },
   "manageGroup-showAllButton": {
     "string": "show all"
+  },
+  "manageGroup-showLabel": {
+    "string": "Show/sort rows:"
   },
   "manageGroup-showLessButton": {
     "string": "show less"
