@@ -13,8 +13,6 @@ script:
   - "npm --version"
   - "echo Building branch ${GIT_LOCAL_BRANCH}"
   - "make build"
-  - "echo ${GIT_LOCAL_BRANCH} > dist/revision.txt"
-  - "git describe --always >> dist/revision.txt; git log -n 1 >> dist/revision.txt"
 clean_workspace: true
 archive_artifacts:
   include: "dist/*"
