@@ -327,7 +327,19 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="givenName">
                         <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
                       </label>
-                      <input type="text" {...input} placeholder="given name" id="givenName" ref={inputRef} autoFocus />
+                      <FormattedMessage id="addToGroup-givenNamePlaceholder" defaultMessage="given name">
+                        {(placeholderText) => (
+                          <input
+                            placeholder={placeholderText}
+                            type="text"
+                            {...input}
+                            id="givenName"
+                            ref={inputRef}
+                            autoFocus
+                          />
+                        )}
+                      </FormattedMessage>
+
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
@@ -339,7 +351,19 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="surName">
                         <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                       </label>
-                      <input type="text" {...input} placeholder="surname" id="surName" />
+                      <FormattedMessage id="addToGroup-surnamePlaceholder" defaultMessage="surname">
+                        {(placeholderText) => (
+                          <input
+                            placeholder={placeholderText}
+                            type="text"
+                            {...input}
+                            id="surName"
+                            ref={inputRef}
+                            autoFocus
+                          />
+                        )}
+                      </FormattedMessage>
+
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
