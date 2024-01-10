@@ -61,9 +61,11 @@ export default function GroupManagement(): JSX.Element {
   async function reloadMembersDetails(members: GroupMember[]) {
     dispatch(getUsersSlice.actions.initialize());
     if (members) {
-      for (const member of members) {
-        await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-      }
+      await Promise.all(
+        members?.map(async (member: GroupMember) => {
+          await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+        })
+      );
       dispatch(getUsersSlice.actions.sortByLatest());
     }
   }
