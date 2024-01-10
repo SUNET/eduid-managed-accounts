@@ -3,14 +3,13 @@ import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppSelector } from "../hooks";
 
 export function Header(): JSX.Element {
   const loggedInUser = useAppSelector((state) => state.personalData.loggedInUser);
   const userMail = loggedInUser?.user?.attributes?.mail;
   const navigate = useNavigate();
   let logoutButton;
-  const dispatch = useAppDispatch();
 
   function logout() {
     navigate("/", { replace: true, state: undefined });
