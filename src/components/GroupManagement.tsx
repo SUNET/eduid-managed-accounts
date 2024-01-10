@@ -54,9 +54,11 @@ export default function GroupManagement(): JSX.Element {
 
   useEffect(() => {
     if (locationState === null) {
-      return navigate("/");
+      navigate("/");
     }
   }, [navigate, locationState]);
+
+  console.log("locationState", locationState);
 
   /**
    * Without user interaction
