@@ -314,7 +314,7 @@ export default function MembersList({
           <div className="form-controls">
             <div className="flex-between">
               <label>
-                <FormattedMessage defaultMessage="Export selected rows to Excel:" id="manageGroup-rowButtonsLabel" />
+                <FormattedMessage defaultMessage="Export selected rows to Excel:" id="manageGroup-exportLabel" />
               </label>
               <div className="buttons">
                 <button
@@ -322,13 +322,13 @@ export default function MembersList({
                   className={`btn btn-sm btn-primary`}
                   onClick={() => exportExcel()}
                 >
-                  <FormattedMessage defaultMessage="Download Excel" id="manageGroup-showLessButton" />
+                  <FormattedMessage defaultMessage="Download Excel" id="manageGroup-exportButton" />
                 </button>
               </div>
             </div>
             <div className="flex-between">
               <label>
-                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-rowButtonsLabel" />
+                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-editLabel" />
               </label>
               <div className="buttons">
                 <button
@@ -352,7 +352,9 @@ export default function MembersList({
               </div>
             </div>
             <div className="flex-between">
-              <label htmlFor="sortOrder">Show rows:</label>
+              <label htmlFor="sortOrder">
+                <FormattedMessage defaultMessage="Show/sort rows:" id="manageGroup-showLabel" />
+              </label>
               <div className="buttons">
                 {membersDetails.length >= 11 &&
                   (showAll ? (
@@ -374,9 +376,15 @@ export default function MembersList({
                     </button>
                   ))}
                 <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
-                  <option value="">Latest (default)</option>
-                  <option value="givenName">Given name (ABC)</option>
-                  <option value="surName">Surname (ABC)</option>
+                  <option value="">
+                    <FormattedMessage defaultMessage="Latest (default)" id="manageGroup-selectOptionLatest" />
+                  </option>
+                  <option value="givenName">
+                    <FormattedMessage defaultMessage="Given name (ABC)" id="manageGroup-selectOptionSurname" />
+                  </option>
+                  <option value="surName">
+                    <FormattedMessage defaultMessage="Surname (ABC)" id="manageGroup-selectOptionSurname" />
+                  </option>
                 </select>
               </div>
             </div>
