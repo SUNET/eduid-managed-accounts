@@ -96,7 +96,7 @@
     "string": "Läs mindre om att hantera tillagda konton"
   },
   "manageGroup-listItem1": {
-    "string": "Välj konton genom att klicka i tillhörande checkbox för varje rad, en i taget eller alla. Notera: konton som lagts till under sessionen - med tillgängliga lösenord, är förvalda."
+    "string": "Du kan välja konton genom att klicka i tillhörande checkbox för varje rad, en i taget eller alla. Obs: konton som lagts till under sessionen - med tillgängliga lösenord, är förvalda."
   },
   "manageGroup-listItem2": {
     "string": "Exportera alla valda rader till en ny Excel-fil genom att klicka på LADDA NED EXCEL-FIL för att spara lokalt."
