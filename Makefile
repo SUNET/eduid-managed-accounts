@@ -13,7 +13,7 @@ node_modules: package-lock.json
 build: node_modules
 	npx vite build
 	git rev-parse --abbrev-ref HEAD > dist/revision.txt
-	git describe --always >> dist/revision.txt; git log -n 1 >> build/revision.txt
+	git describe --always >> dist/revision.txt; git log -n 1 >> dist/revision.txt
 
 translation:
 	npm run translations:extract
