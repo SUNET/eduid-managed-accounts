@@ -281,7 +281,7 @@ export default function GroupManagement(): JSX.Element {
               </li>
               <li>
                 <FormattedMessage
-                  defaultMessage='When you click the ADD button the account will be added to the organisation and appearing in a table below in the "Manage added accounts" section.'
+                  defaultMessage='When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
                   id="addToGroup-listItem3"
                 />
               </li>
@@ -294,7 +294,7 @@ export default function GroupManagement(): JSX.Element {
                 </strong>
                 ,&nbsp;
                 <FormattedMessage
-                  defaultMessage="transfer it to an external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
                   id="addToGroup-listItem4"
                 />
               </li>

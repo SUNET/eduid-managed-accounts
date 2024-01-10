@@ -66,9 +66,13 @@ fieldset {
   margin-right: 1rem;
 }
 
-.listed-steps li {
-  margin-bottom: 0.75rem;
-  font-size: $txt-md;
+.listed-steps {
+  margin-bottom: 2rem;
+  li {
+    margin-bottom: 1rem;
+    font-size: $txt-sm;
+    line-height: 1.375;
+  }
 }
 
 input {
@@ -113,7 +117,7 @@ select {
   padding: 2px 20px 0 10px;
   border-radius: 15px;
   height: 30px;
-  margin-top: 5px;
+  margin-top: 0;
   border: 2px solid $bright-orange;
   font-size: 13px;
   color: $txt-orange;
