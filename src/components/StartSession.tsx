@@ -2,9 +2,6 @@ import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useAppDispatch } from "../hooks";
 import { initLocalStorage, INTERACTION_RESPONSE } from "../initLocalStorage";
-import getGroupsSlice from "../slices/getGroups";
-import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
-import getUsersSlice from "../slices/getUsers";
 
 /**
  * Implement Redirect-based Interaction flow
@@ -35,9 +32,9 @@ export function StartSession(): JSX.Element {
 
   useEffect(() => {
     initLocalStorage();
-    dispatch(getUsersSlice.actions.initialize());
-    dispatch(getGroupsSlice.actions.initialize());
-    dispatch(getPersonalDataSlice.actions.initialize());
+    // dispatch(getUsersSlice.actions.initialize());
+    // dispatch(getGroupsSlice.actions.initialize());
+    // dispatch(getPersonalDataSlice.actions.initialize());
   }, []);
 
   return (

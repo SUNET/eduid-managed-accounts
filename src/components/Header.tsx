@@ -3,16 +3,25 @@ import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormattedMessage } from "react-intl";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import appSlice from "../slices/appReducers";
+import getGroupsSlice from "../slices/getGroups";
+import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
+import getUsersSlice from "../slices/getUsers";
 
 export function Header(): JSX.Element {
   const loggedInUser = useAppSelector((state) => state.personalData.loggedInUser);
   const userMail = loggedInUser?.user?.attributes?.mail;
   const navigate = useNavigate();
   let logoutButton;
+  const dispatch = useAppDispatch();
 
   function logout() {
     navigate("/");
+    dispatch(getUsersSlice.actions.initialize());
+    dispatch(getGroupsSlice.actions.initialize());
+    dispatch(getPersonalDataSlice.actions.initialize());
+    dispatch(appSlice.actions.saveAccessToken(""));
   }
 
   if (userMail) {

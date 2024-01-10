@@ -4,7 +4,7 @@ import { CompactSign, importJWK } from "jose";
 import { getSHA256Hash } from "../../common/CryptoUtils";
 import { ContinueAccessToken, ContinueRequest, SubjectAssertion } from "../../typescript-clients/gnap";
 
-interface PostContinueRequestResponse {
+export interface PostContinueRequestResponse {
   access_token: ContinueAccessToken;
   subject: { assertions: Array<SubjectAssertion> };
 }
