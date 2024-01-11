@@ -221,8 +221,16 @@ export default function GroupManagement(): JSX.Element {
             }}
           />
         </h1>
+        <span>
+          <FormattedMessage
+            defaultMessage="ACTUAL SCOPE: {scope}"
+            id="intro-scope"
+            values={{
+              scope: scope,
+            }}
+          />
+        </span>
 
-        {scope}
         <div className="lead">
           <p>
             <FormattedMessage
