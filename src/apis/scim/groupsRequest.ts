@@ -3,8 +3,6 @@ import { GroupResponse, ListResponse } from "typescript-clients/scim";
 import { AppDispatch, AppRootState } from "../../init-app";
 import { handleErrorResponse } from "./error";
 
-export const baseURL = "https://api.eduid.docker/scim/";
-
 export const scimHeaders = (token: string) => {
   return {
     "Content-Type": "application/scim+json",
@@ -18,6 +16,8 @@ export const createGroup = createAsyncThunk<
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/createGroup", async (args, thunkAPI) => {
   try {
+    const state = thunkAPI.getState();
+    const scim_server_url = state.config.scim_server_url;
     if (args.accessToken) {
       const headers = scimHeaders(args.accessToken);
       const payload = {
@@ -30,7 +30,7 @@ export const createGroup = createAsyncThunk<
         method: "POST",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(baseURL + "Groups/", scimRequest);
+      const scimResponse = await fetch(scim_server_url + "Groups/", scimRequest);
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
@@ -49,6 +49,8 @@ export const getGroupsSearch = createAsyncThunk<
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupsSearch", async (args, thunkAPI) => {
   try {
+    const state = thunkAPI.getState();
+    const scim_server_url = state.config.scim_server_url;
     if (args.accessToken) {
       const headers = scimHeaders(args.accessToken);
       const payload = {
@@ -60,7 +62,7 @@ export const getGroupsSearch = createAsyncThunk<
         method: "POST",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(baseURL + "Groups/.search", scimRequest);
+      const scimResponse = await fetch(scim_server_url + "/Groups/.search", scimRequest);
       if (scimResponse.ok) {
         const scimResponseJSON = await scimResponse.json();
         return scimResponseJSON;
@@ -80,13 +82,15 @@ export const getGroupDetails = createAsyncThunk<
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getGroupDetails", async (args, thunkAPI) => {
   try {
+    const state = thunkAPI.getState();
+    const scim_server_url = state.config.scim_server_url;
     if (args.accessToken) {
       const headers = scimHeaders(args.accessToken);
       const scimRequest = {
         headers: headers,
         method: "GET",
       };
-      const scimResponse = await fetch(baseURL + "Groups/" + args.id, scimRequest);
+      const scimResponse = await fetch(scim_server_url + "/Groups/" + args.id, scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
@@ -111,6 +115,7 @@ export const putGroup = createAsyncThunk<
   try {
     const state = thunkAPI.getState();
     const version = state.groups.managedAccounts.meta.version;
+    const scim_server_url = state.config.scim_server_url;
     if (args.accessToken) {
       const headers = { ...scimHeaders(args.accessToken), "If-Match": version };
       // arg.result is the same response from getGroup. It is needed to clear properties that are not needed
@@ -125,7 +130,7 @@ export const putGroup = createAsyncThunk<
         method: "PUT",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(baseURL + "Groups/" + args.group.id, scimRequest);
+      const scimResponse = await fetch(scim_server_url + "/Groups/" + args.group.id, scimRequest);
       const jsonResponse = await scimResponse.json();
       if (scimResponse.ok) {
         return jsonResponse;
