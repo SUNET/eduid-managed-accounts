@@ -41,7 +41,6 @@ export function StartSession(): JSX.Element {
     dispatch(getUsersSlice.actions.initialize());
     dispatch(getGroupsSlice.actions.initialize());
     dispatch(getPersonalDataSlice.actions.initialize());
-    dispatch(appSlice.actions.setAccessToken(undefined));
   }, []);
 
   return (
