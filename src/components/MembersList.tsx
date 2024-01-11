@@ -328,6 +328,7 @@ export default function MembersList({
               <label>
                 <FormattedMessage defaultMessage="Export selected rows to Excel:" id="manageGroup-exportLabel" />
               </label>
+              <p>{document.getElementsByTagName("input")}</p>
               <div className="buttons">
                 <button
                   disabled={!isMemberSelected.length}
@@ -412,16 +413,16 @@ export default function MembersList({
                     </label>
                   </span>
                 </th>
-                <th>
+                <th id="header-givenname">
                   <FormattedMessage defaultMessage="Given name" id="manageGroup-givenNameColumn" />
                 </th>
-                <th>
+                <th id="header-surname">
                   <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
                 </th>
-                <th>
+                <th id="header-eppn">
                   <FormattedMessage defaultMessage="EPPN/username" id="manageGroup-eppnColumn" />
                 </th>
-                <th>
+                <th id="header-password">
                   <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />
                 </th>
               </tr>
