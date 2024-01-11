@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "../App.css";
 import Callback from "./Callback";
 import Footer from "./Footer";
@@ -19,7 +19,7 @@ export function ManagedAccountApp(): JSX.Element {
             <Route path="/" element={<StartSession />} />
             <Route path="/manage" element={<GroupManagement />} />
             <Route path="/callback" element={<Callback />} />
-            {/* <Route path="/app" element={<App />} /> */}
+            <Route path="*" element={<Navigate to="/" replace={true} />} />
           </Routes>
         </section>
       </main>
