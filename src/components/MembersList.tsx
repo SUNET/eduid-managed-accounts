@@ -51,7 +51,8 @@ export default function MembersList({
   const [selectedValue, setSelectedValue] = useState("");
   const [sortedData, setSortedData] = useState(members);
 
-  const [postsPerPage, setPostsPerPage] = useState(10);
+  const DEFAULT_POST_PER_PAGE = 20;
+  const [postsPerPage, setPostsPerPage] = useState(DEFAULT_POST_PER_PAGE);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAll, setShowAll] = useState(false);
 
@@ -175,7 +176,7 @@ export default function MembersList({
 
   function showLessMembers() {
     setCurrentPage(1);
-    setPostsPerPage(10);
+    setPostsPerPage(DEFAULT_POST_PER_PAGE);
     setShowAll(false);
   }
 
