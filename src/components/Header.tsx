@@ -12,7 +12,7 @@ export function Header(): JSX.Element {
   let logoutButton;
 
   function logout() {
-    navigate("/", { replace: true, state: undefined });
+    navigate("/", { replace: true, state: null });
   }
 
   if (userMail) {
