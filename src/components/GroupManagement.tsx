@@ -56,6 +56,18 @@ export default function GroupManagement(): JSX.Element {
     }
   }, [navigate, accessTokenState]);
 
+  async function reloadMembersDetails(members: GroupMember[]) {
+    dispatch(getUsersSlice.actions.initialize());
+    if (members) {
+      await Promise.all(
+        members?.map(async (member: GroupMember) => {
+          await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+        })
+      );
+      dispatch(getUsersSlice.actions.sortByLatest());
+    }
+  }
+
   /**
    * Without user interaction
    * 1 - Search for a "managed-accounts" Group
@@ -77,14 +89,7 @@ export default function GroupManagement(): JSX.Element {
             );
             if (getGroupDetails.fulfilled.match(response)) {
               const members = response.payload.members;
-              if (members) {
-                await Promise.all(
-                  members?.map(async (member: GroupMember) => {
-                    await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-                  })
-                );
-                dispatch(getUsersSlice.actions.sortByLatest());
-              }
+              if (members) await reloadMembersDetails(members);
             }
           }
         } else if (getGroupsSearch.rejected.match(result)) {
@@ -146,16 +151,8 @@ export default function GroupManagement(): JSX.Element {
     const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
     if (getGroupDetails.fulfilled.match(response)) {
       if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
-        await dispatch(getUsersSlice.actions.initialize());
         const members = response.payload.members;
-        if (members) {
-          await Promise.all(
-            members?.map(async (member: GroupMember) => {
-              await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-            })
-          );
-          await dispatch(getUsersSlice.actions.sortByLatest());
-        }
+        if (members) await reloadMembersDetails(members);
       }
     }
   }
