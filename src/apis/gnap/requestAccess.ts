@@ -11,10 +11,14 @@ import {
   SubjectAssertionFormat,
 } from "../../typescript-clients/gnap";
 
-export async function requestAccess(alg: string, publicJwk: JWK, privateKey: KeyLike, nonce: string) {
-  const TRANSACTION_URL = "https://api.eduid.docker/auth/transaction";
-  const REDIRECT_URL = "http://localhost:5173/callback";
-
+export async function requestAccess(
+  alg: string,
+  publicJwk: JWK,
+  privateKey: KeyLike,
+  nonce: string,
+  transaction_url: string,
+  redirect_url: string
+) {
   const atr: AccessTokenRequest = {
     access: [{ scope: "eduid.docker", type: "scim-api" }],
     flags: [AccessTokenFlags.BEARER],
@@ -38,7 +42,7 @@ export async function requestAccess(alg: string, publicJwk: JWK, privateKey: Key
       start: [StartInteractionMethod.REDIRECT],
       finish: {
         method: FinishInteractionMethod.REDIRECT,
-        uri: REDIRECT_URL,
+        uri: redirect_url,
         nonce: nonce, // generate automatically, to be verified with "hash" query parameter from redirect
       },
     },
@@ -49,7 +53,7 @@ export async function requestAccess(alg: string, publicJwk: JWK, privateKey: Key
     alg: alg,
     kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
     htm: "POST",
-    uri: TRANSACTION_URL,
+    uri: transaction_url,
     created: Date.now(),
   };
 
@@ -67,7 +71,7 @@ export async function requestAccess(alg: string, publicJwk: JWK, privateKey: Key
     method: "POST",
   };
 
-  const response = await fetch(TRANSACTION_URL, jwsRequest);
+  const response = await fetch(transaction_url, jwsRequest);
 
   const responseJson = await response.json();
   return responseJson;
