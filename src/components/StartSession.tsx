@@ -14,7 +14,8 @@ import getUsersSlice from "../slices/getUsers";
  */
 export function StartSession(): JSX.Element {
   const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
-  const TRANSACTION_URL = `${auth_server_url}/transaction`;
+  const redirect_url = useAppSelector((state) => state.config.redirect_url);
+  const transaction_url = `${auth_server_url}/transaction`;
   const dispatch = useAppDispatch();
   // for debugging/development
   localStorage.clear();
@@ -37,7 +38,9 @@ export function StartSession(): JSX.Element {
   }
 
   useEffect(() => {
-    initLocalStorage(TRANSACTION_URL);
+    if (transaction_url !== undefined && redirect_url !== undefined) {
+      initLocalStorage(transaction_url, redirect_url);
+    }
     dispatch(getUsersSlice.actions.initialize());
     dispatch(getGroupsSlice.actions.initialize());
     dispatch(getPersonalDataSlice.actions.initialize());
