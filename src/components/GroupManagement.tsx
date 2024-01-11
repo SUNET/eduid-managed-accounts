@@ -45,13 +45,13 @@ export default function GroupManagement(): JSX.Element {
   }, [parsedUserInfo]);
 
   useEffect(() => {
-    if (!membersDetails.length) {
+    if (!membersDetails.length && accessToken) {
       dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
     }
   }, [membersDetails]);
 
   useEffect(() => {
-    if (locationState === undefined) {
+    if (locationState === null) {
       navigate("/");
     }
   }, [navigate, locationState]);
@@ -203,7 +203,7 @@ export default function GroupManagement(): JSX.Element {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  if (locationState === undefined) {
+  if (locationState === null) {
     return <></>;
   }
 
