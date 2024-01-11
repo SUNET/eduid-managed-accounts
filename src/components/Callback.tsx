@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { postContinueRequest } from "../apis/gnap/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
 import { useAppDispatch } from "../hooks";
-import appSlice from "../slices/appReducers";
 import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
 
 export default function Callback() {
@@ -36,7 +35,7 @@ export default function Callback() {
         const hashCalculated = await getSHA256Hash(hashBaseString);
         if (hashCalculated === hashURL) {
           await continueRequest();
-        }
+        } else navigate("/");
       } catch {
         console.log("error");
       }
@@ -58,6 +57,5 @@ export default function Callback() {
       }
     }
   };
-
   return <></>;
 }
