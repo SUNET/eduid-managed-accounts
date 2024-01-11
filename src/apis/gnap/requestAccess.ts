@@ -11,8 +11,15 @@ import {
   SubjectAssertionFormat,
 } from "../../typescript-clients/gnap";
 
-export async function requestAccess(alg: string, publicJwk: JWK, privateKey: KeyLike, nonce: string) {
-  const TRANSACTION_URL = "https://api.eduid.docker/auth/transaction";
+export async function requestAccess(
+  alg: string,
+  publicJwk: JWK,
+  privateKey: KeyLike,
+  nonce: string,
+  TRANSACTION_URL: string
+) {
+  // const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
+  // const TRANSACTION_URL = `${auth_server_url}/transaction`;
   const REDIRECT_URL = "http://localhost:5173/callback";
 
   const atr: AccessTokenRequest = {

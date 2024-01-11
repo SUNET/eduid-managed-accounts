@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { useAppDispatch } from "../hooks";
-import { initLocalStorage, INTERACTION_RESPONSE } from "../initLocalStorage";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { INTERACTION_RESPONSE, initLocalStorage } from "../initLocalStorage";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
@@ -13,6 +13,8 @@ import getUsersSlice from "../slices/getUsers";
  * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-redirect-based-interaction
  */
 export function StartSession(): JSX.Element {
+  const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
+  const TRANSACTION_URL = `${auth_server_url}/transaction`;
   const dispatch = useAppDispatch();
   // for debugging/development
   localStorage.clear();
@@ -35,7 +37,7 @@ export function StartSession(): JSX.Element {
   }
 
   useEffect(() => {
-    initLocalStorage();
+    initLocalStorage(TRANSACTION_URL);
     dispatch(getUsersSlice.actions.initialize());
     dispatch(getGroupsSlice.actions.initialize());
     dispatch(getPersonalDataSlice.actions.initialize());

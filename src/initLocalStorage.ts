@@ -8,7 +8,7 @@ export const NONCE = "Nonce";
 const PRIVATE_KEY = "privateKey";
 const PUBLIC_KEY = "publicKey";
 
-export async function initLocalStorage() {
+export async function initLocalStorage(TRANSACTION_URL: string) {
   localStorage.clear();
   const token = localStorage.getItem(INTERACTION_RESPONSE);
   if (token === null || Object.keys(token).length === 0 || token === undefined) {
@@ -26,7 +26,7 @@ export async function initLocalStorage() {
       const nonce = generateNonce(24);
 
       // here Access Request
-      const responseJson = await requestAccess(alg, publicJwk, privateKey, nonce);
+      const responseJson = await requestAccess(alg, publicJwk, privateKey, nonce, TRANSACTION_URL);
       if (responseJson && Object.keys(responseJson).length > 0) {
         let now = new Date();
         const expiresIn = responseJson.interact.expires_in; // The number of seconds in which the access will expire
