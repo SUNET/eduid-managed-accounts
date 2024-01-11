@@ -28,7 +28,7 @@ select {
     cursor: not-allowed;
     pointer-events: all !important;
     background-color: $btn-orange;
-    border-color: inherit;
+    border-color: $bright-orange;
     color: $white;
   }
 }
@@ -52,7 +52,7 @@ button.btn-primary:not(:disabled):not(.disabled):hover {
     font-size: 13px;
     min-width: fit-content;
     width: auto;
-    height: auto;
+    height: 30px;
     margin-top: 0;
     margin-bottom: 0;
     letter-spacing: 1px;
@@ -79,7 +79,7 @@ button.btn-secondary:not(:disabled):not(.disabled):hover {
     font-size: 13px;
     min-width: fit-content;
     width: auto;
-    height: auto;
+    height: 30px;
     margin-top: 0;
     margin-bottom: 0;
     letter-spacing: 1px;
@@ -87,12 +87,23 @@ button.btn-secondary:not(:disabled):not(.disabled):hover {
 }
 
 button.btn-primary:hover,
-button.btn-secondary:hover {
+button.btn-secondary:hover,
+select:hover {
   transform: scale(0.95);
 
   &:disabled,
   .disabled {
     transform: scale(1);
+  }
+}
+
+.btn-secondary,
+select {
+  &:disabled,
+  .disabled {
+    background-color: initial !important;
+    border-color: initial !important;
+    color: initial !important;
   }
 }
 

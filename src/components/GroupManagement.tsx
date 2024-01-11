@@ -5,7 +5,7 @@ import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage } from "react-intl";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
 import { getUserDetails, postUser } from "../apis/scim/usersRequest";
@@ -27,18 +27,16 @@ interface ErrorsType {
 }
 
 export default function GroupManagement(): JSX.Element {
-  const location = useLocation();
   const navigate = useNavigate();
-  const locationState = location.state;
-
-  const accessToken = locationState?.access_token?.value;
-  const value = locationState?.subject.assertions[0].value;
-  const parsedUserInfo = value ? JSON.parse(value) : null;
 
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
+  const accessTokenState = useAppSelector((state) => state.app.accessToken);
+  const accessToken = accessTokenState?.access_token?.value;
+  const value = accessTokenState?.subject.assertions[0].value;
+  const parsedUserInfo = value ? JSON.parse(value) : null;
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -53,10 +51,22 @@ export default function GroupManagement(): JSX.Element {
   }, [membersDetails]);
 
   useEffect(() => {
-    if (locationState === null) {
-      return navigate("/");
+    if (accessTokenState === undefined) {
+      navigate("/");
     }
-  }, [navigate, locationState]);
+  }, [navigate, accessTokenState]);
+
+  async function reloadMembersDetails(members: GroupMember[]) {
+    dispatch(getUsersSlice.actions.initialize());
+    if (members) {
+      await Promise.all(
+        members?.map(async (member: GroupMember) => {
+          await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+        })
+      );
+      dispatch(getUsersSlice.actions.sortByLatest());
+    }
+  }
 
   /**
    * Without user interaction
@@ -79,14 +89,7 @@ export default function GroupManagement(): JSX.Element {
             );
             if (getGroupDetails.fulfilled.match(response)) {
               const members = response.payload.members;
-              if (members) {
-                await Promise.all(
-                  members?.map(async (member: GroupMember) => {
-                    await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-                  })
-                );
-                dispatch(getUsersSlice.actions.sortByLatest());
-              }
+              if (members) await reloadMembersDetails(members);
             }
           }
         } else if (getGroupsSearch.rejected.match(result)) {
@@ -98,7 +101,7 @@ export default function GroupManagement(): JSX.Element {
     };
     if (!isLoaded) {
       initializeManagedAccountsGroup();
-      dispatch(appSlice.actions.appIsLoaded());
+      dispatch(appSlice.actions.appIsLoaded(true));
     }
   }, [dispatch, accessToken]);
 
@@ -148,16 +151,8 @@ export default function GroupManagement(): JSX.Element {
     const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
     if (getGroupDetails.fulfilled.match(response)) {
       if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
-        await dispatch(getUsersSlice.actions.initialize());
         const members = response.payload.members;
-        if (members) {
-          await Promise.all(
-            members?.map(async (member: GroupMember) => {
-              await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-            })
-          );
-          await dispatch(getUsersSlice.actions.sortByLatest());
-        }
+        if (members) await reloadMembersDetails(members);
       }
     }
   }
@@ -208,7 +203,7 @@ export default function GroupManagement(): JSX.Element {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  if (locationState === null) {
+  if (accessTokenState === undefined) {
     return <></>;
   }
 
@@ -232,6 +227,15 @@ export default function GroupManagement(): JSX.Element {
               id="intro-lead"
             />
           </p>
+          <div className="text-small">
+            <em>
+              <FormattedMessage
+                defaultMessage="The contents can be presented in Swedish or English, choose language in the footer of this web page. 
+              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility of the forms."
+                id="intro-leadEmphasis"
+              />
+            </em>
+          </div>
         </div>
       </section>
       <section>
@@ -281,7 +285,7 @@ export default function GroupManagement(): JSX.Element {
               </li>
               <li>
                 <FormattedMessage
-                  defaultMessage='When you click the ADD button the account will be added to the organisation and appearing in a table below in the "Manage added accounts" section.'
+                  defaultMessage='When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
                   id="addToGroup-listItem3"
                 />
               </li>
@@ -294,7 +298,7 @@ export default function GroupManagement(): JSX.Element {
                 </strong>
                 ,&nbsp;
                 <FormattedMessage
-                  defaultMessage="transfer it to an external system of your choice, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
                   id="addToGroup-listItem4"
                 />
               </li>
