@@ -52,7 +52,7 @@ export default function Callback() {
     if (interactions && interactRef) {
       const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
       if (postContinueRequest.fulfilled.match(response)) {
-        navigate("/scim", {
+        navigate("/manage", {
           state: response.payload,
         });
       }
