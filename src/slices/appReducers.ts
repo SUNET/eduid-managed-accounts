@@ -17,12 +17,6 @@ export const appSlice = createSlice({
     appIsLoaded: (state, action) => {
       state.isLoaded = action.payload;
     },
-    setAccessToken: (state, action) => {
-      state.accessToken = action.payload;
-    },
-    saveAccessToken: (state, action) => {
-      state.accessToken = action.payload;
-    },
   },
 });
 

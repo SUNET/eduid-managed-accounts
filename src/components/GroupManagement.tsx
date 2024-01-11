@@ -5,7 +5,7 @@ import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage } from "react-intl";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
 import { getUserDetails, postUser } from "../apis/scim/usersRequest";
@@ -28,14 +28,14 @@ interface ErrorsType {
 
 export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
-  const accessTokenState = useAppSelector((state) => state.app.accessToken);
-  const accessToken = accessTokenState?.access_token?.value;
-  const value = accessTokenState?.subject.assertions[0].value;
+  const locationState = location.state;
+  const accessToken = locationState?.access_token?.value;
+  const value = locationState?.subject.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
 
   useEffect(() => {
@@ -51,10 +51,10 @@ export default function GroupManagement(): JSX.Element {
   }, [membersDetails]);
 
   useEffect(() => {
-    if (accessTokenState === undefined) {
+    if (locationState === undefined) {
       navigate("/");
     }
-  }, [navigate, accessTokenState]);
+  }, [navigate, locationState]);
 
   async function reloadMembersDetails(members: GroupMember[]) {
     dispatch(getUsersSlice.actions.initialize());
@@ -203,7 +203,7 @@ export default function GroupManagement(): JSX.Element {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  if (accessTokenState === undefined) {
+  if (locationState === undefined) {
     return <></>;
   }
 
