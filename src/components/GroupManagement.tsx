@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
@@ -30,6 +30,7 @@ export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
+  const intl = useIntl();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
@@ -37,6 +38,18 @@ export default function GroupManagement(): JSX.Element {
   const accessToken = locationState?.access_token?.value;
   const value = locationState?.subject.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
+
+  const placeholderGivenName = intl.formatMessage({
+    id: "addToGroup-givenNamePlaceholder",
+    defaultMessage: "given name",
+    description: "Placeholder for given name text input",
+  });
+
+  const placeholderSurName = intl.formatMessage({
+    id: "addToGroup-surnamePlaceholder",
+    defaultMessage: "surname",
+    description: "Placeholder for surname text input",
+  });
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -324,12 +337,14 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="givenName">
                         <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
                       </label>
-                      <FormattedMessage id="addToGroup-givenNamePlaceholder" defaultMessage="given name">
-                        {(placeholderText) => (
-                          <input placeholder={placeholderText} type="text" id="givenName" ref={inputRef} autoFocus />
-                        )}
-                      </FormattedMessage>
-
+                      <input
+                        {...input}
+                        placeholder={placeholderGivenName}
+                        type="text"
+                        id="givenName"
+                        ref={inputRef}
+                        autoFocus
+                      />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
@@ -341,12 +356,14 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="surName">
                         <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                       </label>
-                      <FormattedMessage id="addToGroup-surnamePlaceholder" defaultMessage="surname">
-                        {(placeholderText) => (
-                          <input placeholder={placeholderText} type="text" id="surName" ref={inputRef} autoFocus />
-                        )}
-                      </FormattedMessage>
-
+                      <input
+                        {...input}
+                        placeholder={placeholderSurName}
+                        type="text"
+                        id="surName"
+                        ref={inputRef}
+                        autoFocus
+                      />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
