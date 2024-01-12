@@ -103,6 +103,7 @@ export default function GroupManagement(): JSX.Element {
     if (!isLoaded) {
       initializeManagedAccountsGroup();
       dispatch(appSlice.actions.appIsLoaded(true));
+      handleStyling();
     }
   }, [dispatch, accessToken]);
 
@@ -232,7 +233,8 @@ export default function GroupManagement(): JSX.Element {
 
     const wb = new ExcelJS.Workbook();
     const reader = new FileReader();
-    const file = document.getElementById("excelFile") as HTMLInputElement;
+    const file = document.getElementById("file") as HTMLInputElement;
+    console.log("files", file);
     if (!file?.files) {
       return;
     }
@@ -261,6 +263,23 @@ export default function GroupManagement(): JSX.Element {
       });
     };
   }
+
+  const handleStyling = () => {
+    const file = document.querySelector("#file");
+    file?.addEventListener("change", (e) => {
+      // Get the selected file
+      const [file] = e.target.files;
+      // Get the file name and size
+      const { name: fileName, size } = file;
+      // Convert size in bytes to kilo bytes
+      const fileSize = (size / 1000).toFixed(2);
+      // Set the text content
+      const fileNameAndSize = `${fileName} - ${fileSize}KB`;
+      document.querySelector(".file-name").textContent = fileNameAndSize;
+    });
+  };
+
+  const file = document.querySelector("#file");
 
   return (
     <React.Fragment>
@@ -411,16 +430,27 @@ export default function GroupManagement(): JSX.Element {
             </form>
           )}
         />
-        <hr className="border-line"></hr>
+        <hr
+          style={{
+            margin: "2rem 0",
+            width: "50%",
+          }}
+        />
         <p>
           <FormattedMessage defaultMessage="Import via Excel" id="excel-import" />
         </p>
-        <form onSubmit={excelImport} id="testForm">
-          <input type="file" name="excelFile" id="excelFile" />
-          <button type="submit" className="btn btn-primary">
-            <FormattedMessage defaultMessage="Create via Excel" id="excel-import" />
-          </button>
-        </form>
+        <div className="file-input">
+          <form onSubmit={excelImport} id="import-excel-form">
+            <input className="file" type="file" name="excelFile" id="file" />
+            <label htmlFor="file">
+              <FormattedMessage defaultMessage="Select file" id="excel-import" />
+            </label>
+            <p className="file-name"></p>
+            <button type="submit" className="btn btn-primary">
+              <FormattedMessage defaultMessage="Create via Excel" id="excel-import" />
+            </button>
+          </form>
+        </div>
       </section>
       <section>
         <MembersList
