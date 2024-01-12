@@ -214,10 +214,10 @@ export default function MembersList({
   function exportExcel() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
-    const headerGivenName = document.getElementById("header-givenname")?.textContent || "Given name";
-    const headerSurname = document.getElementById("header-surname")?.textContent || "Surname";
-    const headerEPPN = document.getElementById("header-eppn")?.textContent || "EPPN/username";
-    const headerPassword = document.getElementById("header-password")?.textContent || "Password";
+    const headerGivenName = document.getElementById("header-givenname")?.textContent ?? "Given name";
+    const headerSurname = document.getElementById("header-surname")?.textContent ?? "Surname";
+    const headerEPPN = document.getElementById("header-eppn")?.textContent ?? "EPPN/username";
+    const headerPassword = document.getElementById("header-password")?.textContent ?? "Password";
     worksheet.columns = [
       { header: headerGivenName, key: "given-name" },
       { header: headerSurname, key: "surname" },
