@@ -221,15 +221,6 @@ export default function GroupManagement(): JSX.Element {
             }}
           />
         </h1>
-        <span>
-          <FormattedMessage
-            defaultMessage="ACTUAL SCOPE: {scope}"
-            id="intro-scope"
-            values={{
-              scope: scope,
-            }}
-          />
-        </span>
 
         <div className="lead">
           <p>
@@ -254,6 +245,12 @@ export default function GroupManagement(): JSX.Element {
         <h2>
           <FormattedMessage defaultMessage="Add account to organisation" id="addToGroup-heading" />
         </h2>
+        <p>
+          <span className="heading-5">
+            <FormattedMessage defaultMessage="CURRENT SCOPE: " id="intro-scope" />
+          </span>
+          <strong>{scope}</strong>
+        </p>
         <p>
           <FormattedMessage
             defaultMessage="Add every account by using this form, to create the username and password."
