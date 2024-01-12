@@ -54,7 +54,7 @@
     "string": "Innehållet kan presenteras på svenska eller engelska, välj språk i sidfoten. Användning av tjänsten lämpar sig bäst i större format än mobila enheter för bästa läsbarhet av innehållet. "
   },
   "intro-scope": {
-    "string": "Nuvarande scope:"
+    "string": "Scope:"
   },
   "landing-header": {
     "string": "Välkommen till Hantera Konton med eduID"
