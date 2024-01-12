@@ -329,14 +329,7 @@ export default function GroupManagement(): JSX.Element {
                       </label>
                       <FormattedMessage id="addToGroup-givenNamePlaceholder" defaultMessage="given name">
                         {(placeholderText) => (
-                          <input
-                            placeholder={placeholderText}
-                            type="text"
-                            {...input}
-                            id="givenName"
-                            ref={inputRef}
-                            autoFocus
-                          />
+                          <input placeholder={placeholderText} type="text" id="givenName" ref={inputRef} autoFocus />
                         )}
                       </FormattedMessage>
 
@@ -353,14 +346,7 @@ export default function GroupManagement(): JSX.Element {
                       </label>
                       <FormattedMessage id="addToGroup-surnamePlaceholder" defaultMessage="surname">
                         {(placeholderText) => (
-                          <input
-                            placeholder={placeholderText}
-                            type="text"
-                            {...input}
-                            id="surName"
-                            ref={inputRef}
-                            autoFocus
-                          />
+                          <input placeholder={placeholderText} type="text" id="surName" ref={inputRef} autoFocus />
                         )}
                       </FormattedMessage>
 
