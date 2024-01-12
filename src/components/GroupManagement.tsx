@@ -200,12 +200,14 @@ export default function GroupManagement(): JSX.Element {
   function toggleShowMore() {
     setShowMore(!showMore);
   }
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   if (locationState === null) {
     return <></>;
   }
+
+  const eduPersonPrincipalName = parsedUserInfo.attributes.eduPersonPrincipalName.indexOf("@");
+  const scope = parsedUserInfo.attributes.eduPersonPrincipalName.slice(eduPersonPrincipalName + 1);
 
   return (
     <React.Fragment>
@@ -219,6 +221,7 @@ export default function GroupManagement(): JSX.Element {
             }}
           />
         </h1>
+
         <div className="lead">
           <p>
             <FormattedMessage
@@ -242,6 +245,12 @@ export default function GroupManagement(): JSX.Element {
         <h2>
           <FormattedMessage defaultMessage="Add account to organisation" id="addToGroup-heading" />
         </h2>
+        <p>
+          <span className="heading-5">
+            <FormattedMessage defaultMessage="CURRENT SCOPE: " id="intro-scope" />
+          </span>
+          <strong>{scope}</strong>
+        </p>
         <p>
           <FormattedMessage
             defaultMessage="Add every account by using this form, to create the username and password."
