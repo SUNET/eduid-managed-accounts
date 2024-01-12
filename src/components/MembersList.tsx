@@ -255,7 +255,7 @@ export default function MembersList({
           </h2>
           <p>
             <FormattedMessage
-              defaultMessage="Export, copy or note down the corresponding EPPN/username and password for every account during the session in which it was added."
+              defaultMessage="Export, copy or note down the corresponding EPPN/username and password for every account during the session and page load in which it was added."
               id="manageGroup-paragraph"
             />
           </p>

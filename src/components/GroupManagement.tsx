@@ -298,7 +298,7 @@ export default function GroupManagement(): JSX.Element {
                 </strong>
                 ,&nbsp;
                 <FormattedMessage
-                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and prior to page reload."
                   id="addToGroup-listItem4"
                 />
               </li>
@@ -324,7 +324,12 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="givenName">
                         <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
                       </label>
-                      <input type="text" {...input} placeholder="given name" id="givenName" ref={inputRef} autoFocus />
+                      <FormattedMessage id="addToGroup-givenNamePlaceholder" defaultMessage="given name">
+                        {(placeholderText) => (
+                          <input placeholder={placeholderText} type="text" id="givenName" ref={inputRef} autoFocus />
+                        )}
+                      </FormattedMessage>
+
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
@@ -336,7 +341,12 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="surName">
                         <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                       </label>
-                      <input type="text" {...input} placeholder="surname" id="surName" />
+                      <FormattedMessage id="addToGroup-surnamePlaceholder" defaultMessage="surname">
+                        {(placeholderText) => (
+                          <input placeholder={placeholderText} type="text" id="surName" ref={inputRef} autoFocus />
+                        )}
+                      </FormattedMessage>
+
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
