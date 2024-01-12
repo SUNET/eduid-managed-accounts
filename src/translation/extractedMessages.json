@@ -41,6 +41,9 @@
   "addToGroup-surname": {
     "string": "Surname*"
   },
+  "header-logoutLink": {
+    "string": "Log out"
+  },
   "intro-heading": {
     "string": "Welcome {user}"
   },
@@ -49,6 +52,9 @@
   },
   "intro-leadEmphasis": {
     "string": "The contents can be presented in Swedish or English, choose language in the footer of this web page. You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility of the forms."
+  },
+  "intro-scope": {
+    "string": "CURRENT SCOPE:"
   },
   "landing-header": {
     "string": "Welcome to Managed Accounts with eduID"
