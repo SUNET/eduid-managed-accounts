@@ -215,11 +215,15 @@ export default function MembersList({
   function exportExcel() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
+    const headerGivenName = document.getElementById("header-givenname")?.textContent ?? "Given name";
+    const headerSurname = document.getElementById("header-surname")?.textContent ?? "Surname";
+    const headerEPPN = document.getElementById("header-eppn")?.textContent ?? "EPPN/username";
+    const headerPassword = document.getElementById("header-password")?.textContent ?? "Password";
     worksheet.columns = [
-      { header: "Given name", key: "given-name" },
-      { header: "Surname", key: "surname" },
-      { header: "EPPN", key: "eppn" },
-      { header: "Password", key: "password" },
+      { header: headerGivenName, key: "given-name" },
+      { header: headerSurname, key: "surname" },
+      { header: headerEPPN, key: "eppn" },
+      { header: headerPassword, key: "password" },
     ];
     worksheet.getRow(1).font = { bold: true };
 
@@ -413,16 +417,16 @@ export default function MembersList({
                     </label>
                   </span>
                 </th>
-                <th>
+                <th id="header-givenname">
                   <FormattedMessage defaultMessage="Given name" id="manageGroup-givenNameColumn" />
                 </th>
-                <th>
+                <th id="header-surname">
                   <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
                 </th>
-                <th>
+                <th id="header-eppn">
                   <FormattedMessage defaultMessage="EPPN/username" id="manageGroup-eppnColumn" />
                 </th>
-                <th>
+                <th id="header-password">
                   <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />
                 </th>
               </tr>
