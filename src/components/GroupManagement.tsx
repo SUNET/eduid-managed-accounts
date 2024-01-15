@@ -2,6 +2,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
+import { ValidationErrors } from "final-form";
 import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
@@ -23,9 +24,9 @@ interface ValidatePersonalData {
   [key: string]: string;
 }
 
-interface ErrorsType {
-  [key: string]: React.ReactNode;
-}
+// interface ErrorsType {
+//   [key: string]: React.ReactNode;
+// }
 
 export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
@@ -117,10 +118,12 @@ export default function GroupManagement(): JSX.Element {
    *  - 2. with one single request, update the Group with all the new users
    *    - 2a.  update Group state with newGroupMembers
    *
+   * OBS! Validation has to be done before addUser()
+   *
    * @param names
    */
   async function addUsers(names: { given_name: string; surname: string }[]) {
-    await handleGroupVersion();
+    // 1 - Create Users
     let newMembersList: GroupMember[] = []; // for PUT Groups
     for (const name of names) {
       try {
@@ -148,9 +151,10 @@ export default function GroupManagement(): JSX.Element {
       }
     }
 
-    // update group with new members
+    // 2 - update group with new members
     let newMembersListCopy = managedAccountsDetails.members?.slice(); // copy array
     const updatedMembersList = newMembersListCopy?.concat(newMembersList);
+    await handleGroupVersion(); // check/update Group version
     const response = await dispatch(
       putGroup({
         group: {
@@ -193,15 +197,18 @@ export default function GroupManagement(): JSX.Element {
     }
   }
 
-  const validatePersonalData = (values: ValidatePersonalData) => {
-    const errors: ErrorsType = {};
+  const validatePersonalData = (values: ValidatePersonalData): ValidationErrors => {
+    console.log("validatePersonalData", values);
+    const errors: ValidationErrors = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
         // check if the input is empty or it contains only spaces
         if (!values[inputName] || !values[inputName].trim()) {
+          //console.error("validatePersonalData", "Empty");
           errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {
+          //console.error("validatePersonalData", "It is not allowed to save a national ID number");
           errors[inputName] = (
             <FormattedMessage
               defaultMessage="It is not allowed to save a national ID number"
@@ -211,8 +218,19 @@ export default function GroupManagement(): JSX.Element {
         }
       });
     }
+    console.log("validatePersonalData ERRORS: ", errors);
     return errors;
   };
+
+  function handleValidatePersonalData(values: ValidatePersonalData) {
+    try {
+      validatePersonalData(values);
+      return {};
+    } catch (error) {
+      console.error("validatePersonalData", error);
+      return error;
+    }
+  }
 
   const [members, setMembers] = useState<Array<MembersDetailsTypes & { selected: boolean }>>([]);
   const [showMore, setShowMore] = useState(true);
@@ -246,15 +264,22 @@ export default function GroupManagement(): JSX.Element {
         workbook.eachSheet(async (sheet, id) => {
           // 1 - skip the first row that contains headers
           // 2 - for each row :
-          //      - read "Given name" and "Surname" columns (VALIDATE DATA?)
+          //      - read "Given name" and "Surname" columns
+          //      - VALIDATE DATA
           //      - create/POST a new user with these values
           let newNames: any[] = [];
           sheet.eachRow((row, rowIndex) => {
             if (rowIndex > 1) {
               const name = {
-                given_name: row.getCell(1).value,
-                surname: row.getCell(2).value,
+                given_name: row.getCell(1).text,
+                surname: row.getCell(2).text,
               };
+              // Validate happens when reading the values, before creating the users
+              const errors = validatePersonalData(name);
+              if (errors && Object.keys(errors).length > 0) {
+                console.error("ERRORS EXCEL IMPORT: validatePersonalData", errors);
+                //throw errors;
+              }
               newNames.push(name);
             }
           });
