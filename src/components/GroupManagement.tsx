@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
@@ -30,6 +30,7 @@ export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
+  const intl = useIntl();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
@@ -37,6 +38,18 @@ export default function GroupManagement(): JSX.Element {
   const accessToken = locationState?.access_token?.value;
   const value = locationState?.subject.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
+
+  const placeholderGivenName = intl.formatMessage({
+    id: "addToGroup-givenNamePlaceholder",
+    defaultMessage: "given name",
+    description: "Placeholder for given name text input",
+  });
+
+  const placeholderSurName = intl.formatMessage({
+    id: "addToGroup-surnamePlaceholder",
+    defaultMessage: "surname",
+    description: "Placeholder for surname text input",
+  });
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -307,7 +320,7 @@ export default function GroupManagement(): JSX.Element {
                 </strong>
                 ,&nbsp;
                 <FormattedMessage
-                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and prior to page reload."
                   id="addToGroup-listItem4"
                 />
               </li>
@@ -333,7 +346,14 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="givenName">
                         <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
                       </label>
-                      <input type="text" {...input} placeholder="given name" id="givenName" ref={inputRef} autoFocus />
+                      <input
+                        {...input}
+                        placeholder={placeholderGivenName}
+                        type="text"
+                        id="givenName"
+                        ref={inputRef}
+                        autoFocus
+                      />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
@@ -345,7 +365,7 @@ export default function GroupManagement(): JSX.Element {
                       <label htmlFor="surName">
                         <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                       </label>
-                      <input type="text" {...input} placeholder="surname" id="surName" />
+                      <input {...input} placeholder={placeholderSurName} type="text" id="surName" ref={inputRef} />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
                   )}
