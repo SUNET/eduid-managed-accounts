@@ -9,6 +9,7 @@
     "string": "Given name*"
   },
   "addToGroup-givenNamePlaceholder": {
+    "developer_comment": "Placeholder for given name text input",
     "string": "given name"
   },
   "addToGroup-heading": {
@@ -45,6 +46,7 @@
     "string": "Surname*"
   },
   "addToGroup-surnamePlaceholder": {
+    "developer_comment": "Placeholder for surname text input",
     "string": "surname"
   },
   "header-logoutLink": {
