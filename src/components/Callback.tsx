@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { postContinueRequest } from "../apis/gnap/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
-import { useAppDispatch } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
 
 export default function Callback() {
+  const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
   const dispatch = useAppDispatch();
 
   // Get "InteractionResponse" from LocalStorage
@@ -20,7 +21,7 @@ export default function Callback() {
   const params = new URLSearchParams(location.search);
   const hashURL = params.get("hash");
   const interactRef = params.get("interact_ref") ?? undefined;
-  const url = "https://api.eduid.docker/auth/transaction";
+  const transaction_url = `${auth_server_url}/transaction`;
 
   const navigate = useNavigate();
 
@@ -31,13 +32,13 @@ export default function Callback() {
   useEffect(() => {
     async function testHash() {
       try {
-        const hashBaseString = `${nonce}\n${finish}\n${interactRef}\n${url}`;
+        const hashBaseString = `${nonce}\n${finish}\n${interactRef}\n${transaction_url}`;
         const hashCalculated = await getSHA256Hash(hashBaseString);
         if (hashCalculated === hashURL) {
           await continueRequest();
         } else navigate("/");
       } catch {
-        console.log("error");
+        console.log("testHash error");
       }
     }
     testHash();
