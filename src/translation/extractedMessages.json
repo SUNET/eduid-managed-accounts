@@ -61,6 +61,9 @@
   "intro-leadEmphasis": {
     "string": "The contents can be presented in Swedish or English, choose language in the footer of this web page. You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility of the forms."
   },
+  "intro-scope": {
+    "string": "CURRENT SCOPE:"
+  },
   "landing-header": {
     "string": "Welcome to Managed Accounts with eduID"
   },
@@ -136,8 +139,7 @@
   "manageGroup-removeMembersDialogHeading": {
     "string": "Remove accounts from organisation"
   },
-  "manageGroup-removeMembersDialogParagraph": {
-  },
+  "manageGroup-removeMembersDialogParagraph": {},
   "manageGroup-removeRowButton": {
     "string": "Remove row"
   },
