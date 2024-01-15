@@ -8,6 +8,10 @@
   "addToGroup-givenName": {
     "string": "Förnamn*"
   },
+  "addToGroup-givenNamePlaceholder": {
+    "developer_comment": "Placeholder for given name text input",
+    "string": "förnamn"
+  },
   "addToGroup-heading": {
     "string": "Lägg till konto till organisationen"
   },
@@ -24,7 +28,7 @@
     "string": "När du klickar på knappen LÄGG TILL så läggs kontot till organisationen med skapat användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
   },
   "addToGroup-listItem4": {
-    "string": "överför till lämpligt externt format, t.ex. genom att exportera till Excel eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session."
+    "string": "överför till lämpligt externt format, t.ex. genom att exportera till Excel eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session och innan sidan laddas om."
   },
   "addToGroup-listItem4Strong": {
     "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
@@ -40,6 +44,10 @@
   },
   "addToGroup-surname": {
     "string": "Efternamn*"
+  },
+  "addToGroup-surnamePlaceholder": {
+    "developer_comment": "Placeholder for surname text input",
+    "string": "efternamn"
   },
   "header-logoutLink": {
     "string": "Logga ut"
@@ -123,7 +131,7 @@
     "string": "Nytt lösenord"
   },
   "manageGroup-paragraph": {
-    "string": "Exportera, kopiera eller notera varje kontos EPPN/användarnamn och lösenord under samma session som det skapas."
+    "string": "Exportera, kopiera eller notera varje kontos EPPN/användarnamn och lösenord under samma session och sid-laddning som det skapas."
   },
   "manageGroup-passwordColumn": {
     "string": "Lösenord"
@@ -131,8 +139,7 @@
   "manageGroup-removeMembersDialogHeading": {
     "string": "Ta bort konton ur organisationen"
   },
-  "manageGroup-removeMembersDialogParagraph": {
-  },
+  "manageGroup-removeMembersDialogParagraph": {},
   "manageGroup-removeRowButton": {
     "string": "Ta bort rad"
   },
