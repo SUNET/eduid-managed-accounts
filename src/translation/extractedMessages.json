@@ -8,6 +8,10 @@
   "addToGroup-givenName": {
     "string": "Given name*"
   },
+  "addToGroup-givenNamePlaceholder": {
+    "developer_comment": "Placeholder for given name text input",
+    "string": "given name"
+  },
   "addToGroup-heading": {
     "string": "Add account to organisation"
   },
@@ -24,7 +28,7 @@
     "string": "When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the \"Manage added accounts\" section, where the newly added accounts will be pre-selected."
   },
   "addToGroup-listItem4": {
-    "string": "transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
+    "string": "transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and prior to page reload."
   },
   "addToGroup-listItem4Strong": {
     "string": "Then note the corresponding EPPN/username and password which appears in the table"
@@ -40,6 +44,10 @@
   },
   "addToGroup-surname": {
     "string": "Surname*"
+  },
+  "addToGroup-surnamePlaceholder": {
+    "developer_comment": "Placeholder for surname text input",
+    "string": "surname"
   },
   "header-logoutLink": {
     "string": "Log out"
@@ -123,7 +131,7 @@
     "string": "New password"
   },
   "manageGroup-paragraph": {
-    "string": "Export, copy or note down the corresponding EPPN/username and password for every account during the session in which it was added."
+    "string": "Export, copy or note down the corresponding EPPN/username and password for every account during the session and page load in which it was added."
   },
   "manageGroup-passwordColumn": {
     "string": "Password"
@@ -131,8 +139,7 @@
   "manageGroup-removeMembersDialogHeading": {
     "string": "Remove accounts from organisation"
   },
-  "manageGroup-removeMembersDialogParagraph": {
-  },
+  "manageGroup-removeMembersDialogParagraph": {},
   "manageGroup-removeRowButton": {
     "string": "Remove row"
   },
