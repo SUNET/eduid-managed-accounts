@@ -40,6 +40,7 @@ export default function GroupManagement(): JSX.Element {
   const accessToken = locationState?.access_token?.value;
   const value = locationState?.subject.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const placeholderGivenName = intl.formatMessage({
     id: "addToGroup-givenNamePlaceholder",
@@ -52,6 +53,13 @@ export default function GroupManagement(): JSX.Element {
     defaultMessage: "surname",
     description: "Placeholder for surname text input",
   });
+
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  }
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -136,6 +144,8 @@ export default function GroupManagement(): JSX.Element {
    * @param names
    */
   async function addUsers(names: { given_name: string; surname: string }[]) {
+    // 0 - Disable "create accounts" button, to avoid users can click multiple times while we create accounts
+    setSelectedFile(null);
     // 1 - Create Users
     let newMembersList: GroupMember[] = []; // for PUT Groups
     for (const name of names) {
@@ -259,6 +269,12 @@ export default function GroupManagement(): JSX.Element {
   const eduPersonPrincipalName = parsedUserInfo.attributes.eduPersonPrincipalName.indexOf("@");
   const scope = parsedUserInfo.attributes.eduPersonPrincipalName.slice(eduPersonPrincipalName + 1);
 
+  function cleanFileInput() {
+    setSelectedFile(null);
+    document.getElementById("file").files = null; // as HTMLInputElement
+    document.querySelector(".file-name").textContent = null;
+  }
+
   async function excelImport(e: any) {
     e.preventDefault();
 
@@ -297,6 +313,8 @@ export default function GroupManagement(): JSX.Element {
             }
           });
           await addUsers(newNames);
+          // reset input
+          cleanFileInput();
         });
       });
     };
@@ -489,7 +507,7 @@ export default function GroupManagement(): JSX.Element {
                 </label>
                 <div className="flex-between file-input">
                   <span className="file-name"></span>
-                  <input className="file" type="file" name="excelFile" id="file" />
+                  <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
                   <label className="btn-cover btn-sm" htmlFor="file">
                     <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
                   </label>
@@ -503,7 +521,7 @@ export default function GroupManagement(): JSX.Element {
                     id="addToGroup-importLabel"
                   />
                 </label>
-                <button type="submit" className="btn btn-primary btn-sm">
+                <button type="submit" className="btn btn-primary btn-sm" disabled={!selectedFile}>
                   <FormattedMessage defaultMessage="Create accounts" id="excel-import" />
                 </button>
               </fieldset>
@@ -535,7 +553,7 @@ export default function GroupManagement(): JSX.Element {
                         <input
                           type="text"
                           {...input}
-                          placeholder="given name"
+                          placeholder={placeholderGivenName}
                           id="givenName"
                           ref={inputRef}
                           autoFocus
@@ -551,7 +569,7 @@ export default function GroupManagement(): JSX.Element {
                         <label htmlFor="surName">
                           <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                         </label>
-                        <input type="text" {...input} placeholder="surname" id="surName" />
+                        <input type="text" {...input} placeholder={placeholderSurName} id="surName" />
                         {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                       </fieldset>
                     )}
