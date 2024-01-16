@@ -31,7 +31,7 @@
     "string": "Läs mindre om att lägga till konton"
   },
   "addToGroup-importLabel": {
-    "string": "Skapa konton från valt Excel-dokument"
+    "string": "Skapa konton från valt Excel-dokument:"
   },
   "addToGroup-list1Item1": {
     "string": "Skriv in förnamn och efternamn för varje konto, ett i taget."
