@@ -81,12 +81,12 @@
   "addToGroup-surname": {
     "string": "Efternamn*"
   },
-  "excel-import": {
-    "string": "Skapa konton"
-  },
   "addToGroup-surnamePlaceholder": {
     "developer_comment": "Placeholder for surname text input",
     "string": "efternamn"
+  },
+  "excel-import": {
+    "string": "Skapa konton"
   },
   "header-logoutLink": {
     "string": "Logga ut"
@@ -178,7 +178,9 @@
   "manageGroup-removeMembersDialogHeading": {
     "string": "Ta bort konton ur organisationen"
   },
-  "manageGroup-removeMembersDialogParagraph": {},
+  "manageGroup-removeMembersDialogParagraph": {
+    "string": "Är du säker på att du vill ta bort ${isMemberSelected.length} konton? Klicka i så fall på knappen OK nedan."
+  },
   "manageGroup-removeRowButton": {
     "string": "Ta bort rad"
   },
