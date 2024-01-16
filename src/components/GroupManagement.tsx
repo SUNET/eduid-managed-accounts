@@ -535,7 +535,7 @@ export default function GroupManagement(): JSX.Element {
                         <input
                           type="text"
                           {...input}
-                          placeholder="given name"
+                          placeholder={placeholderGivenName}
                           id="givenName"
                           ref={inputRef}
                           autoFocus
@@ -551,7 +551,7 @@ export default function GroupManagement(): JSX.Element {
                         <label htmlFor="surName">
                           <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                         </label>
-                        <input type="text" {...input} placeholder="surname" id="surName" />
+                        <input type="text" {...input} placeholder={placeholderSurName} id="surName" />
                         {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                       </fieldset>
                     )}
