@@ -55,7 +55,7 @@
     "string": "Importera ditt ifyllda dokument genom att klicka på knappen VÄLJ FIL för att välja din .xls eller .xlsx fil. Namnet på det importerade dokumentet syns intill knappen."
   },
   "addToGroup-list2Item3": {
-    "string": "Skapa konton från dokumentet genom att klicka på knappen SKAPA KONTON, så läggs de till organisationen med skapade användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
+    "string": "Skapa sedan konton från dokumentet genom att klicka på knappen SKAPA KONTON, så läggs de till organisationen med skapade användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
   },
   "addToGroup-list2Item4": {
     "string": "överför till lämpligt externt format, t.ex. genom att exportera till Excel eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
