@@ -8,7 +8,8 @@
 a.btn,
 button,
 button.btn,
-select {
+select,
+label.btn-cover {
   font-family: $akkurat;
   letter-spacing: 1px;
   font-size: 1rem;
@@ -63,7 +64,8 @@ button.btn-secondary,
 button.btn-secondary:not(:disabled):not(.disabled):active,
 button.btn-secondary:not(:disabled):not(.disabled):focus,
 button.btn-secondary:not(:disabled):not(.disabled):active:focus,
-button.btn-secondary:not(:disabled):not(.disabled):hover {
+button.btn-secondary:not(:disabled):not(.disabled):hover,
+label.btn-cover {
   color: $txt-orange;
   border: solid 2px $bright-orange;
   background-color: $white;
@@ -88,7 +90,8 @@ button.btn-secondary:not(:disabled):not(.disabled):hover {
 
 button.btn-primary:hover,
 button.btn-secondary:hover,
-select:hover {
+select:hover,
+label.btn-cover:hover {
   transform: scale(0.95);
 
   &:disabled,

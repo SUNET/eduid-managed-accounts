@@ -139,4 +139,15 @@ hr.border-line {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  > :last-child:not(button) {
+    text-align: right;
+  }
+
+  .file-input & label:not(.btn-cover) {
+    margin: 0 1rem 0 0;
+  }
+  button {
+    align-self: flex-end;
+  }
 }
