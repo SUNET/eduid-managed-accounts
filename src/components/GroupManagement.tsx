@@ -344,7 +344,7 @@ export default function GroupManagement(): JSX.Element {
             <em>
               <FormattedMessage
                 defaultMessage="The contents can be presented in Swedish or English, choose language in the footer of this web page. 
-              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility of the forms."
+              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility and to read the full instructions under the READ MORE... links."
                 id="intro-leadEmphasis"
               />
             </em>
@@ -363,7 +363,7 @@ export default function GroupManagement(): JSX.Element {
         </p>
         <p>
           <FormattedMessage
-            defaultMessage="Add every account, either by importing your prepared Ecxel-document or one by one using the form."
+            defaultMessage="Add every account, either by first importing your prepared Excel-document or one by one using the form."
             id="addToGroup-paragraph"
           />
         </p>
@@ -401,13 +401,13 @@ export default function GroupManagement(): JSX.Element {
               </li>
               <li>
                 <FormattedMessage
-                  defaultMessage="Import your prepared document by clicking on the SELECT DOCUMENT button to choose your .xls or .xlsx file. You will see the name of the last imported file next to the button."
+                  defaultMessage="Import your filled in document by clicking on the SELECT DOCUMENT button to choose your .xls or .xlsx file. You will see the name of the last imported file next to the button."
                   id="addToGroup-list2Item2"
                 />
               </li>
               <li>
                 <FormattedMessage
-                  defaultMessage='Create the accounts listed in the document by clicking on the CREATE ACCOUNTS button. The accounts will be added to the organisation, with usernames and passwords, and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
+                  defaultMessage='Then create the accounts listed in the document by clicking on the CREATE ACCOUNTS button. The accounts will be added to the organisation, with usernames and passwords, and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
                   id="addToGroup-list2Item3"
                 />
               </li>
