@@ -43,7 +43,7 @@
     "string": "När du klickar på knappen LÄGG TILL så läggs kontot till organisationen med skapat användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
   },
   "addToGroup-list1Item4": {
-    "string": "överför till lämpligt externt format, t.ex. genom att exportera till en ny kompletterad Excel-fil eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
+    "string": "överför till lämpligt externt format, t.ex. genom att exportera en Excel-fil eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
   },
   "addToGroup-list1Item4Strong": {
     "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
@@ -58,7 +58,7 @@
     "string": "Skapa sedan konton från dokumentet genom att klicka på knappen SKAPA KONTON, så läggs de till organisationen med skapade användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
   },
   "addToGroup-list2Item4": {
-    "string": "överför till lämpligt externt format, t.ex. genom att exportera till Excel eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
+    "string": "överför till lämpligt externt format, t.ex. genom att exportera till en ny kompletterad Excel-fil eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
   },
   "addToGroup-list2Item4Strong": {
     "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
@@ -179,7 +179,7 @@
     "string": "Ta bort konton ur organisationen"
   },
   "manageGroup-removeMembersDialogParagraph": {
-    "string": "Är du säker på att du vill ta bort ${isMemberSelected.length} konton? Klicka i så fall på knappen OK nedan."
+    "string": "Är du säker på att du vill ta bort {selectedMemberLength} konton? Klicka i så fall på knappen OK nedan."
   },
   "manageGroup-removeRowButton": {
     "string": "Ta bort rad"
