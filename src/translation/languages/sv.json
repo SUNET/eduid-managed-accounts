@@ -52,7 +52,7 @@
     "string": "Skapa ett 2-kolumns Excel-dokument innehållande för- och efternamn åt de konton som ska läggas till. Du kan ladda ned ett exempel att fylla i genom att klicka på länken LADDA NED DOKUMENT."
   },
   "addToGroup-list2Item2": {
-    "string": "Importera ditt ifyllda dokument genom att klicka på knappen VÄLJ FIL för att välja din .xls eller .xlsx fil. Namnet på den importerade filen syns intill knappen."
+    "string": "Importera ditt ifyllda dokument genom att klicka på knappen VÄLJ FIL för att välja din .xls eller .xlsx fil. Namnet på det importerade dokumentet syns intill knappen."
   },
   "addToGroup-list2Item3": {
     "string": "Skapa konton från dokumentet genom att klicka på knappen SKAPA KONTON, så läggs de till organisationen med skapade användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
