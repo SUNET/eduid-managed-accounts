@@ -267,6 +267,12 @@ export default function GroupManagement(): JSX.Element {
   const eduPersonPrincipalName = parsedUserInfo.attributes.eduPersonPrincipalName.indexOf("@");
   const scope = parsedUserInfo.attributes.eduPersonPrincipalName.slice(eduPersonPrincipalName + 1);
 
+  function cleanFileInput() {
+    setSelectedFile(null);
+    document.getElementById("file").files = null; // as HTMLInputElement
+    document.querySelector(".file-name").textContent = null;
+  }
+
   async function excelImport(e: any) {
     e.preventDefault();
 
@@ -305,6 +311,8 @@ export default function GroupManagement(): JSX.Element {
             }
           });
           await addUsers(newNames);
+          // reset input
+          cleanFileInput();
         });
       });
     };
