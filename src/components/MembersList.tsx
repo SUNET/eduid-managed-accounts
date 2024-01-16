@@ -243,7 +243,7 @@ export default function MembersList({
       const url = window.URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `EPPN-${currentDateTimeToString()}.xls`; // maybe use Scope as file name?
+      anchor.download = `EPPN-${currentDateTimeToString()}.xlsx`; // maybe use Scope as file name?
       anchor.click();
       window.URL.revokeObjectURL(url);
     });
