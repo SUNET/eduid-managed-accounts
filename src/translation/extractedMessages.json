@@ -14,6 +14,10 @@
   "addToGroup-givenName": {
     "string": "Given name*"
   },
+  "addToGroup-givenNamePlaceholder": {
+    "developer_comment": "Placeholder for given name text input",
+    "string": "given name"
+  },
   "addToGroup-heading": {
     "string": "Add account to organisation"
   },
@@ -79,6 +83,10 @@
   },
   "excel-import": {
     "string": "Create accounts"
+  },
+  "addToGroup-surnamePlaceholder": {
+    "developer_comment": "Placeholder for surname text input",
+    "string": "surname"
   },
   "header-logoutLink": {
     "string": "Log out"
@@ -162,7 +170,7 @@
     "string": "New password"
   },
   "manageGroup-paragraph": {
-    "string": "Export, copy or note down the corresponding EPPN/username and password for every account during the session in which it was added."
+    "string": "Export, copy or note down the corresponding EPPN/username and password for every account during the session and page load in which it was added."
   },
   "manageGroup-passwordColumn": {
     "string": "Password"
@@ -170,8 +178,7 @@
   "manageGroup-removeMembersDialogHeading": {
     "string": "Remove accounts from organisation"
   },
-  "manageGroup-removeMembersDialogParagraph": {
-  },
+  "manageGroup-removeMembersDialogParagraph": {},
   "manageGroup-removeRowButton": {
     "string": "Remove row"
   },
