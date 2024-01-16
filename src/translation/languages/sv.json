@@ -37,7 +37,7 @@
     "string": "Skriv in förnamn och efternamn för varje konto, ett i taget."
   },
   "addToGroup-list1Item2": {
-    "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer för detta syfte."
+    "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer med detta syfte."
   },
   "addToGroup-list1Item3": {
     "string": "När du klickar på knappen LÄGG TILL så läggs kontot till organisationen med skapat användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
