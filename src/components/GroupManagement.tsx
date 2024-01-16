@@ -350,37 +350,77 @@ export default function GroupManagement(): JSX.Element {
               <FormattedMessage defaultMessage="READ LESS ON HOW TO ADD ACCOUNTS" id="addToGroup-hideList" />
               <FontAwesomeIcon icon={faChevronUp as IconProp} />
             </button>
+
+            <h3>
+              <FormattedMessage defaultMessage="Add account by file import" id="addToGroup-headingImport" />
+            </h3>
             <ol className="listed-steps">
               <li>
                 <FormattedMessage
-                  defaultMessage="Enter the given name and surname for each account, one at a time."
-                  id="addToGroup-listItem1"
+                  defaultMessage="Create a 2-column Excel-document containing the given names and surnames of the accounts you wish to add. You can download the example file to fill in using the DOWNLOAD DOCUMENT link."
+                  id="addToGroup-list2Item1"
                 />
               </li>
               <li>
                 <FormattedMessage
-                  defaultMessage="Write the name so that you can distinguish the identity of the person even if there are 
-                identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
-                  id="addToGroup-listItem2"
+                  defaultMessage="Import your prepared document by clicking on the SELECT DOCUMENT button to choose your .xls or .xlsx file. You will see the name of the last imported file next to the button."
+                  id="addToGroup-list2Item2"
                 />
               </li>
               <li>
                 <FormattedMessage
-                  defaultMessage='When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
-                  id="addToGroup-listItem3"
+                  defaultMessage='Create the accounts listed in the document by clicking on the CREATE ACCOUNTS button. The accounts will be added to the organisation, with usernames and passwords, and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
+                  id="addToGroup-list2Item3"
                 />
               </li>
               <li>
                 <strong>
                   <FormattedMessage
                     defaultMessage="Then note the corresponding EPPN/username and password which appears in the table"
-                    id="addToGroup-listItem4Strong"
+                    id="addToGroup-list2Item4Strong"
                   />
                 </strong>
                 ,&nbsp;
                 <FormattedMessage
-                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
-                  id="addToGroup-listItem4"
+                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to another Excel document or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and page load."
+                  id="addToGroup-list2Item4"
+                />
+              </li>
+            </ol>
+            <h3>
+              <FormattedMessage defaultMessage="Add account manually" id="addToGroup-headingManually" />
+            </h3>
+            <ol className="listed-steps">
+              <li>
+                <FormattedMessage
+                  defaultMessage="Enter the given name and surname for each account, one at a time."
+                  id="addToGroup-list1Item1"
+                />
+              </li>
+              <li>
+                <FormattedMessage
+                  defaultMessage="Write the name so that you can distinguish the identity of the person even if there are 
+                identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
+                  id="addToGroup-list1Item2"
+                />
+              </li>
+              <li>
+                <FormattedMessage
+                  defaultMessage='When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
+                  id="addToGroup-list1Item3"
+                />
+              </li>
+              <li>
+                <strong>
+                  <FormattedMessage
+                    defaultMessage="Then note the corresponding EPPN/username and password which appears in the table"
+                    id="addToGroup-list1Item4Strong"
+                  />
+                </strong>
+                ,&nbsp;
+                <FormattedMessage
+                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and page load."
+                  id="addToGroup-list1Item4"
                 />
               </li>
             </ol>
@@ -397,33 +437,36 @@ export default function GroupManagement(): JSX.Element {
               <fieldset className="flex-between">
                 <label>
                   <FormattedMessage
-                    defaultMessage="Download spreadsheet to fill in or use as a guide:"
+                    defaultMessage="Download empty Excel document to fill in or use as a guide:"
                     id="addToGroup-downloadLabel"
                   />
                 </label>
                 <a href="src/assets/hanterade_konton.xlsx" target="_blank">
-                  <FormattedMessage defaultMessage="Download empty student document" id="addToGroup-downloadLink" />
+                  <FormattedMessage defaultMessage="Download document" id="addToGroup-downloadLink" />
                 </a>
               </fieldset>
               <fieldset className="flex-between">
                 <label>
-                  <FormattedMessage defaultMessage="Select filled in document:" id="addToGroup-downloadLabel" />
+                  <FormattedMessage defaultMessage="Select filled in Excel document:" id="addToGroup-downloadLabel" />
                 </label>
                 <div className="flex-between file-input">
                   <span className="file-name"></span>
                   <input className="file" type="file" name="excelFile" id="file" />
                   <label className="btn-cover btn-sm" htmlFor="file">
-                    <FormattedMessage defaultMessage="Select file" id="excel-import" />
+                    <FormattedMessage defaultMessage="Select document" id="excel-import" />
                   </label>
                 </div>
               </fieldset>
 
               <fieldset className="flex-between">
                 <label>
-                  <FormattedMessage defaultMessage="Create account:" id="addToGroup-downloadLabel" />
+                  <FormattedMessage
+                    defaultMessage="Create accounts from selected Excel document:"
+                    id="addToGroup-downloadLabel"
+                  />
                 </label>
                 <button type="submit" className="btn btn-primary btn-sm">
-                  <FormattedMessage defaultMessage="Create via Excel" id="excel-import" />
+                  <FormattedMessage defaultMessage="Create accounts" id="excel-import" />
                 </button>
               </fieldset>
             </form>
