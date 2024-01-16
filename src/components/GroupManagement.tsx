@@ -447,13 +447,13 @@ export default function GroupManagement(): JSX.Element {
               </fieldset>
               <fieldset className="flex-between">
                 <label>
-                  <FormattedMessage defaultMessage="Select filled in Excel document:" id="addToGroup-downloadLabel" />
+                  <FormattedMessage defaultMessage="Select filled in Excel document:" id="addToGroup-selectLabel" />
                 </label>
                 <div className="flex-between file-input">
                   <span className="file-name"></span>
                   <input className="file" type="file" name="excelFile" id="file" />
                   <label className="btn-cover btn-sm" htmlFor="file">
-                    <FormattedMessage defaultMessage="Select document" id="excel-import" />
+                    <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
                   </label>
                 </div>
               </fieldset>
@@ -462,7 +462,7 @@ export default function GroupManagement(): JSX.Element {
                 <label>
                   <FormattedMessage
                     defaultMessage="Create accounts from selected Excel document:"
-                    id="addToGroup-downloadLabel"
+                    id="addToGroup-importLabel"
                   />
                 </label>
                 <button type="submit" className="btn btn-primary btn-sm">
