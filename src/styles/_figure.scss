@@ -24,6 +24,17 @@ figure,
       padding: 0.5em;
     }
   }
+  &.add-account {
+    text-align: left;
+    width: 100%;
+
+    input[type="text"] {
+      background: $bg-gray;
+    }
+    hr {
+      border-bottom-style: dashed;
+    }
+  }
 }
 
 .captcha-responsive {

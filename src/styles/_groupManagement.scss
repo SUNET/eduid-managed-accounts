@@ -99,7 +99,7 @@ input {
   margin-top: 1.5rem;
 
   .buttons {
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
   }
 }
 .input-validate-error {
@@ -122,4 +122,23 @@ select {
   font-size: 13px;
   color: $txt-orange;
   width: auto;
+}
+
+.file-name {
+  //border-bottom: 2px solid $border-gray;
+  margin-right: 10px;
+  color: $txt-gray;
+  font-size: $txt-sm;
+
+  &.input-validate-error {
+    position: relative;
+    border: none;
+  }
+}
+
+label.btn-cover {
+  margin-right: 0;
+}
+.file-input {
+  margin: 0.75rem 0 1rem;
 }

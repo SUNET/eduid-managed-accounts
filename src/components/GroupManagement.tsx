@@ -325,7 +325,7 @@ export default function GroupManagement(): JSX.Element {
         </p>
         <p>
           <FormattedMessage
-            defaultMessage="Add every account by using this form, to create the username and password."
+            defaultMessage="Add every account, either by importing your prepared Ecxel-document or one by one using the form."
             id="addToGroup-paragraph"
           />
         </p>
@@ -387,70 +387,103 @@ export default function GroupManagement(): JSX.Element {
           </>
         )}
 
-        <Form
-          validate={validatePersonalData}
-          onSubmit={handleAddUser}
-          render={({ handleSubmit, form, submitting, invalid }) => (
-            <form
-              onSubmit={async (event) => {
-                await handleSubmit(event);
-                form.reset();
-                inputRef.current?.focus();
-              }}
-            >
-              <div className="flex-between">
-                <Field name="given_name">
-                  {({ input, meta }) => (
-                    <fieldset>
-                      <label htmlFor="givenName">
-                        <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
-                      </label>
-                      <input type="text" {...input} placeholder="given name" id="givenName" ref={inputRef} autoFocus />
-                      {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
-                  )}
-                </Field>
+        <article className="figure add-account">
+          <h3>
+            <FormattedMessage defaultMessage="Add account by file import" id="addToGroup-headingImport" />
+          </h3>
 
-                <Field name="surname">
-                  {({ input, meta }) => (
-                    <fieldset>
-                      <label htmlFor="surName">
-                        <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
-                      </label>
-                      <input type="text" {...input} placeholder="surname" id="surName" />
-                      {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
-                  )}
-                </Field>
+          <div>
+            <form onSubmit={excelImport} id="import-excel-form">
+              <fieldset className="flex-between">
+                <label>
+                  <FormattedMessage
+                    defaultMessage="Download spreadsheet to fill in or use as a guide:"
+                    id="addToGroup-downloadLabel"
+                  />
+                </label>
+                <a href="src/assets/hanterade_konton.xlsx" target="_blank">
+                  <FormattedMessage defaultMessage="Download empty student document" id="addToGroup-downloadLink" />
+                </a>
+              </fieldset>
+              <fieldset className="flex-between">
+                <label>
+                  <FormattedMessage defaultMessage="Select filled in document:" id="addToGroup-downloadLabel" />
+                </label>
+                <div className="flex-between file-input">
+                  <span className="file-name"></span>
+                  <input className="file" type="file" name="excelFile" id="file" />
+                  <label className="btn-cover btn-sm" htmlFor="file">
+                    <FormattedMessage defaultMessage="Select file" id="excel-import" />
+                  </label>
+                </div>
+              </fieldset>
 
-                <button disabled={submitting || invalid} className="btn btn-primary">
-                  <FormattedMessage defaultMessage="Add" id="addToGroup-addButton" />
+              <fieldset className="flex-between">
+                <label>
+                  <FormattedMessage defaultMessage="Create account:" id="addToGroup-downloadLabel" />
+                </label>
+                <button type="submit" className="btn btn-primary btn-sm">
+                  <FormattedMessage defaultMessage="Create via Excel" id="excel-import" />
                 </button>
-              </div>
+              </fieldset>
             </form>
-          )}
-        />
-        <hr
-          style={{
-            margin: "2rem 0",
-            width: "50%",
-          }}
-        />
-        <p>
-          <FormattedMessage defaultMessage="Import via Excel" id="excel-import" />
-        </p>
-        <div className="file-input">
-          <form onSubmit={excelImport} id="import-excel-form">
-            <input className="file" type="file" name="excelFile" id="file" />
-            <label htmlFor="file">
-              <FormattedMessage defaultMessage="Select file" id="excel-import" />
-            </label>
-            <p className="file-name"></p>
-            <button type="submit" className="btn btn-primary">
-              <FormattedMessage defaultMessage="Create via Excel" id="excel-import" />
-            </button>
-          </form>
-        </div>
+          </div>
+
+          <hr className="border-line"></hr>
+          <h3>
+            <FormattedMessage defaultMessage="Add account manually" id="addToGroup-headingManually" />
+          </h3>
+          <Form
+            validate={validatePersonalData}
+            onSubmit={handleAddUser}
+            render={({ handleSubmit, form, submitting, invalid }) => (
+              <form
+                onSubmit={async (event) => {
+                  await handleSubmit(event);
+                  form.reset();
+                  inputRef.current?.focus();
+                }}
+              >
+                <div className="flex-between">
+                  <Field name="given_name">
+                    {({ input, meta }) => (
+                      <fieldset>
+                        <label htmlFor="givenName">
+                          <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
+                        </label>
+                        <input
+                          type="text"
+                          {...input}
+                          placeholder="given name"
+                          id="givenName"
+                          ref={inputRef}
+                          autoFocus
+                        />
+                        {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
+                      </fieldset>
+                    )}
+                  </Field>
+
+                  <Field name="surname">
+                    {({ input, meta }) => (
+                      <fieldset>
+                        <label htmlFor="surName">
+                          <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
+                        </label>
+                        <input type="text" {...input} placeholder="surname" id="surName" />
+                        {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
+                      </fieldset>
+                    )}
+                  </Field>
+
+                  <button disabled={submitting || invalid} className="btn btn-primary">
+                    <FormattedMessage defaultMessage="Add" id="addToGroup-addButton" />
+                  </button>
+                </div>
+              </form>
+            )}
+          />
+        </article>
       </section>
       <section>
         <MembersList
