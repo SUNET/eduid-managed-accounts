@@ -40,6 +40,7 @@ export default function GroupManagement(): JSX.Element {
   const accessToken = locationState?.access_token?.value;
   const value = locationState?.subject.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const placeholderGivenName = intl.formatMessage({
     id: "addToGroup-givenNamePlaceholder",
@@ -52,6 +53,13 @@ export default function GroupManagement(): JSX.Element {
     defaultMessage: "surname",
     description: "Placeholder for surname text input",
   });
+
+  function handleFileChange(event: any) {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  }
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -489,7 +497,7 @@ export default function GroupManagement(): JSX.Element {
                 </label>
                 <div className="flex-between file-input">
                   <span className="file-name"></span>
-                  <input className="file" type="file" name="excelFile" id="file" />
+                  <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
                   <label className="btn-cover btn-sm" htmlFor="file">
                     <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
                   </label>
@@ -503,7 +511,7 @@ export default function GroupManagement(): JSX.Element {
                     id="addToGroup-importLabel"
                   />
                 </label>
-                <button type="submit" className="btn btn-primary btn-sm">
+                <button type="submit" className="btn btn-primary btn-sm" disabled={!selectedFile}>
                   <FormattedMessage defaultMessage="Create accounts" id="excel-import" />
                 </button>
               </fieldset>
