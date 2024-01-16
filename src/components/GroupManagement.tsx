@@ -40,7 +40,7 @@ export default function GroupManagement(): JSX.Element {
   const accessToken = locationState?.access_token?.value;
   const value = locationState?.subject.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const placeholderGivenName = intl.formatMessage({
     id: "addToGroup-givenNamePlaceholder",
@@ -54,7 +54,7 @@ export default function GroupManagement(): JSX.Element {
     description: "Placeholder for surname text input",
   });
 
-  function handleFileChange(event: any) {
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
