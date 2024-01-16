@@ -179,7 +179,7 @@
     "string": "Remove accounts from organisation"
   },
   "manageGroup-removeMembersDialogParagraph": {
-    "string": "Are you sure you want to delete ${isMemberSelected.length} accounts? If so, please press the OK button below."
+    "string": "Are you sure you want to delete {selectedMemberLength} accounts? If so, please press the OK button below."
   },
   "manageGroup-removeRowButton": {
     "string": "Remove row"

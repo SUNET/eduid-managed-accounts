@@ -507,8 +507,9 @@ export default function MembersList({
         }
         mainText={
           <FormattedMessage
-            defaultMessage="Are you sure you want to delete ${isMemberSelected.length} accounts? If so, please press the OK button below."
+            defaultMessage="Are you sure you want to delete {selectedMemberLength} accounts? If so, please press the OK button below."
             id="manageGroup-removeMembersDialogParagraph"
+            values={{ selectedMemberLength: isMemberSelected.length }}
           />
         }
         showModal={showModal}
