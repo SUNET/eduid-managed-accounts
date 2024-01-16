@@ -2,6 +2,12 @@
   "addToGroup-addButton": {
     "string": "Add"
   },
+  "addToGroup-downloadLabel": {
+    "string": "Download empty Excel document to fill in or use as a guide:"
+  },
+  "addToGroup-downloadLink": {
+    "string": "Download document"
+  },
   "addToGroup-emptyValidation": {
     "string": "Required"
   },
@@ -15,35 +21,68 @@
   "addToGroup-heading": {
     "string": "Add account to organisation"
   },
+  "addToGroup-headingImport": {
+    "string": "Add account by file import"
+  },
+  "addToGroup-headingManually": {
+    "string": "Add account manually"
+  },
   "addToGroup-hideList": {
     "string": "READ LESS ON HOW TO ADD ACCOUNTS"
   },
-  "addToGroup-listItem1": {
+  "addToGroup-importLabel": {
+    "string": "Create accounts from selected Excel document:"
+  },
+  "addToGroup-list1Item1": {
     "string": "Enter the given name and surname for each account, one at a time."
   },
-  "addToGroup-listItem2": {
+  "addToGroup-list1Item2": {
     "string": "Write the name so that you can distinguish the identity of the person even if there are identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
   },
-  "addToGroup-listItem3": {
+  "addToGroup-list1Item3": {
     "string": "When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the \"Manage added accounts\" section, where the newly added accounts will be pre-selected."
   },
-  "addToGroup-listItem4": {
-    "string": "transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and prior to page reload."
+  "addToGroup-list1Item4": {
+    "string": "transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and page load."
   },
-  "addToGroup-listItem4Strong": {
+  "addToGroup-list1Item4Strong": {
+    "string": "Then note the corresponding EPPN/username and password which appears in the table"
+  },
+  "addToGroup-list2Item1": {
+    "string": "Create a 2-column Excel-document containing the given names and surnames of the accounts you wish to add. You can download the example file to fill in using the DOWNLOAD DOCUMENT link."
+  },
+  "addToGroup-list2Item2": {
+    "string": "Import your prepared document by clicking on the SELECT DOCUMENT button to choose your .xls or .xlsx file. You will see the name of the last imported file next to the button."
+  },
+  "addToGroup-list2Item3": {
+    "string": "Create the accounts listed in the document by clicking on the CREATE ACCOUNTS button. The accounts will be added to the organisation, with usernames and passwords, and appearing in a table below in the \"Manage added accounts\" section, where the newly added accounts will be pre-selected."
+  },
+  "addToGroup-list2Item4": {
+    "string": "transfer it to an external system of your choice, e.g. by exporting to another Excel document or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and page load."
+  },
+  "addToGroup-list2Item4Strong": {
     "string": "Then note the corresponding EPPN/username and password which appears in the table"
   },
   "addToGroup-ninValidation": {
     "string": "It is not allowed to save a national ID number"
   },
   "addToGroup-paragraph": {
-    "string": "Add every account by using this form, to create the username and password."
+    "string": "Add every account, either by importing your prepared Ecxel-document or one by one using the form."
+  },
+  "addToGroup-selectButton": {
+    "string": "Select document"
+  },
+  "addToGroup-selectLabel": {
+    "string": "Select filled in Excel document:"
   },
   "addToGroup-showList": {
     "string": "READ MORE ON HOW TO ADD ACCOUNTS"
   },
   "addToGroup-surname": {
     "string": "Surname*"
+  },
+  "excel-import": {
+    "string": "Create accounts"
   },
   "addToGroup-surnamePlaceholder": {
     "developer_comment": "Placeholder for surname text input",
