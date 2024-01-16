@@ -359,7 +359,7 @@ export default function GroupManagement(): JSX.Element {
           <span className="heading-5">
             <FormattedMessage defaultMessage="CURRENT SCOPE: " id="intro-scope" />
           </span>
-          <strong>{scope}</strong>
+          <strong>&nbsp;{scope}</strong>
         </p>
         <p>
           <FormattedMessage
