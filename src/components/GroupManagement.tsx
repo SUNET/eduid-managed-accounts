@@ -144,6 +144,8 @@ export default function GroupManagement(): JSX.Element {
    * @param names
    */
   async function addUsers(names: { given_name: string; surname: string }[]) {
+    // 0 - Disable "create accounts" button, to avoid users can click multiple times while we create accounts
+    setSelectedFile(null);
     // 1 - Create Users
     let newMembersList: GroupMember[] = []; // for PUT Groups
     for (const name of names) {
