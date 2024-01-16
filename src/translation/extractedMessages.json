@@ -52,10 +52,10 @@
     "string": "Create a 2-column Excel-document containing the given names and surnames of the accounts you wish to add. You can download the example file to fill in using the DOWNLOAD DOCUMENT link."
   },
   "addToGroup-list2Item2": {
-    "string": "Import your prepared document by clicking on the SELECT DOCUMENT button to choose your .xls or .xlsx file. You will see the name of the last imported file next to the button."
+    "string": "Import your filled in document by clicking on the SELECT DOCUMENT button to choose your .xls or .xlsx file. You will see the name of the last imported file next to the button."
   },
   "addToGroup-list2Item3": {
-    "string": "Create the accounts listed in the document by clicking on the CREATE ACCOUNTS button. The accounts will be added to the organisation, with usernames and passwords, and appearing in a table below in the \"Manage added accounts\" section, where the newly added accounts will be pre-selected."
+    "string": "Then create the accounts listed in the document by clicking on the CREATE ACCOUNTS button. The accounts will be added to the organisation, with usernames and passwords, and appearing in a table below in the \"Manage added accounts\" section, where the newly added accounts will be pre-selected."
   },
   "addToGroup-list2Item4": {
     "string": "transfer it to an external system of your choice, e.g. by exporting to another Excel document or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and page load."
@@ -67,7 +67,7 @@
     "string": "It is not allowed to save a national ID number"
   },
   "addToGroup-paragraph": {
-    "string": "Add every account, either by importing your prepared Ecxel-document or one by one using the form."
+    "string": "Add every account, either by first importing your prepared Excel-document or one by one using the form."
   },
   "addToGroup-selectButton": {
     "string": "Select document"
@@ -81,12 +81,12 @@
   "addToGroup-surname": {
     "string": "Surname*"
   },
-  "excel-import": {
-    "string": "Create accounts"
-  },
   "addToGroup-surnamePlaceholder": {
     "developer_comment": "Placeholder for surname text input",
     "string": "surname"
+  },
+  "excel-import": {
+    "string": "Create accounts"
   },
   "header-logoutLink": {
     "string": "Log out"
@@ -98,7 +98,7 @@
     "string": "In the forms below you can manage your organisations accounts by adding students, to create their individual account with a unique username - EPPN - and the password that they will need to be able to perform the Digital National Exam."
   },
   "intro-leadEmphasis": {
-    "string": "The contents can be presented in Swedish or English, choose language in the footer of this web page. You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility of the forms."
+    "string": "The contents can be presented in Swedish or English, choose language in the footer of this web page. You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility and to read the full instructions under the READ MORE... links."
   },
   "intro-scope": {
     "string": "CURRENT SCOPE:"
@@ -178,7 +178,9 @@
   "manageGroup-removeMembersDialogHeading": {
     "string": "Remove accounts from organisation"
   },
-  "manageGroup-removeMembersDialogParagraph": {},
+  "manageGroup-removeMembersDialogParagraph": {
+    "string": "Are you sure you want to delete ${isMemberSelected.length} accounts? If so, please press the OK button below."
+  },
   "manageGroup-removeRowButton": {
     "string": "Remove row"
   },
