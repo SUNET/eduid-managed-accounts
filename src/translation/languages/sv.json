@@ -37,13 +37,13 @@
     "string": "Skriv in förnamn och efternamn för varje konto, ett i taget."
   },
   "addToGroup-list1Item2": {
-    "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer för detta syfte."
+    "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer med detta syfte."
   },
   "addToGroup-list1Item3": {
     "string": "När du klickar på knappen LÄGG TILL så läggs kontot till organisationen med skapat användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
   },
   "addToGroup-list1Item4": {
-    "string": "överför till lämpligt externt format, t.ex. genom att exportera till Excel eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
+    "string": "överför till lämpligt externt format, t.ex. genom att exportera till en ny kompletterad Excel-fil eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
   },
   "addToGroup-list1Item4Strong": {
     "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
@@ -52,10 +52,10 @@
     "string": "Skapa ett 2-kolumns Excel-dokument innehållande för- och efternamn åt de konton som ska läggas till. Du kan ladda ned ett exempel att fylla i genom att klicka på länken LADDA NED DOKUMENT."
   },
   "addToGroup-list2Item2": {
-    "string": "Importera ditt förberedda dokument genom att klicka på knappen VÄLJ FIL för att välja din .xls eller .xlsx fil. Namnet på den importerade filen syns intill knappen."
+    "string": "Importera ditt ifyllda dokument genom att klicka på knappen VÄLJ FIL för att välja din .xls eller .xlsx fil. Namnet på det importerade dokumentet syns intill knappen."
   },
   "addToGroup-list2Item3": {
-    "string": "Skapa konton från dokumentet genom att klicka på knappen SKAPA KONTON, så läggs de till organisationen med skapade användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
+    "string": "Skapa sedan konton från dokumentet genom att klicka på knappen SKAPA KONTON, så läggs de till organisationen med skapade användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
   },
   "addToGroup-list2Item4": {
     "string": "överför till lämpligt externt format, t.ex. genom att exportera till Excel eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
@@ -67,7 +67,7 @@
     "string": "Det är inte tillåtet att spara personnummer"
   },
   "addToGroup-paragraph": {
-    "string": "Lägg till varje konto, antingen genom att skapa och importera ett förberett Excel-dokument eller ett i taget med hjälp av formuläret."
+    "string": "Lägg till varje konto, antingen genom att först skapa och importera ett förberett Excel-dokument eller ett i taget med hjälp av formuläret."
   },
   "addToGroup-selectButton": {
     "string": "Välj fil"
