@@ -20,7 +20,7 @@ export async function requestAccess(
   redirect_url: string
 ) {
   const atr: AccessTokenRequest = {
-    access: [{ scope: "eduid.docker", type: "scim-api" }],
+    // when "type" is fixed in SCIM it will be "access: [{ type: "scim-api" }],"
     flags: [AccessTokenFlags.BEARER],
   };
 
