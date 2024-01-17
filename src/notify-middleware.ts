@@ -11,8 +11,8 @@ const notifyAndDispatch = () => (next: any) => (action: any) => {
         // window.scroll isn't available in the tests jsdom environment
       }
     }, 100);
-  } else if (action.payload && action.payload.message) {
-    next(showNotification({ message: action.payload.message }));
+  } else if (action.error?.message) {
+    next(showNotification({ message: action.payload }));
     setTimeout(() => {
       try {
         window.scroll(0, 0);
