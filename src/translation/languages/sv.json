@@ -3,10 +3,10 @@
     "string": "Lägg till"
   },
   "addToGroup-downloadLabel": {
-    "string": "Ladda ned tomt Excel-dokument att fylla i eller använda som guide:"
+    "string": "Ladda ned tomt Excel-dokument att fylla i eller använda som mall:"
   },
   "addToGroup-downloadLink": {
-    "string": "Ladda ned dokument"
+    "string": "Ladda ned mall"
   },
   "addToGroup-emptyValidation": {
     "string": "Nödvändig"
@@ -49,7 +49,7 @@
     "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
   },
   "addToGroup-list2Item1": {
-    "string": "Skapa ett 2-kolumns Excel-dokument innehållande för- och efternamn åt de konton som ska läggas till. Du kan ladda ned ett exempel att fylla i genom att klicka på länken LADDA NED DOKUMENT."
+    "string": "Skapa ett 2-kolumns Excel-dokument innehållande för- och efternamn åt de konton som ska läggas till. Du kan ladda ned ett exempel att fylla i genom att klicka på länken LADDA NED MALL."
   },
   "addToGroup-list2Item2": {
     "string": "Importera ditt ifyllda dokument genom att klicka på knappen VÄLJ FIL för att välja din .xls eller .xlsx fil. Namnet på det importerade dokumentet syns intill knappen."
