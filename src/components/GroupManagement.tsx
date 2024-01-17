@@ -16,7 +16,7 @@ import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
-import MembersList, { MembersDetailsTypes } from "./MembersList";
+import MembersList, { DEFAULT_POST_PER_PAGE, MembersDetailsTypes } from "./MembersList";
 
 export const GROUP_NAME = "Managed Accounts";
 
@@ -81,13 +81,27 @@ export default function GroupManagement(): JSX.Element {
 
   async function reloadMembersDetails(members: GroupMember[]) {
     dispatch(getUsersSlice.actions.initialize());
-    if (members) {
-      await Promise.all(
-        members?.map(async (member: GroupMember) => {
-          await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-        })
-      );
-      dispatch(getUsersSlice.actions.sortByLatest());
+    const chunkSize = DEFAULT_POST_PER_PAGE * 3; // empirical value
+    for (let i = 0; i < members.length; i += chunkSize) {
+      // run in chunks to avoid server overload
+      const chunk = members.slice(i, i + chunkSize);
+      if (chunk) {
+        await Promise.all(
+          chunk?.map(async (member: GroupMember) => {
+            await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+          })
+        );
+      }
+    }
+    dispatch(getUsersSlice.actions.sortByLatest());
+
+    console.error("members", members);
+    console.error("membersDetails", membersDetails);
+
+    if (members.length !== membersDetails.length) {
+      console.error("Could not load all members details. Try again");
+      throw new Error("Could not load all members details. Try again");
+      // TODO: here disable all the buttons to avoid working on a partially loaded list of members
     }
   }
 
