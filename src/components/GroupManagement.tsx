@@ -12,6 +12,7 @@ import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
 import { getUserDetails, postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { managedAccountsStore } from "../init-app";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
@@ -79,6 +80,16 @@ export default function GroupManagement(): JSX.Element {
     }
   }, [navigate, locationState]);
 
+  function checkAllMembersDetailsAreLoaded(groupResponseMembers: any): any {
+    const state = managedAccountsStore.getState();
+
+    if (groupResponseMembers.length !== state.members.members.length) {
+      console.error("Could not load all members details. Try again");
+      throw new Error("Could not load all members details. Try again");
+      // TODO: here disable all the buttons to avoid working on a partially loaded list of members
+    }
+  }
+
   async function reloadMembersDetails(members: GroupMember[]) {
     dispatch(getUsersSlice.actions.initialize());
     const chunkSize = DEFAULT_POST_PER_PAGE * 3; // empirical value
@@ -93,16 +104,9 @@ export default function GroupManagement(): JSX.Element {
         );
       }
     }
+    checkAllMembersDetailsAreLoaded(members);
+
     dispatch(getUsersSlice.actions.sortByLatest());
-
-    console.error("members", members);
-    console.error("membersDetails", membersDetails);
-
-    if (members.length !== membersDetails.length) {
-      console.error("Could not load all members details. Try again");
-      throw new Error("Could not load all members details. Try again");
-      // TODO: here disable all the buttons to avoid working on a partially loaded list of members
-    }
   }
 
   /**
