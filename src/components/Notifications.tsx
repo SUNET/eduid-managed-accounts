@@ -16,13 +16,14 @@ export function Notifications(): JSX.Element | null {
 
   // show errors first, information second
   const show: eduidNotification | undefined = error ?? error;
+  console.log("SHOW", show);
 
   if (!show) {
     // no messages to show
     return null;
   }
 
-  let msg: string = intl.formatMessage({ id: show.message });
+  let msg: string = intl.formatMessage({ id: show.message, defaultMessage: show.message });
 
   return (
     <div className="notifications-area" aria-live="polite">

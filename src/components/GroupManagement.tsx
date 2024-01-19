@@ -13,6 +13,7 @@ import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis
 import { getUserDetails, postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { managedAccountsStore } from "../init-app";
+import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
@@ -38,6 +39,10 @@ export default function GroupManagement(): JSX.Element {
   const value = locationState?.subject.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const error = useAppSelector((state) => state.notifications.error);
+
+  console.error("[error]", error?.message);
 
   const placeholderGivenName = intl.formatMessage({
     id: "addToGroup-givenNamePlaceholder",
@@ -81,8 +86,11 @@ export default function GroupManagement(): JSX.Element {
 
     if (groupResponseMembers.length !== state.members.members.length) {
       console.error("Could not load all members details. Try again");
-      //throw new Error("Could not load all members details. Try again");
+      dispatch(showNotification({ message: "Could not load all members details. Try again" }));
+      //navigate("/", { replace: true, state: null });
       // TODO: here disable all the buttons to avoid working on a partially loaded list of members or logout?
+    } else {
+      dispatch(showNotification({ message: "Could not load all members details. Try again" }));
     }
   }
 
@@ -240,7 +248,7 @@ export default function GroupManagement(): JSX.Element {
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
         // check if the input is empty or it contains only spaces
-        if (!values[inputName] || !values[inputName].trim()) {
+        if (!values[inputName]?.trim()) {
           errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {

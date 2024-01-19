@@ -7,4 +7,10 @@ export const apiResponses = {
       defaultMessage="Unknown data owner please contact support"
     />
   ),
+  "Could not load all members details. Try again": (
+    <FormattedMessage
+      id="Could not load all members details. Try again"
+      defaultMessage="Could not load all members details. Try again"
+    />
+  ),
 };
