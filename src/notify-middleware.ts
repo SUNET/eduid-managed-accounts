@@ -23,7 +23,6 @@ const notifyAndDispatch = () => (next: any) => (action: any) => {
       }
     }, 100);
   } else if (action.payload?.message) {
-    console.log("hihi", action.payload.message);
     next(showNotification({ message: action.payload.message }));
     setTimeout(() => {
       try {
@@ -33,6 +32,7 @@ const notifyAndDispatch = () => (next: any) => (action: any) => {
       }
     }, 100);
   }
+
   if (action.payload !== undefined) {
     delete action.payload.message;
     delete action.payload.errorMsg;

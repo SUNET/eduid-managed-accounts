@@ -42,8 +42,6 @@ export default function GroupManagement(): JSX.Element {
 
   const error = useAppSelector((state) => state.notifications.error);
 
-  console.error("[error]", error?.message);
-
   const placeholderGivenName = intl.formatMessage({
     id: "addToGroup-givenNamePlaceholder",
     defaultMessage: "given name",
@@ -90,7 +88,7 @@ export default function GroupManagement(): JSX.Element {
       //navigate("/", { replace: true, state: null });
       // TODO: here disable all the buttons to avoid working on a partially loaded list of members or logout?
     } else {
-      dispatch(showNotification({ message: "Could not load all members details. Try again" }));
+      dispatch(showNotification({ message: "GOOD JOB" }));
     }
   }
 
