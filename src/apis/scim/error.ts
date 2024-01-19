@@ -1,8 +1,7 @@
 import { ErrorDetail } from "typescript-clients/scim";
 
 export const handleErrorResponse = async (jsonResponse: ErrorDetail) => {
-  const errorMessage = `Failed with status ${jsonResponse.status}: ${jsonResponse.detail}`;
-  console.log("ERROR RESPONSE:", jsonResponse);
+  const errorMessage = `Access denied: ${jsonResponse.detail}`;
   // if token has expired, renew it. Temporary solution: reload to homepage
   if (jsonResponse.status === 401 && jsonResponse.detail == "Bearer token error") {
     window.location.href = "/";
