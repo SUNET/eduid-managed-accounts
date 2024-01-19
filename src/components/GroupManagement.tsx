@@ -36,7 +36,6 @@ export default function GroupManagement(): JSX.Element {
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
-  const errorMessage = useAppSelector((state) => state.notifications.error?.message);
   const locationState = location.state;
   const accessToken = locationState?.access_token?.value;
   const value = locationState?.subject.assertions[0].value;
@@ -498,7 +497,11 @@ export default function GroupManagement(): JSX.Element {
                     id="addToGroup-downloadLabel"
                   />
                 </label>
-                <a href="src/assets/hanterade_konton.xlsx" target="_blank" className={errorMessage ? "disabled" : ""}>
+                <a
+                  href="src/assets/hanterade_konton.xlsx"
+                  target="_blank"
+                  className={!managedAccountsDetails.displayName ? "disabled" : ""}
+                >
                   <FormattedMessage defaultMessage="Download document" id="addToGroup-downloadLink" />
                 </a>
               </fieldset>
@@ -509,7 +512,10 @@ export default function GroupManagement(): JSX.Element {
                 <div className="flex-between file-input">
                   <span className="file-name"></span>
                   <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
-                  <label className={`btn-cover btn-sm ${errorMessage ? "disabled" : ""}`} htmlFor="file">
+                  <label
+                    className={`btn-cover btn-sm ${!managedAccountsDetails.displayName ? "disabled" : ""}`}
+                    htmlFor="file"
+                  >
                     <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
                   </label>
                 </div>
@@ -558,7 +564,7 @@ export default function GroupManagement(): JSX.Element {
                           id="givenName"
                           ref={inputRef}
                           autoFocus
-                          disabled={Boolean(errorMessage)}
+                          disabled={!managedAccountsDetails.displayName}
                         />
                         {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                       </fieldset>
@@ -576,7 +582,7 @@ export default function GroupManagement(): JSX.Element {
                           {...input}
                           placeholder={placeholderSurName}
                           id="surName"
-                          disabled={Boolean(errorMessage)}
+                          disabled={!managedAccountsDetails.displayName}
                         />
                         {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                       </fieldset>
