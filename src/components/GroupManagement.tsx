@@ -83,12 +83,9 @@ export default function GroupManagement(): JSX.Element {
     const state = managedAccountsStore.getState();
 
     if (groupResponseMembers.length !== state.members.members.length) {
-      console.error("Could not load all members details. Try again");
       dispatch(showNotification({ message: "Could not load all members details. Try again" }));
-      //navigate("/", { replace: true, state: null });
-      // TODO: here disable all the buttons to avoid working on a partially loaded list of members or logout?
-    } else {
-      dispatch(showNotification({ message: "GOOD JOB" }));
+      // TODO: here disable all the buttons to avoid working on a partially loaded list of members (or simply logout)
+      navigate("/", { replace: true, state: null });
     }
   }
 
