@@ -2,7 +2,6 @@ import { showNotification } from "./slices/Notifications";
 
 showNotification;
 const notifyAndDispatch = () => (next: any) => (action: any) => {
-  console.log("actions", action);
   if (action.type.endsWith("FAIL")) {
     //TODO: display an error message when there are no access token
     setTimeout(() => {

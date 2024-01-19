@@ -27,10 +27,10 @@
     "string": "Add"
   },
   "addToGroup-downloadLabel": {
-    "string": "Download empty Excel document to fill in or use as a guide:"
+    "string": "Create Excel document with account names, e.g. using this empty template:"
   },
   "addToGroup-downloadLink": {
-    "string": "Download document"
+    "string": "Download template"
   },
   "addToGroup-emptyValidation": {
     "string": "Required"

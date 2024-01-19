@@ -40,8 +40,6 @@ export default function GroupManagement(): JSX.Element {
   const parsedUserInfo = value ? JSON.parse(value) : null;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const error = useAppSelector((state) => state.notifications.error);
-
   const placeholderGivenName = intl.formatMessage({
     id: "addToGroup-givenNamePlaceholder",
     defaultMessage: "given name",
@@ -503,45 +501,55 @@ export default function GroupManagement(): JSX.Element {
 
           <div>
             <form onSubmit={excelImport} id="import-excel-form">
-              <fieldset className="flex-between">
-                <label>
-                  <FormattedMessage
-                    defaultMessage="Download empty Excel document to fill in or use as a guide:"
-                    id="addToGroup-downloadLabel"
-                  />
-                </label>
-                <a
-                  href="src/assets/hanterade_konton.xlsx"
-                  target="_blank"
-                  className={!managedAccountsDetails.id ? "disabled" : ""}
-                >
-                  <FormattedMessage defaultMessage="Download document" id="addToGroup-downloadLink" />
-                </a>
-              </fieldset>
-              <fieldset className="flex-between">
-                <label>
-                  <FormattedMessage defaultMessage="Select filled in Excel document:" id="addToGroup-selectLabel" />
-                </label>
-                <div className="flex-between file-input">
-                  <span className="file-name"></span>
-                  <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
-                  <label className={`btn-cover btn-sm ${!managedAccountsDetails.id ? "disabled" : ""}`} htmlFor="file">
-                    <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
-                  </label>
-                </div>
-              </fieldset>
-
-              <fieldset className="flex-between">
-                <label>
-                  <FormattedMessage
-                    defaultMessage="Create accounts from selected Excel document:"
-                    id="addToGroup-importLabel"
-                  />
-                </label>
-                <button type="submit" className="btn btn-primary btn-sm" disabled={!selectedFile}>
-                  <FormattedMessage defaultMessage="Create accounts" id="excel-import" />
-                </button>
-              </fieldset>
+              <ol className="listed-steps">
+                <li>
+                  <fieldset className="flex-between">
+                    <label>
+                      <FormattedMessage
+                        defaultMessage="Create Excel document with account names, e.g. using this empty template:"
+                        id="addToGroup-downloadLabel"
+                      />
+                    </label>
+                    <a
+                      href="src/assets/hanterade_konton.xlsx"
+                      target="_blank"
+                      className={!managedAccountsDetails.id ? "disabled" : ""}
+                    >
+                      <FormattedMessage defaultMessage="Download template" id="addToGroup-downloadLink" />
+                    </a>
+                  </fieldset>
+                </li>
+                <li>
+                  <fieldset className="flex-between">
+                    <label>
+                      <FormattedMessage defaultMessage="Select filled in Excel document:" id="addToGroup-selectLabel" />
+                    </label>
+                    <div className="flex-between file-input">
+                      <span className="file-name"></span>
+                      <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
+                      <label
+                        className={`btn-cover btn-sm ${!managedAccountsDetails.id ? "disabled" : ""}`}
+                        htmlFor="file"
+                      >
+                        <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
+                      </label>
+                    </div>
+                  </fieldset>
+                </li>
+                <li>
+                  <fieldset className="flex-between">
+                    <label>
+                      <FormattedMessage
+                        defaultMessage="Create accounts from selected Excel document:"
+                        id="addToGroup-importLabel"
+                      />
+                    </label>
+                    <button type="submit" className="btn btn-primary btn-sm" disabled={!selectedFile}>
+                      <FormattedMessage defaultMessage="Create accounts" id="excel-import" />
+                    </button>
+                  </fieldset>
+                </li>
+              </ol>
             </form>
           </div>
 
