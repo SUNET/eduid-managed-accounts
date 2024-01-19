@@ -329,7 +329,7 @@ export default function GroupManagement(): JSX.Element {
     file?.addEventListener("change", (e) => {
       // Get the selected file
       const inputElement = e.target as HTMLInputElement;
-      const [file] = inputElement.files;
+      const [file] = inputElement.files as any;
       // Get the file name and size
       const { name: fileName, size } = file;
       // Convert size in bytes to kilo bytes
