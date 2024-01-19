@@ -25,10 +25,6 @@ interface ValidatePersonalData {
   [key: string]: string;
 }
 
-// interface ErrorsType {
-//   [key: string]: React.ReactNode;
-// }
-
 export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
@@ -85,8 +81,8 @@ export default function GroupManagement(): JSX.Element {
 
     if (groupResponseMembers.length !== state.members.members.length) {
       console.error("Could not load all members details. Try again");
-      throw new Error("Could not load all members details. Try again");
-      // TODO: here disable all the buttons to avoid working on a partially loaded list of members
+      //throw new Error("Could not load all members details. Try again");
+      // TODO: here disable all the buttons to avoid working on a partially loaded list of members or logout?
     }
   }
 
@@ -260,16 +256,6 @@ export default function GroupManagement(): JSX.Element {
     console.log("validatePersonalData ERRORS: ", errors);
     return errors;
   };
-
-  function handleValidatePersonalData(values: ValidatePersonalData) {
-    try {
-      validatePersonalData(values);
-      return {};
-    } catch (error) {
-      console.error("validatePersonalData", error);
-      return error;
-    }
-  }
 
   const [members, setMembers] = useState<Array<MembersDetailsTypes & { selected: boolean }>>([]);
   const [showMore, setShowMore] = useState(true);
