@@ -1,9 +1,30 @@
 {
+  "Authentication source or assurance level invalid": {
+    "string": "Åtkomst nekades: Authentication source or assurance level invalid"
+  },
+  "Bearer token error": {
+    "string": "Åtkomst nekades: Bearer token error"
+  },
+  "Data owner requested in access token denied": {
+    "string": "Åtkomst nekades: Data owner requested in access token denied"
+  },
+  "Failed with status 401: Unknown data_owner": {
+    "string": "Åtkomst nekades: Unknown data owner"
+  },
+  "Missing correct entitlement in saml data": {
+    "string": "Åtkomst nekades: Missing correct entitlement in saml data"
+  },
+  "No authentication header found": {
+    "string": "Åtkomst nekades: No authentication header found"
+  },
+  "Unknown data_owner": {
+    "string": "Åtkomst nekades: Unknown data_owner"
+  },
   "addToGroup-addButton": {
     "string": "Lägg till"
   },
   "addToGroup-downloadLabel": {
-    "string": "Ladda ned tomt Excel-dokument att fylla i eller använda som mall:"
+    "string": "Skapa Excel dokument med kontonamnen, t.ex. m.h.a. denna tomma mall:"
   },
   "addToGroup-downloadLink": {
     "string": "Ladda ned mall"
