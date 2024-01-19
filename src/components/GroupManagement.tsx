@@ -178,7 +178,7 @@ export default function GroupManagement(): JSX.Element {
     let newMembersListCopy = managedAccountsDetails.members?.slice(); // copy array
     const updatedMembersList = newMembersListCopy?.concat(newMembersList);
     await handleGroupVersion(); // check/update Group version
-    const response = await dispatch(
+    await dispatch(
       putGroup({
         group: {
           ...managedAccountsDetails,
@@ -227,11 +227,9 @@ export default function GroupManagement(): JSX.Element {
       ["given_name", "surname"].forEach((inputName) => {
         // check if the input is empty or it contains only spaces
         if (!values[inputName] || !values[inputName].trim()) {
-          //console.error("validatePersonalData", "Empty");
           errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {
-          //console.error("validatePersonalData", "It is not allowed to save a national ID number");
           errors[inputName] = (
             <FormattedMessage
               defaultMessage="It is not allowed to save a national ID number"
@@ -271,8 +269,14 @@ export default function GroupManagement(): JSX.Element {
 
   function cleanFileInput() {
     setSelectedFile(null);
-    document.getElementById("file").files = null; // as HTMLInputElement
-    document.querySelector(".file-name").textContent = null;
+    const fileInput = document.getElementById("file") as HTMLInputElement;
+    const fileName = document.querySelector(".file-name");
+    if (fileInput) {
+      fileInput.files = null;
+    }
+    if (fileName) {
+      fileName.textContent = null;
+    }
   }
 
   async function excelImport(e: any) {
@@ -324,18 +328,20 @@ export default function GroupManagement(): JSX.Element {
     const file = document.querySelector("#file");
     file?.addEventListener("change", (e) => {
       // Get the selected file
-      const [file] = e.target.files;
+      const inputElement = e.target as HTMLInputElement;
+      const [file] = inputElement.files as any;
       // Get the file name and size
       const { name: fileName, size } = file;
       // Convert size in bytes to kilo bytes
       const fileSize = (size / 1000).toFixed(2);
       // Set the text content
       const fileNameAndSize = `${fileName} - ${fileSize}KB`;
-      document.querySelector(".file-name").textContent = fileNameAndSize;
+      const fileNameElement = document.querySelector(".file-name");
+      if (fileNameElement) {
+        fileNameElement.textContent = fileNameAndSize;
+      }
     });
   };
-
-  const file = document.querySelector("#file");
 
   return (
     <React.Fragment>
@@ -497,7 +503,11 @@ export default function GroupManagement(): JSX.Element {
                     id="addToGroup-downloadLabel"
                   />
                 </label>
-                <a href="src/assets/hanterade_konton.xlsx" target="_blank">
+                <a
+                  href="src/assets/hanterade_konton.xlsx"
+                  target="_blank"
+                  className={!managedAccountsDetails.id ? "disabled" : ""}
+                >
                   <FormattedMessage defaultMessage="Download document" id="addToGroup-downloadLink" />
                 </a>
               </fieldset>
@@ -508,7 +518,7 @@ export default function GroupManagement(): JSX.Element {
                 <div className="flex-between file-input">
                   <span className="file-name"></span>
                   <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
-                  <label className="btn-cover btn-sm" htmlFor="file">
+                  <label className={`btn-cover btn-sm ${!managedAccountsDetails.id ? "disabled" : ""}`} htmlFor="file">
                     <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
                   </label>
                 </div>
@@ -557,6 +567,7 @@ export default function GroupManagement(): JSX.Element {
                           id="givenName"
                           ref={inputRef}
                           autoFocus
+                          disabled={!managedAccountsDetails.id}
                         />
                         {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                       </fieldset>
@@ -569,7 +580,13 @@ export default function GroupManagement(): JSX.Element {
                         <label htmlFor="surName">
                           <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                         </label>
-                        <input type="text" {...input} placeholder={placeholderSurName} id="surName" />
+                        <input
+                          type="text"
+                          {...input}
+                          placeholder={placeholderSurName}
+                          id="surName"
+                          disabled={!managedAccountsDetails.id}
+                        />
                         {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                       </fieldset>
                     )}
@@ -593,9 +610,6 @@ export default function GroupManagement(): JSX.Element {
           membersDetails={membersDetails}
         />
       </section>
-
-      {/* <Splash showChildren={managedAccountsDetails.id}> */}
     </React.Fragment>
-    // </Splash>
   );
 }
