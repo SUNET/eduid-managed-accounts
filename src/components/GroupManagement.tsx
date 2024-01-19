@@ -226,7 +226,7 @@ export default function GroupManagement(): JSX.Element {
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
         // check if the input is empty or it contains only spaces
-        if (!values[inputName] || !values[inputName]?.trim()) {
+        if (!values[inputName] || !values[inputName].trim()) {
           errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {
@@ -506,7 +506,7 @@ export default function GroupManagement(): JSX.Element {
                 <a
                   href="src/assets/hanterade_konton.xlsx"
                   target="_blank"
-                  className={!managedAccountsDetails.displayName ? "disabled" : ""}
+                  className={!managedAccountsDetails.id ? "disabled" : ""}
                 >
                   <FormattedMessage defaultMessage="Download document" id="addToGroup-downloadLink" />
                 </a>
@@ -518,10 +518,7 @@ export default function GroupManagement(): JSX.Element {
                 <div className="flex-between file-input">
                   <span className="file-name"></span>
                   <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
-                  <label
-                    className={`btn-cover btn-sm ${!managedAccountsDetails.displayName ? "disabled" : ""}`}
-                    htmlFor="file"
-                  >
+                  <label className={`btn-cover btn-sm ${!managedAccountsDetails.id ? "disabled" : ""}`} htmlFor="file">
                     <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
                   </label>
                 </div>
@@ -570,7 +567,7 @@ export default function GroupManagement(): JSX.Element {
                           id="givenName"
                           ref={inputRef}
                           autoFocus
-                          disabled={!managedAccountsDetails.displayName}
+                          disabled={!managedAccountsDetails.id}
                         />
                         {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                       </fieldset>
@@ -588,7 +585,7 @@ export default function GroupManagement(): JSX.Element {
                           {...input}
                           placeholder={placeholderSurName}
                           id="surName"
-                          disabled={!managedAccountsDetails.displayName}
+                          disabled={!managedAccountsDetails.id}
                         />
                         {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                       </fieldset>
