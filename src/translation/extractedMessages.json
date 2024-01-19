@@ -20,6 +20,9 @@
   "Unknown data_owner": {
     "string": "Access denied: Unknown data_owner"
   },
+  "Could not load all members details. Try again": {
+    "string": "Could not load all members details. Try again"
+  },
   "addToGroup-addButton": {
     "string": "Add"
   },

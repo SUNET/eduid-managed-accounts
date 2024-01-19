@@ -22,7 +22,7 @@ export function Notifications(): JSX.Element | null {
     return null;
   }
 
-  let msg: string = intl.formatMessage({ id: show.message });
+  let msg: string = intl.formatMessage({ id: show.message, defaultMessage: show.message });
 
   return (
     <div className="notifications-area" aria-live="polite">

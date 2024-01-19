@@ -11,7 +11,8 @@ const notifyAndDispatch = () => (next: any) => (action: any) => {
         // window.scroll isn't available in the tests jsdom environment
       }
     }, 100);
-  } else if (action.error?.message) {
+  } //SCIM api error messages
+  else if (action.error?.message) {
     next(showNotification({ message: action.payload }));
     setTimeout(() => {
       try {
@@ -20,7 +21,17 @@ const notifyAndDispatch = () => (next: any) => (action: any) => {
         // window.scroll isn't available in the tests jsdom environment
       }
     }, 100);
+  } else if (action.payload?.message) {
+    next(showNotification({ message: action.payload.message }));
+    setTimeout(() => {
+      try {
+        window.scroll(0, 0);
+      } catch (error) {
+        // window.scroll isn't available in the tests jsdom environment
+      }
+    }, 100);
   }
+
   if (action.payload !== undefined) {
     delete action.payload.message;
     delete action.payload.errorMsg;

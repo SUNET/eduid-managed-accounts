@@ -12,21 +12,19 @@ import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
 import { getUserDetails, postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { managedAccountsStore } from "../init-app";
+import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
-import MembersList, { MembersDetailsTypes } from "./MembersList";
+import MembersList, { DEFAULT_POST_PER_PAGE, MembersDetailsTypes } from "./MembersList";
 
 export const GROUP_NAME = "Managed Accounts";
 
 interface ValidatePersonalData {
   [key: string]: string;
 }
-
-// interface ErrorsType {
-//   [key: string]: React.ReactNode;
-// }
 
 export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
@@ -79,16 +77,33 @@ export default function GroupManagement(): JSX.Element {
     }
   }, [navigate, locationState]);
 
+  function checkAllMembersDetailsAreLoaded(groupResponseMembers: any): any {
+    const state = managedAccountsStore.getState();
+
+    if (groupResponseMembers.length !== state.members.members.length) {
+      dispatch(showNotification({ message: "Could not load all members details. Try again" }));
+      // TODO: here disable all the buttons to avoid working on a partially loaded list of members (or simply logout)
+      navigate("/", { replace: true, state: null });
+    }
+  }
+
   async function reloadMembersDetails(members: GroupMember[]) {
     dispatch(getUsersSlice.actions.initialize());
-    if (members) {
-      await Promise.all(
-        members?.map(async (member: GroupMember) => {
-          await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-        })
-      );
-      dispatch(getUsersSlice.actions.sortByLatest());
+    const chunkSize = DEFAULT_POST_PER_PAGE * 3; // empirical value
+    for (let i = 0; i < members.length; i += chunkSize) {
+      // run in chunks to avoid server overload
+      const chunk = members.slice(i, i + chunkSize);
+      if (chunk) {
+        await Promise.all(
+          chunk?.map(async (member: GroupMember) => {
+            await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+          })
+        );
+      }
     }
+    checkAllMembersDetailsAreLoaded(members);
+
+    dispatch(getUsersSlice.actions.sortByLatest());
   }
 
   /**
@@ -226,7 +241,7 @@ export default function GroupManagement(): JSX.Element {
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
         // check if the input is empty or it contains only spaces
-        if (!values[inputName] || !values[inputName].trim()) {
+        if (!values[inputName]?.trim()) {
           errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {
@@ -242,16 +257,6 @@ export default function GroupManagement(): JSX.Element {
     console.log("validatePersonalData ERRORS: ", errors);
     return errors;
   };
-
-  function handleValidatePersonalData(values: ValidatePersonalData) {
-    try {
-      validatePersonalData(values);
-      return {};
-    } catch (error) {
-      console.error("validatePersonalData", error);
-      return error;
-    }
-  }
 
   const [members, setMembers] = useState<Array<MembersDetailsTypes & { selected: boolean }>>([]);
   const [showMore, setShowMore] = useState(true);

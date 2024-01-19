@@ -19,7 +19,9 @@ export const notificationsSlice = createSlice({
   initialState,
   reducers: {
     showNotification: (state, action: PayloadAction<eduidNotification>) => {
-      state.error = action.payload;
+      if (action.payload.message) {
+        state.error = action.payload;
+      }
     },
     clearNotifications: (state) => {
       state.error = undefined;
