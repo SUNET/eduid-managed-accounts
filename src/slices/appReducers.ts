@@ -7,13 +7,17 @@ interface AppState {
 
 export const initialState: AppState = {
   isLoaded: false,
-  accessToken: undefined,
+  accessToken: null,
 };
 
 export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
+    initialize: (state) => {
+      state.accessToken = null;
+      state.isLoaded = false;
+    },
     appIsLoaded: (state, action) => {
       state.isLoaded = action.payload;
     },

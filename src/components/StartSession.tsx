@@ -4,6 +4,7 @@ import { requestAccess } from "../apis/gnap/requestAccess";
 import { generateNonce } from "../common/CryptoUtils";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { initLocalStorage } from "../initLocalStorage";
+import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
@@ -23,6 +24,7 @@ export function StartSession(): JSX.Element {
   dispatch(getUsersSlice.actions.initialize());
   dispatch(getGroupsSlice.actions.initialize());
   dispatch(getPersonalDataSlice.actions.initialize());
+  dispatch(appSlice.actions.initialize());
 
   async function redirect() {
     if (transaction_url && redirect_url) {
