@@ -45,6 +45,6 @@
     "openapi-typescript-codegen": "^0.25.0",
     "sass": "^1.69.4",
     "typescript": "^5.0.2",
-    "vite": "^4.5.1"
+    "vite": "^4.5.2"
   }
 }
