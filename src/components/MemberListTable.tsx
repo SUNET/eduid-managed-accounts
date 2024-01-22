@@ -193,7 +193,7 @@ export function MemberListTable({
           <FormattedMessage
             defaultMessage="Are you sure you want to generate a new password for {name}? If so, please press the OK button below."
             id="manageGroup-generateNewPasswordDialogParagraph"
-            values={{ name: `${selectedUser.givenName} ${selectedUser.familyName}` }}
+            values={{ name: `"${selectedUser.givenName} ${selectedUser.familyName}"` }}
           />
         }
         showModal={showGeneratePasswordModal}
