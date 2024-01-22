@@ -21,7 +21,6 @@ export default function GroupManagement(): JSX.Element {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
-  const membersDetails = useAppSelector((state) => state.members.members);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
   const locationState = location.state;
   const accessToken = locationState?.access_token?.value;
@@ -159,7 +158,6 @@ export default function GroupManagement(): JSX.Element {
           accessToken={accessToken}
           members={members}
           setMembers={setMembers}
-          // membersDetails={membersDetails}
         />
       </section>
     </React.Fragment>
