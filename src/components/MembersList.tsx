@@ -10,7 +10,7 @@ import { deleteUser } from "../apis/scim/usersRequest";
 import { fakePassword } from "../common/testEPPNData";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { getUsersSlice } from "../slices/getUsers";
+import getUsersSlice from "../slices/getUsers";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
 
@@ -49,6 +49,8 @@ export default function MembersList({
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showGeneratePasswordModal, setShowGeneratePasswordModal] = useState<boolean>(false);
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [selectedValue, setSelectedValue] = useState("");
   const [sortedData, setSortedData] = useState(members);
 
@@ -188,13 +190,20 @@ export default function MembersList({
     }
   }
 
-  function generateNewPassword(id: string) {
+  function handleGenerateNewPassword(id: string) {
+    setShowGeneratePasswordModal(true);
+    setSelectedUserId(id);
+  }
+
+  function generateNewPassword() {
     const generatedPassword = fakePassword();
     const memberWithGeneratedPassword = membersDetails.map((member) =>
-      member.id === id ? { ...member, password: generatedPassword } : member
+      member.id === selectedUserId ? { ...member, password: generatedPassword } : member
     );
 
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
+    setShowGeneratePasswordModal(false);
+    setSelectedUserId("");
   }
 
   const handleSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -478,7 +487,7 @@ export default function MembersList({
                       <button
                         id="generate-new-password"
                         className="btn btn-link btn-sm"
-                        onClick={() => generateNewPassword(member.id)}
+                        onClick={() => handleGenerateNewPassword(member.id)}
                       >
                         <FormattedMessage defaultMessage="New password" id="manageGroup-newPasswordLink" />
                       </button>
@@ -517,6 +526,25 @@ export default function MembersList({
           setShowModal(false);
         }}
         acceptModal={() => removeSelectedUser()}
+        acceptButtonText="ok"
+      />
+
+      <NotificationModal
+        id="generate-new-password-modal"
+        title={
+          <FormattedMessage defaultMessage="Generate new Password" id="manageGroup-generateNewPasswordDialogHeading" />
+        }
+        mainText={
+          <FormattedMessage
+            defaultMessage="Are you sure you want to generate new password? If so, please press the OK button below."
+            id="manageGroup-generateNewPasswordDialogParagraph"
+          />
+        }
+        showModal={showGeneratePasswordModal}
+        closeModal={() => {
+          setShowGeneratePasswordModal(false);
+        }}
+        acceptModal={() => generateNewPassword()}
         acceptButtonText="ok"
       />
     </Fragment>
