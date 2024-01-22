@@ -1,6 +1,77 @@
 /* additions and overwrites for the managed accounts app */
 @import "variables";
 
+// Numbered list
+.listed-steps {
+  margin-bottom: 2rem;
+  li {
+    margin-bottom: 1rem;
+    font-size: $txt-sm;
+    line-height: 1.375;
+  }
+  .add-account & {
+    margin-bottom: 0;
+    margin-left: 1.75rem;
+    li {
+      margin-bottom: 0;
+      label {
+        flex: 1;
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+// File import
+.file-input {
+  margin: 0.75rem 0 1rem;
+
+  .file-name {
+    margin-right: 10px;
+    color: $txt-gray;
+    font-size: $txt-sm;
+
+    &.input-validate-error {
+      position: relative;
+      border: none;
+    }
+  }
+
+  label.btn-cover {
+    margin-right: 0;
+    font-size: 13px !important;
+  }
+}
+
+// File export and table edits
+.form-controls {
+  padding: 1rem 1rem 0.75rem;
+  background: $white;
+  border-bottom: 2px dashed $border-gray;
+  margin-top: 1.5rem;
+
+  label {
+    font-size: 15px;
+  }
+
+  .buttons {
+    margin-bottom: 1rem;
+    padding: 0;
+  }
+
+  select {
+    padding: 2px 20px 0 10px;
+    border-radius: 15px;
+    height: 30px;
+    margin-top: 0;
+    border: 2px solid $bright-orange;
+    font-size: 13px;
+    color: $txt-orange;
+    width: auto;
+  }
+}
+
+// Table contents
 table.group-management {
   counter-reset: rowNumber;
 
@@ -52,13 +123,13 @@ table.group-management {
   }
 }
 
+/** General **/
 p {
   font-size: 1.125rem;
 }
 
-.buttons {
-  margin-bottom: 2rem;
-  padding: 0;
+.btn-link svg {
+  margin-left: 0.5rem;
 }
 
 fieldset {
@@ -66,24 +137,12 @@ fieldset {
   margin-right: 1rem;
 }
 
-.listed-steps {
-  margin-bottom: 2rem;
-  li {
-    margin-bottom: 1rem;
-    font-size: $txt-sm;
-    line-height: 1.375;
-  }
-  .add-account & {
-    margin-bottom: 0;
-    margin-left: 1.75rem;
-    li {
-      margin-bottom: 0;
-      label {
-        flex: 1;
-        font-size: 15px;
-      }
-    }
-  }
+.input-validate-error {
+  margin-top: 3px;
+}
+
+hr.border-line {
+  margin: 2rem 0;
 }
 
 input {
@@ -101,60 +160,4 @@ input {
   &[type="text"] {
     margin-bottom: 0;
   }
-}
-
-.form-controls {
-  padding: 1rem 1rem 0.75rem;
-  background: $white;
-  border-bottom: 2px dashed $border-gray;
-  margin-top: 1.5rem;
-
-  label {
-    font-size: 15px;
-  }
-
-  .buttons {
-    margin-bottom: 1rem;
-  }
-}
-.input-validate-error {
-  margin-top: 3px;
-}
-hr.border-line {
-  margin: 2rem 0;
-}
-
-.btn-link svg {
-  margin-left: 0.5rem;
-}
-
-select {
-  padding: 2px 20px 0 10px;
-  border-radius: 15px;
-  height: 30px;
-  margin-top: 0;
-  border: 2px solid $bright-orange;
-  font-size: 13px;
-  color: $txt-orange;
-  width: auto;
-}
-
-.file-name {
-  //border-bottom: 2px solid $border-gray;
-  margin-right: 10px;
-  color: $txt-gray;
-  font-size: $txt-sm;
-
-  &.input-validate-error {
-    position: relative;
-    border: none;
-  }
-}
-
-label.btn-cover {
-  margin-right: 0;
-  font-size: 13px !important;
-}
-.file-input {
-  margin: 0.75rem 0 1rem;
 }
