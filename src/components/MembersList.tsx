@@ -26,9 +26,9 @@ export interface MembersDetailsTypes {
 }
 
 export interface MembersListTypes {
-  members: Array<MembersDetailsTypes & { selected: boolean }>;
-  setMembers: React.Dispatch<React.SetStateAction<any>>;
-  accessToken: string;
+  readonly members: Array<MembersDetailsTypes & { selected: boolean }>;
+  readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
+  readonly accessToken: string;
   handleGroupVersion(): void;
 }
 export const DEFAULT_POST_PER_PAGE = 20;
@@ -348,7 +348,6 @@ export default function MembersList({
           </div>
           <MembersListTable
             currentPosts={currentPosts}
-            membersDetails={membersDetails}
             sortedData={sortedData}
             setMembers={setMembers}
             currentPage={currentPage}

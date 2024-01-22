@@ -6,9 +6,28 @@ import { FormattedMessage } from "react-intl";
 import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getUsersSlice from "../slices/getUsers";
+import { MembersDetailsTypes } from "./MembersList";
 import NotificationModal from "./NotificationModal";
 
-export function MembersListTable({ currentPosts, sortedData, postsPerPage, currentPage, setMembers }: any) {
+interface MembersDetailsAndSelectedType extends MembersDetailsTypes {
+  selected: boolean;
+}
+
+interface MembersListTableTypes {
+  readonly currentPosts: MembersDetailsAndSelectedType[];
+  readonly sortedData: MembersDetailsAndSelectedType[];
+  readonly postsPerPage: number;
+  readonly currentPage: number;
+  readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export function MembersListTable({
+  currentPosts,
+  sortedData,
+  postsPerPage,
+  currentPage,
+  setMembers,
+}: MembersListTableTypes) {
   const membersDetails = useAppSelector((state) => state.members.members);
   const [showGeneratePasswordModal, setShowGeneratePasswordModal] = useState<boolean>(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -37,11 +56,6 @@ export function MembersListTable({ currentPosts, sortedData, postsPerPage, curre
     }, 1000);
   }
 
-  function handleGenerateNewPassword(id: string) {
-    setShowGeneratePasswordModal(true);
-    setSelectedUserId(id);
-  }
-
   function handleSelectAll() {
     setSelectAll((prevState: any) => !prevState);
     const updatedMembers = sortedData.map((member: any) => ({
@@ -53,10 +67,17 @@ export function MembersListTable({ currentPosts, sortedData, postsPerPage, curre
   }
 
   function handleSelect(id: string) {
-    setMembers((prevMembers: any) =>
-      prevMembers.map((member: any) => (member.id === id ? { ...member, selected: !member.selected } : member))
+    setMembers((prevMembers: []) =>
+      prevMembers.map((member: { id: string; selected: boolean }) =>
+        member.id === id ? { ...member, selected: !member.selected } : member
+      )
     );
     setSelectAll(false);
+  }
+
+  function handleGenerateNewPassword(id: string) {
+    setShowGeneratePasswordModal(true);
+    setSelectedUserId(id);
   }
 
   function generateNewPassword() {
