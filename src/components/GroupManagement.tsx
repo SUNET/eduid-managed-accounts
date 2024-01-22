@@ -622,7 +622,7 @@ export default function GroupManagement(): JSX.Element {
           accessToken={accessToken}
           members={members}
           setMembers={setMembers}
-          membersDetails={membersDetails}
+          // membersDetails={membersDetails}
         />
       </section>
     </React.Fragment>
