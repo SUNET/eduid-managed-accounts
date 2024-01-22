@@ -4,10 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
 import { ValidationErrors } from "final-form";
 import Personnummer from "personnummer";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useLocation } from "react-router-dom";
 import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { putGroup } from "../apis/scim/groupsRequest";
 import { postUser } from "../apis/scim/usersRequest";
@@ -19,15 +18,10 @@ interface ValidatePersonalData {
   [key: string]: string;
 }
 
-export default function CreateAccounts({ handleGroupVersion }): JSX.Element {
-  const location = useLocation();
+export default function CreateAccounts({ accessToken, handleGroupVersion, scope }): JSX.Element {
   const dispatch = useAppDispatch();
   const intl = useIntl();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
-  const locationState = location.state;
-  const accessToken = locationState?.access_token?.value;
-  const value = locationState?.subject.assertions[0].value;
-  const parsedUserInfo = value ? JSON.parse(value) : null;
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const placeholderGivenName = intl.formatMessage({
@@ -42,12 +36,34 @@ export default function CreateAccounts({ handleGroupVersion }): JSX.Element {
     description: "Placeholder for surname text input",
   });
 
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [showMore, setShowMore] = useState(true);
+
+  function toggleShowMore() {
+    setShowMore(!showMore);
   }
+
+  useEffect(() => {
+    const handleStyling = () => {
+      const file = document.querySelector("#file");
+      file?.addEventListener("change", (e) => {
+        // Get the selected file
+        const inputElement = e.target as HTMLInputElement;
+        const [file] = inputElement.files as any;
+        // Get the file name and size
+        const { name: fileName, size } = file;
+        // Convert size in bytes to kilo bytes
+        const fileSize = (size / 1000).toFixed(2);
+        // Set the text content
+        const fileNameAndSize = `${fileName} - ${fileSize}KB`;
+        const fileNameElement = document.querySelector(".file-name");
+        if (fileNameElement) {
+          fileNameElement.textContent = fileNameAndSize;
+        }
+      });
+    };
+    handleStyling();
+  }, []);
 
   /**
    * Prepare addUsers() to create multiple accounts at the same time.
@@ -70,8 +86,6 @@ export default function CreateAccounts({ handleGroupVersion }): JSX.Element {
     let newMembersList: GroupMember[] = []; // for PUT Groups
     for (const name of names) {
       try {
-        const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
-        const scope = eduPersonPrincipalName.split("@")[1];
         const createdUserResponse = await dispatch(
           postUser({
             familyName: name.surname,
@@ -153,14 +167,12 @@ export default function CreateAccounts({ handleGroupVersion }): JSX.Element {
     }
   }
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [showMore, setShowMore] = useState(true);
-  function toggleShowMore() {
-    setShowMore(!showMore);
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
   }
-
-  const eduPersonPrincipalName = parsedUserInfo.attributes.eduPersonPrincipalName.indexOf("@");
-  const scope = parsedUserInfo.attributes.eduPersonPrincipalName.slice(eduPersonPrincipalName + 1);
 
   function cleanFileInput() {
     setSelectedFile(null);

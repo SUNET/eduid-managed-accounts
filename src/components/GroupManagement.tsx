@@ -27,6 +27,8 @@ export default function GroupManagement(): JSX.Element {
   const accessToken = locationState?.access_token?.value;
   const value = locationState?.subject.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
+  const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
+  const scope = eduPersonPrincipalName.split("@")[1];
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -109,7 +111,6 @@ export default function GroupManagement(): JSX.Element {
     if (!isLoaded) {
       initializeManagedAccountsGroup();
       dispatch(appSlice.actions.appIsLoaded(true));
-      handleStyling();
     }
   }, [dispatch, accessToken]);
 
@@ -128,25 +129,6 @@ export default function GroupManagement(): JSX.Element {
   if (locationState === null) {
     return <></>;
   }
-
-  const handleStyling = () => {
-    const file = document.querySelector("#file");
-    file?.addEventListener("change", (e) => {
-      // Get the selected file
-      const inputElement = e.target as HTMLInputElement;
-      const [file] = inputElement.files as any;
-      // Get the file name and size
-      const { name: fileName, size } = file;
-      // Convert size in bytes to kilo bytes
-      const fileSize = (size / 1000).toFixed(2);
-      // Set the text content
-      const fileNameAndSize = `${fileName} - ${fileSize}KB`;
-      const fileNameElement = document.querySelector(".file-name");
-      if (fileNameElement) {
-        fileNameElement.textContent = fileNameAndSize;
-      }
-    });
-  };
 
   return (
     <React.Fragment>
@@ -181,7 +163,7 @@ export default function GroupManagement(): JSX.Element {
         </div>
       </section>
       <section>
-        <CreateAccounts handleGroupVersion={handleGroupVersion} />
+        <CreateAccounts handleGroupVersion={handleGroupVersion} accessToken={accessToken} scope={scope} />
       </section>
       <section>
         <MembersList
