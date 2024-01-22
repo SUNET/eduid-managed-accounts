@@ -9,7 +9,7 @@ import { getGroupDetails } from "../apis/scim/groupsRequest";
 import { deleteUser } from "../apis/scim/usersRequest";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { MembersListTable } from "./MemberListTable";
+import { MemberListTable } from "./MemberListTable";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
 
@@ -97,7 +97,6 @@ export default function MembersList({
       setCopiedRowToClipboard(false);
     }, 1000);
   }
-
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
@@ -346,7 +345,7 @@ export default function MembersList({
               </div>
             </div>
           </div>
-          <MembersListTable
+          <MemberListTable
             currentPosts={currentPosts}
             sortedData={sortedData}
             setMembers={setMembers}

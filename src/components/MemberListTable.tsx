@@ -6,14 +6,14 @@ import { FormattedMessage } from "react-intl";
 import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getUsersSlice from "../slices/getUsers";
-import { MembersDetailsTypes } from "./MembersList";
+import { MembersDetailsTypes } from "./MemberList";
 import NotificationModal from "./NotificationModal";
 
 interface MembersDetailsAndSelectedType extends MembersDetailsTypes {
   selected: boolean;
 }
 
-interface MembersListTableTypes {
+interface MemberListTableTypes {
   readonly currentPosts: MembersDetailsAndSelectedType[];
   readonly sortedData: MembersDetailsAndSelectedType[];
   readonly postsPerPage: number;
@@ -21,16 +21,20 @@ interface MembersListTableTypes {
   readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export function MembersListTable({
+export function MemberListTable({
   currentPosts,
   sortedData,
   postsPerPage,
   currentPage,
   setMembers,
-}: MembersListTableTypes) {
+}: MemberListTableTypes) {
   const membersDetails = useAppSelector((state) => state.members.members);
   const [showGeneratePasswordModal, setShowGeneratePasswordModal] = useState<boolean>(false);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<{
+    id: string | null;
+    familyName: string | null;
+    givenName: string | null;
+  }>({ id: null, familyName: null, givenName: null });
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -77,17 +81,22 @@ export function MembersListTable({
 
   function handleGenerateNewPassword(id: string) {
     setShowGeneratePasswordModal(true);
-    setSelectedUserId(id);
+    const selectedMember = membersDetails.find((member: any) => member.id === id);
+    setSelectedUser({
+      id: selectedMember.id,
+      familyName: selectedMember.name.familyName,
+      givenName: selectedMember.name.givenName,
+    });
   }
 
   function generateNewPassword() {
     const generatedPassword = fakePassword();
     const memberWithGeneratedPassword = membersDetails.map((member: any) =>
-      member.id === selectedUserId ? { ...member, password: generatedPassword } : member
+      member.id === selectedUser.id ? { ...member, password: generatedPassword } : member
     );
     dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
     setShowGeneratePasswordModal(false);
-    setSelectedUserId(null);
+    setSelectedUser({ id: null, familyName: null, givenName: null });
   }
 
   return (
@@ -175,12 +184,16 @@ export function MembersListTable({
       <NotificationModal
         id="generate-new-password-modal"
         title={
-          <FormattedMessage defaultMessage="Generate new Password" id="manageGroup-generateNewPasswordDialogHeading" />
+          <FormattedMessage
+            defaultMessage="Generate a new password"
+            id="manageGroup-generateNewPasswordDialogHeading"
+          />
         }
         mainText={
           <FormattedMessage
-            defaultMessage="Are you sure you want to generate new password? If so, please press the OK button below."
+            defaultMessage="Are you sure you want to generate a new password for {name}? If so, please press the OK button below."
             id="manageGroup-generateNewPasswordDialogParagraph"
+            values={{ name: `${selectedUser.givenName} ${selectedUser.familyName}` }}
           />
         }
         showModal={showGeneratePasswordModal}
