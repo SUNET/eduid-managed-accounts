@@ -109,7 +109,7 @@ export default function CreateAccounts({ accessToken, handleGroupVersion, scope 
     }
 
     // 2 - update group with new members
-    let newMembersListCopy = managedAccountsDetails.members?.slice(); // copy array
+    let newMembersListCopy = managedAccountsDetails?.members?.slice(); // copy array
     const updatedMembersList = newMembersListCopy?.concat(newMembersList);
     await handleGroupVersion(); // check/update Group version
     await dispatch(
@@ -365,7 +365,7 @@ export default function CreateAccounts({ accessToken, handleGroupVersion, scope 
                   <a
                     href="src/assets/hanterade_konton.xlsx"
                     target="_blank"
-                    className={!managedAccountsDetails.id ? "disabled" : ""}
+                    className={!managedAccountsDetails?.id ? "disabled" : ""}
                   >
                     <FormattedMessage defaultMessage="Download template" id="addToGroup-downloadLink" />
                   </a>
@@ -380,7 +380,7 @@ export default function CreateAccounts({ accessToken, handleGroupVersion, scope 
                     <span className="file-name"></span>
                     <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
                     <label
-                      className={`btn-cover btn-sm ${!managedAccountsDetails.id ? "disabled" : ""}`}
+                      className={`btn-cover btn-sm ${!managedAccountsDetails?.id ? "disabled" : ""}`}
                       htmlFor="file"
                     >
                       <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
@@ -434,7 +434,7 @@ export default function CreateAccounts({ accessToken, handleGroupVersion, scope 
                         id="givenName"
                         ref={inputRef}
                         autoFocus
-                        disabled={!managedAccountsDetails.id}
+                        disabled={!managedAccountsDetails?.id}
                       />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>
@@ -452,7 +452,7 @@ export default function CreateAccounts({ accessToken, handleGroupVersion, scope 
                         {...input}
                         placeholder={placeholderSurName}
                         id="surName"
-                        disabled={!managedAccountsDetails.id}
+                        disabled={!managedAccountsDetails?.id}
                       />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
                     </fieldset>

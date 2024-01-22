@@ -25,10 +25,11 @@ export default function GroupManagement(): JSX.Element {
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
   const locationState = location.state;
   const accessToken = locationState?.access_token?.value;
-  const value = locationState?.subject.assertions[0].value;
+  const value = locationState?.subject?.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
-  const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
-  const scope = eduPersonPrincipalName.split("@")[1];
+  const eduPersonPrincipalName: string = parsedUserInfo?.attributes?.eduPersonPrincipalName;
+  const scope = eduPersonPrincipalName?.split("@")[1];
+  const [members, setMembers] = useState<Array<MembersDetailsTypes & { selected: boolean }>>([]);
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -37,14 +38,8 @@ export default function GroupManagement(): JSX.Element {
   }, [parsedUserInfo]);
 
   useEffect(() => {
-    if (!membersDetails.length && accessToken) {
-      dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
-    }
-  }, [membersDetails]);
-
-  useEffect(() => {
-    if (locationState === null) {
-      navigate("/");
+    if (!locationState) {
+      navigate("/", { replace: true, state: null });
     }
   }, [navigate, locationState]);
 
@@ -73,8 +68,17 @@ export default function GroupManagement(): JSX.Element {
       }
     }
     checkAllMembersDetailsAreLoaded(members);
-
     dispatch(getUsersSlice.actions.sortByLatest());
+  }
+
+  async function handleGroupVersion() {
+    const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    if (getGroupDetails.fulfilled.match(response)) {
+      if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
+        const members = response.payload.members;
+        if (members) await reloadMembersDetails(members);
+      }
+    }
   }
 
   /**
@@ -114,22 +118,6 @@ export default function GroupManagement(): JSX.Element {
     }
   }, [dispatch, accessToken]);
 
-  async function handleGroupVersion() {
-    const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
-    if (getGroupDetails.fulfilled.match(response)) {
-      if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
-        const members = response.payload.members;
-        if (members) await reloadMembersDetails(members);
-      }
-    }
-  }
-
-  const [members, setMembers] = useState<Array<MembersDetailsTypes & { selected: boolean }>>([]);
-
-  if (locationState === null) {
-    return <></>;
-  }
-
   return (
     <React.Fragment>
       <section className="intro">
@@ -138,7 +126,7 @@ export default function GroupManagement(): JSX.Element {
             defaultMessage="Welcome {user}"
             id="intro-heading"
             values={{
-              user: parsedUserInfo.attributes.displayName,
+              user: parsedUserInfo?.attributes?.displayName,
             }}
           />
         </h1>
