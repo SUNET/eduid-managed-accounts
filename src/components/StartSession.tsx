@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl";
 import { requestAccess } from "../apis/gnap/requestAccess";
 import { generateNonce } from "../common/CryptoUtils";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { initLocalStorage } from "../initLocalStorage";
+import { initSessionStorage } from "../initSessionStorage";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
@@ -45,7 +45,7 @@ export function StartSession(): JSX.Element {
 
         if (response && Object.keys(response).length > 0) {
           // Save in local storage and redirect
-          initLocalStorage(response, nonce, publicJwk, privateJwk);
+          initSessionStorage(response, nonce, publicJwk, privateJwk);
           window.location.href = response.interact.redirect;
         }
       } catch (error) {
