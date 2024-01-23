@@ -63,5 +63,21 @@ footer nav .lang-selected {
         margin-right: 0;
       }
     }
+    flex-direction: column;
+
+    .support-link {
+      margin: 0.75rem 0;
+      line-height: 1.2;
+    }
+  }
+}
+@media (max-width: $bp-sm) {
+  footer {
+    flex-direction: column;
+
+    .support-link {
+      margin: 0.75rem 0;
+      line-height: 1.2;
+    }
   }
 }

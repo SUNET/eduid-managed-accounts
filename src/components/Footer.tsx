@@ -45,7 +45,7 @@ const Footer = (): JSX.Element => {
         </a>
         <span>&copy; 2013-2024</span>
       </div>
-      <div>
+      <div className="support-link">
         Kontakta
         <img src="src/img/Skolverket_Logo.svg" title="Skolverket logo" className="skolverket-logo" />
         för support:
