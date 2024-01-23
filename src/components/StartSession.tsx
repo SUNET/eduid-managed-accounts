@@ -72,7 +72,7 @@ export function StartSession(): JSX.Element {
       <div className="text-small">
         <em>
           <FormattedMessage
-            defaultMessage="Det här är en produktutveckling av eduID som ett led i Sunets regeringsuppdrag att bistå Skolverket kring digital identitet för nationella prov och bedömningsstöd, genom att erbjuda skolhuvudmän som har behov en inloggningstjänst (IdP) eller e-legitimation."
+            defaultMessage="This is a product development of eduID as part of Sunet's government assignment to assist Skolverket regarding digital identity concerning the digital national exam and assessment support, by offering school principals in need thereof an IdP or e-identity. "
             id="landing-info"
           />
         </em>
