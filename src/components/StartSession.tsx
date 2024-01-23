@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { GenerateKeyPairOptions, exportJWK, generateKeyPair } from "jose";
 import { FormattedMessage } from "react-intl";
+import { requestAccess } from "../apis/gnap/requestAccess";
+import { generateNonce } from "../common/CryptoUtils";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { INTERACTION_RESPONSE, initLocalStorage } from "../initLocalStorage";
+import { initLocalStorage } from "../initLocalStorage";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
@@ -16,35 +18,41 @@ export function StartSession(): JSX.Element {
   const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
   const redirect_url = useAppSelector((state) => state.config.redirect_url);
   const transaction_url = `${auth_server_url}/transaction`;
+
+  // TODO Inizialize store here?
   const dispatch = useAppDispatch();
-  // for debugging/development
-  localStorage.clear();
+  dispatch(getUsersSlice.actions.initialize());
+  dispatch(getGroupsSlice.actions.initialize());
+  dispatch(getPersonalDataSlice.actions.initialize());
+  dispatch(appSlice.actions.initialize());
 
   async function redirect() {
-    const token = localStorage.getItem(INTERACTION_RESPONSE);
-    if (token) {
+    if (transaction_url && redirect_url) {
       try {
-        const tokenObject = JSON.parse(token);
+        // configure request, generate key pair, generate nonce
+        const alg = "ES256";
+        const gpo: GenerateKeyPairOptions = {
+          crv: "25519",
+          extractable: true,
+        };
+        const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
+        const privateJwk = await exportJWK(privateKey);
+        const publicJwk = await exportJWK(publicKey);
 
-        if (tokenObject?.interact?.redirect) {
-          window.location.href = tokenObject.interact.redirect;
+        const nonce = generateNonce(24);
+
+        const response = await requestAccess(alg, publicJwk, privateKey, nonce, transaction_url, redirect_url);
+
+        if (response && Object.keys(response).length > 0) {
+          // Save in local storage and redirect
+          initLocalStorage(response, nonce, publicJwk, privateJwk);
+          window.location.href = response.interact.redirect;
         }
       } catch (error) {
-        console.error("Error parsing token:", error);
+        console.error("error:", error);
       }
-    } else {
-      console.error("Token is null or undefined");
     }
   }
-
-  useEffect(() => {
-    if (transaction_url !== undefined && redirect_url !== undefined) {
-      initLocalStorage(transaction_url, redirect_url);
-    }
-    dispatch(getUsersSlice.actions.initialize());
-    dispatch(getGroupsSlice.actions.initialize());
-    dispatch(getPersonalDataSlice.actions.initialize());
-  }, []);
 
   return (
     <>

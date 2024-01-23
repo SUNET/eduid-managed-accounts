@@ -40,7 +40,7 @@ export default function GroupManagement(): JSX.Element {
     if (!locationState) {
       navigate("/", { replace: true, state: null });
     }
-  }, [navigate, locationState]);
+  }, [locationState]);
 
   function checkAllMembersDetailsAreLoaded(groupResponseMembers: any): any {
     const state = managedAccountsStore.getState();
@@ -115,7 +115,7 @@ export default function GroupManagement(): JSX.Element {
       initializeManagedAccountsGroup();
       dispatch(appSlice.actions.appIsLoaded(true));
     }
-  }, [dispatch, accessToken]);
+  }, [accessToken]);
 
   return (
     <React.Fragment>

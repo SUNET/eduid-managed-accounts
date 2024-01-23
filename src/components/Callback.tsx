@@ -53,6 +53,7 @@ export default function Callback() {
     if (interactions && interactRef) {
       const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
       if (postContinueRequest.fulfilled.match(response)) {
+        localStorage.clear(); // remove unnecessary data from localStorage
         navigate("/manage", {
           state: response.payload,
         });
