@@ -1,5 +1,5 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faCheck, faChevronDown, faChevronUp, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
 import { Fragment, useEffect, useState } from "react";
@@ -7,10 +7,9 @@ import { FormattedMessage } from "react-intl";
 import { Meta } from "typescript-clients/scim";
 import { getGroupDetails } from "../apis/scim/groupsRequest";
 import { deleteUser } from "../apis/scim/usersRequest";
-import { fakePassword } from "../common/testEPPNData";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { getUsersSlice } from "../slices/getUsers";
+import { MemberListTable } from "./MemberListTable";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
 
@@ -27,40 +26,35 @@ export interface MembersDetailsTypes {
 }
 
 export interface MembersListTypes {
-  membersDetails: MembersDetailsTypes[];
-  members: Array<MembersDetailsTypes & { selected: boolean }>;
-  setMembers: React.Dispatch<React.SetStateAction<any>>;
-  accessToken: string;
+  readonly members: Array<MembersDetailsTypes & { selected: boolean }>;
+  readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
+  readonly accessToken: string;
   handleGroupVersion(): void;
 }
 export const DEFAULT_POST_PER_PAGE = 20;
 
 export default function MembersList({
-  membersDetails,
   members,
   setMembers,
   accessToken,
   handleGroupVersion,
 }: MembersListTypes): JSX.Element {
-  const [tooltipCopied, setTooltipCopied] = useState(false);
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
   const isMemberSelected = members.filter((member) => member.selected);
-  const [selectAll, setSelectAll] = useState<boolean>(false);
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
-  const dispatch = useAppDispatch();
+  const membersDetails = useAppSelector((state) => state.members.members);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [sortedData, setSortedData] = useState(members);
-
   const [postsPerPage, setPostsPerPage] = useState(DEFAULT_POST_PER_PAGE);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAll, setShowAll] = useState(false);
-
+  const dispatch = useAppDispatch();
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = sortedData.slice(indexOfFirstPost, indexOfLastPost);
-
   const [showMore, setShowMore] = useState(true);
+
   function toggleShowMore() {
     setShowMore(!showMore);
   }
@@ -70,7 +64,6 @@ export default function MembersList({
   }, [members]);
 
   useEffect(() => {
-    setSelectAll(false);
     setMembers(
       membersDetails.map((member: MembersDetailsTypes) => {
         if (member.password) {
@@ -86,65 +79,23 @@ export default function MembersList({
     const memberFamilyName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.familyName);
     const memberEPPN = isMemberSelected.map((member: MembersDetailsTypes) => member.externalId);
     const memberPassword = isMemberSelected.map((member: MembersDetailsTypes) => member.password);
-
     const membersArray = [];
-
     for (let i = 0; i < isMemberSelected.length; i++) {
       const password = memberPassword[i] ? memberPassword[i] : " ";
       const memberInfo = `${memberGivenName[i]}, ${memberFamilyName[i]}, ${memberEPPN[i]}, ${password}`;
       membersArray.push(memberInfo);
     }
-
     const lineBreak = membersArray.join("\n");
-
     const createdTextArea = document.createElement("textarea");
     createdTextArea.value = lineBreak;
     document.body.appendChild(createdTextArea);
     createdTextArea.select();
-
     document.execCommand("copy");
     document.body.removeChild(createdTextArea);
-
     setCopiedRowToClipboard(true);
     setTimeout(() => {
       setCopiedRowToClipboard(false);
     }, 1000);
-  }
-
-  function copyToClipboard(id: string) {
-    const TempText = document.createElement("input");
-    TempText.value = id;
-    document.body.appendChild(TempText);
-    TempText.select();
-
-    document.execCommand("copy");
-    document.body.removeChild(TempText);
-    setTooltipCopied(true);
-    (document.getElementById(`icon-copy ${id}`) as HTMLInputElement).style.display = "none";
-    (document.getElementById(`icon-check ${id}`) as HTMLInputElement).style.display = "inline";
-    setTimeout(() => {
-      (document.getElementById(`icon-copy ${id}`) as HTMLInputElement).style.display = "inline";
-      (document.getElementById(`icon-check ${id}`) as HTMLInputElement).style.display = "none";
-      setTooltipCopied(false);
-    }, 1000);
-  }
-
-  function handleSelectAll() {
-    setSelectAll((prevState) => !prevState);
-
-    const updatedMembers = sortedData.map((member) => ({
-      ...member,
-      selected: !selectAll,
-    }));
-
-    setMembers(updatedMembers);
-  }
-
-  function handleSelect(id: string) {
-    setMembers((prevMembers: any) =>
-      prevMembers.map((member: any) => (member.id === id ? { ...member, selected: !member.selected } : member))
-    );
-    setSelectAll(false);
   }
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
@@ -188,19 +139,9 @@ export default function MembersList({
     }
   }
 
-  function generateNewPassword(id: string) {
-    const generatedPassword = fakePassword();
-    const memberWithGeneratedPassword = membersDetails.map((member) =>
-      member.id === id ? { ...member, password: generatedPassword } : member
-    );
-
-    dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
-  }
-
-  const handleSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  function handleSorting(e: React.ChangeEvent<HTMLSelectElement>) {
     const value = e.target?.value;
     setSelectedValue(value);
-
     let newData = [...members];
     if (value === "givenName") {
       newData.sort((a, b) => a.name.givenName.toUpperCase().localeCompare(b.name.givenName, "sv"));
@@ -210,7 +151,7 @@ export default function MembersList({
       newData.sort((a, b) => b.meta.created.localeCompare(a.meta.created));
     }
     setSortedData(newData);
-  };
+  }
 
   function exportExcel() {
     const workbook = new ExcelJS.Workbook();
@@ -226,7 +167,6 @@ export default function MembersList({
       { header: headerPassword, key: "password" },
     ];
     worksheet.getRow(1).font = { bold: true };
-
     // read the data from state
     isMemberSelected.forEach((member) => {
       worksheet.addRow({
@@ -236,7 +176,6 @@ export default function MembersList({
         password: member.password,
       });
     });
-
     // download the file
     workbook.xlsx.writeBuffer().then(function (buffer) {
       const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
@@ -406,88 +345,13 @@ export default function MembersList({
               </div>
             </div>
           </div>
-          <table className="group-management">
-            <thead>
-              <tr>
-                <th>
-                  <span className="flex-between">
-                    <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} id="selectAll" />
-                    <label htmlFor="selectAll">
-                      <FormattedMessage defaultMessage="All" id="manageGroup-selectAllCheckbox" />
-                    </label>
-                  </span>
-                </th>
-                <th id="header-givenname">
-                  <FormattedMessage defaultMessage="Given name" id="manageGroup-givenNameColumn" />
-                </th>
-                <th id="header-surname">
-                  <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
-                </th>
-                <th id="header-eppn">
-                  <FormattedMessage defaultMessage="EPPN/username" id="manageGroup-eppnColumn" />
-                </th>
-                <th id="header-password">
-                  <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentPosts?.map((member: any, index: number) => (
-                <tr key={member.id}>
-                  <td>
-                    <span className="flex-between">
-                      <input
-                        type="checkbox"
-                        checked={member.selected}
-                        onChange={() => handleSelect(member.id)}
-                        id={"selectMember" + (index + 1)}
-                      />
-                      <label htmlFor={"selectMember" + (index + 1)}>
-                        {(currentPage - 1) * postsPerPage + index + 1}
-                      </label>
-                    </span>
-                  </td>
-                  <td>{member.name.givenName}</td>
-                  <td>{member.name.familyName}</td>
-                  <td>
-                    {member.externalId.split("@")[0]}
-                    <button
-                      id="clipboard"
-                      className="icon-only copybutton"
-                      onClick={() => copyToClipboard(member.externalId)}
-                    >
-                      <FontAwesomeIcon id={`icon-copy ${member.externalId}`} icon={faCopy as IconProp} />
-                      <FontAwesomeIcon id={`icon-check ${member.externalId}`} icon={faCheck as IconProp} />
-                      <div className="tool-tip-text" id="tool-tip">
-                        {tooltipCopied ? (
-                          <span>
-                            <FormattedMessage defaultMessage="Copied EPPN" id="manageGroup-copiedEppnDialog" />
-                          </span>
-                        ) : (
-                          <span>
-                            <FormattedMessage defaultMessage="Copy EPPN" id="manageGroup-copyEppnDialog" />
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  </td>
-                  <td>
-                    {member.password ? (
-                      member.password
-                    ) : (
-                      <button
-                        id="generate-new-password"
-                        className="btn btn-link btn-sm"
-                        onClick={() => generateNewPassword(member.id)}
-                      >
-                        <FormattedMessage defaultMessage="New password" id="manageGroup-newPasswordLink" />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <MemberListTable
+            currentPosts={currentPosts}
+            sortedData={sortedData}
+            setMembers={setMembers}
+            currentPage={currentPage}
+            postsPerPage={postsPerPage}
+          />
           <Pagination
             postsPerPage={postsPerPage}
             totalPosts={membersDetails.length}
@@ -496,7 +360,6 @@ export default function MembersList({
           />
         </Fragment>
       )}
-
       <NotificationModal
         id="remove-selected-users-modal"
         title={
