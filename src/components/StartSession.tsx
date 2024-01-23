@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { INTERACTION_RESPONSE, initLocalStorage } from "../initLocalStorage";
-import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
@@ -69,6 +68,14 @@ export function StartSession(): JSX.Element {
         <button className="btn btn-link" onClick={redirect}>
           <FormattedMessage defaultMessage="Go to login service" id="landing-link" />
         </button>
+      </div>
+      <div className="text-small">
+        <em>
+          <FormattedMessage
+            defaultMessage="Det här är en produktutveckling av eduID som ett led i Sunets regeringsuppdrag att bistå Skolverket kring digital identitet för nationella prov och bedömningsstöd, genom att erbjuda skolhuvudmän som har behov en inloggningstjänst (IdP) eller e-legitimation."
+            id="landing-info"
+          />
+        </em>
       </div>
       {/* </Splash> */}
     </>
