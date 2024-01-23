@@ -35,7 +35,7 @@ export const postContinueRequest = createAsyncThunk<
         interact_ref: args.interactRef,
       };
       const alg = "ES256";
-      const privateJwk = JSON.parse(localStorage.getItem("privateKey") ?? "");
+      const privateJwk = JSON.parse(sessionStorage.getItem("privateKey") ?? "");
       const privateKey = await importJWK(privateJwk, alg);
 
       const jwsHeader = {
