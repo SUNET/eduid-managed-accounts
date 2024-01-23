@@ -26,7 +26,7 @@ export default function GroupManagement(): JSX.Element {
   //const accessToken = null;
   // const accessToken = locationState?.access_token?.value;
   // const accessToken = useAppSelector((state) => state.app.isLoaded);
-  dispatch(appSlice.actions.updateAccessToken(locationState?.access_token?.value));
+
   //const accessToken = useAppSelector((state) => state.app.accessToken);
   const value = locationState?.subject?.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
@@ -36,9 +36,10 @@ export default function GroupManagement(): JSX.Element {
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
+      dispatch(appSlice.actions.updateAccessToken(locationState?.access_token?.value));
       dispatch(getLoggedInUserInfoSlice.actions.updateUserInfo({ user: parsedUserInfo }));
     }
-  }, [parsedUserInfo]);
+  }, [parsedUserInfo, locationState]);
 
   useEffect(() => {
     if (!locationState) {
@@ -155,11 +156,7 @@ export default function GroupManagement(): JSX.Element {
         <CreateAccounts handleGroupVersion={handleGroupVersion} scope={scope} />
       </section>
       <section>
-        <MembersList
-          handleGroupVersion={handleGroupVersion}
-          members={members}
-          setMembers={setMembers}
-        />
+        <MembersList handleGroupVersion={handleGroupVersion} members={members} setMembers={setMembers} />
       </section>
     </React.Fragment>
   );
