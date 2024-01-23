@@ -12,7 +12,7 @@ import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
 import CreateAccounts from "./CreateAccounts";
-import MembersList, { DEFAULT_POST_PER_PAGE, MembersDetailsTypes } from "./MemberList";
+import MembersList, { DEFAULT_POST_PER_PAGE, MembersDetailsTypes } from "./MembersList";
 
 export const GROUP_NAME = "Managed Accounts";
 

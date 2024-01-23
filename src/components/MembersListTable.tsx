@@ -6,14 +6,14 @@ import { FormattedMessage } from "react-intl";
 import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getUsersSlice from "../slices/getUsers";
-import { MembersDetailsTypes } from "./MemberList";
+import { MembersDetailsTypes } from "./MembersList";
 import NotificationModal from "./NotificationModal";
 
 interface MembersDetailsAndSelectedType extends MembersDetailsTypes {
   selected: boolean;
 }
 
-interface MemberListTableTypes {
+interface MembersListTableTypes {
   readonly currentPosts: MembersDetailsAndSelectedType[];
   readonly sortedData: MembersDetailsAndSelectedType[];
   readonly postsPerPage: number;
@@ -21,13 +21,13 @@ interface MemberListTableTypes {
   readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export function MemberListTable({
+export function MembersListTable({
   currentPosts,
   sortedData,
   postsPerPage,
   currentPage,
   setMembers,
-}: MemberListTableTypes) {
+}: MembersListTableTypes) {
   const membersDetails = useAppSelector((state) => state.members.members);
   const [showGeneratePasswordModal, setShowGeneratePasswordModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<{
