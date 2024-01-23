@@ -28,7 +28,7 @@ export interface MembersDetailsTypes {
 export interface MembersListTypes {
   readonly members: Array<MembersDetailsTypes & { selected: boolean }>;
   readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
-  handleGroupVersion(): void;
+  readonly handleGroupVersion: () => void;
 }
 export const DEFAULT_POST_PER_PAGE = 20;
 

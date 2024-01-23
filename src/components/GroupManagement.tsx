@@ -23,11 +23,6 @@ export default function GroupManagement(): JSX.Element {
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
   const locationState = location.state;
-  //const accessToken = null;
-  // const accessToken = locationState?.access_token?.value;
-  // const accessToken = useAppSelector((state) => state.app.isLoaded);
-
-  //const accessToken = useAppSelector((state) => state.app.accessToken);
   const value = locationState?.subject?.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
   const eduPersonPrincipalName: string = parsedUserInfo?.attributes?.eduPersonPrincipalName;
