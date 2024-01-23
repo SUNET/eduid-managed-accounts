@@ -26,9 +26,7 @@ export function Header(): JSX.Element {
 
   return (
     <header id="header">
-      <a aria-label="eduID start" title="eduID start">
-        <div id="eduid-logo" className="eduid-logo" />
-      </a>
+      <div id="eduid-logo" className="eduid-logo" />
 
       <span className="header-user">
         <div>{userMail}</div>
