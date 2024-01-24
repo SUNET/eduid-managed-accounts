@@ -17,9 +17,10 @@ export const configSlice = createSlice({
   initialState,
   reducers: {
     fetchConfig: (state, action) => {
-      state.auth_server_url = action.payload.auth_server_url;
-      state.scim_server_url = action.payload.scim_server_url;
-      state.redirect_url = action.payload.redirect_url;
+      const removeTrailingSlash = (url: string) => (url.endsWith("/") ? url.slice(0, -1) : url);
+      state.auth_server_url = removeTrailingSlash(action.payload.auth_server_url);
+      state.scim_server_url = removeTrailingSlash(action.payload.scim_server_url);
+      state.redirect_url = removeTrailingSlash(action.payload.redirect_url);
     },
   },
 });

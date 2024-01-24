@@ -31,7 +31,7 @@ export const createGroup = createAsyncThunk<
         method: "POST",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(scim_server_url + "Groups/", scimRequest);
+      const scimResponse = await fetch(scim_server_url + "/Groups/", scimRequest);
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {

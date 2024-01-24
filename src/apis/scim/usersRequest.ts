@@ -38,7 +38,7 @@ export const postUser = createAsyncThunk<
         method: "POST",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(scim_server_url + "/Users", scimRequest);
+      const scimResponse = await fetch(scim_server_url + "/Users/", scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
