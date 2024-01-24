@@ -22,6 +22,7 @@ export default function GroupManagement(): JSX.Element {
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
+  const error = useAppSelector((state) => state.notifications.error);
   const locationState = location.state;
   const value = locationState?.subject?.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
@@ -114,6 +115,13 @@ export default function GroupManagement(): JSX.Element {
       dispatch(appSlice.actions.appIsLoaded(true));
     }
   }, []);
+
+  useEffect(() => {
+    // Status 401 error will be handled here
+    if (error?.message.includes("Access denied:")) {
+      navigate("/");
+    }
+  }, [error]);
 
   return (
     <React.Fragment>
