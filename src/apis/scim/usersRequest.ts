@@ -10,7 +10,6 @@ export const postUser = createAsyncThunk<
   {
     familyName: string;
     givenName: string;
-    accessToken: string;
     scope: string;
   }, // args type
   { dispatch: AppDispatch; state: AppRootState }
@@ -18,10 +17,11 @@ export const postUser = createAsyncThunk<
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
-    if (args.accessToken) {
+    const accessToken = state.app.accessToken;
+    if (accessToken) {
       const eduIdEppn: string = fakeEPPN(); // what could be expected from eppn API
       const organizerEppn: string = `${eduIdEppn.split("@")[0]}@${args.scope}`;
-      const headers = scimHeaders(args.accessToken);
+      const headers = scimHeaders(accessToken);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User", "https://scim.eduid.se/schema/nutid/user/v1"],
         externalId: eduIdEppn,
@@ -54,14 +54,15 @@ export const postUser = createAsyncThunk<
 
 export const getUserDetails = createAsyncThunk<
   UserResponse, // return type
-  { id: string; accessToken: string }, // args type
+  { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/getUserDetails", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
-    if (args.accessToken) {
-      const headers = scimHeaders(args.accessToken);
+    const accessToken = state.app.accessToken;
+    if (accessToken) {
+      const headers = scimHeaders(accessToken);
       const scimRequest = {
         headers: headers,
         method: "GET",
@@ -82,14 +83,15 @@ export const getUserDetails = createAsyncThunk<
 
 export const deleteUser = createAsyncThunk<
   any, // return type
-  { user: { id: string; version: string }; accessToken: string }, // args type
+  { user: { id: string; version: string } }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/deleteUser", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
-    if (args.accessToken) {
-      const headers = { ...scimHeaders(args.accessToken), "If-Match": args.user.version };
+    const accessToken = state.app.accessToken;
+    if (accessToken) {
+      const headers = { ...scimHeaders(accessToken), "If-Match": args.user.version };
       const scimRequest = {
         headers: headers,
         method: "DELETE",
