@@ -6,7 +6,7 @@
     "string": "Åtkomst nekades: Bearer token error"
   },
   "Could not load all members details. Try again": {
-    "string": "Kunde inte ladda all medlemsinformation, var vänlig försök igen."
+    "string": "Kunde inte ladda all detaljerad medlemsinformation, var vänlig försök igen."
   },
   "Data owner requested in access token denied": {
     "string": "Åtkomst nekades: Data owner requested in access token denied"
