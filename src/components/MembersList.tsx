@@ -68,15 +68,29 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     );
   }, [membersDetails]);
 
+  function exportHeaders() {
+    const headerGivenName = document.getElementById("header-givenname")?.textContent ?? "Given name";
+    const headerSurname = document.getElementById("header-surname")?.textContent ?? "Surname";
+    const headerEPPN = "EPPN";
+    const headerUsername = document.getElementById("header-username")?.textContent ?? "Username";
+    const headerPassword = document.getElementById("header-password")?.textContent ?? "Password";
+    return [headerGivenName, headerSurname, headerEPPN, headerUsername, headerPassword];
+  }
+
   function copyToClipboardAllMembers() {
     const memberGivenName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.givenName);
     const memberFamilyName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.familyName);
     const memberEPPN = isMemberSelected.map((member: MembersDetailsTypes) => member.externalId);
+    const memberUsername = isMemberSelected.map((member: MembersDetailsTypes) => member.externalId.split("@")[0]);
     const memberPassword = isMemberSelected.map((member: MembersDetailsTypes) => member.password);
     const membersArray = [];
+    // Headers
+    const [headerGivenName, headerSurname, headerEPPN, headerUsername, headerPassword] = exportHeaders();
+    const headers = `${headerGivenName}, ${headerSurname}, ${headerEPPN}, ${headerUsername}, ${headerPassword}`;
+    membersArray.push(headers);
     for (let i = 0; i < isMemberSelected.length; i++) {
       const password = memberPassword[i] ? memberPassword[i] : " ";
-      const memberInfo = `${memberGivenName[i]}, ${memberFamilyName[i]}, ${memberEPPN[i]}, ${password}`;
+      const memberInfo = `${memberGivenName[i]}, ${memberFamilyName[i]}, ${memberEPPN[i]}, ${memberUsername[i]}, ${password}`;
       membersArray.push(memberInfo);
     }
     const lineBreak = membersArray.join("\n");
@@ -150,14 +164,12 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   function exportExcel() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
-    const headerGivenName = document.getElementById("header-givenname")?.textContent ?? "Given name";
-    const headerSurname = document.getElementById("header-surname")?.textContent ?? "Surname";
-    const headerEPPN = document.getElementById("header-eppn")?.textContent ?? "EPPN/username";
-    const headerPassword = document.getElementById("header-password")?.textContent ?? "Password";
+    const [headerGivenName, headerSurname, headerEPPN, headerUsername, headerPassword] = exportHeaders();
     worksheet.columns = [
       { header: headerGivenName, key: "given-name" },
       { header: headerSurname, key: "surname" },
       { header: headerEPPN, key: "eppn" },
+      { header: headerUsername, key: "username" },
       { header: headerPassword, key: "password" },
     ];
     worksheet.getRow(1).font = { bold: true };
@@ -167,6 +179,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
         "given-name": member.name.givenName,
         surname: member.name.familyName,
         eppn: member.externalId,
+        username: member.externalId.split("@")[0],
         password: member.password,
       });
     });

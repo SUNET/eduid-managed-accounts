@@ -157,8 +157,8 @@
   "manageGroup-editLabel": {
     "string": "Ändra valda rader:"
   },
-  "manageGroup-eppnColumn": {
-    "string": "EPPN/användarnamn"
+  "manageGroup-usernameColumn": {
+    "string": "Användarnamn"
   },
   "manageGroup-exportButton": {
     "string": "Ladda ned Excel-fil"
