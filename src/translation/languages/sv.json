@@ -5,6 +5,9 @@
   "Bearer token error": {
     "string": "Åtkomst nekades: Bearer token error"
   },
+  "Could not load all members details. Try again": {
+    "string": "Kunde inte ladda all medlemsinformation, var vänlig försök igen."
+  },
   "Data owner requested in access token denied": {
     "string": "Åtkomst nekades: Data owner requested in access token denied"
   },
@@ -127,6 +130,9 @@
   "landing-header": {
     "string": "Välkommen till Hantera Konton med eduID"
   },
+  "landing-info": {
+    "string": "Det här är en produktutveckling av eduID som ett led i Sunets regeringsuppdrag att bistå Skolverket kring digital identitet för nationella prov och bedömningsstöd, genom att erbjuda skolhuvudmän som har behov därav en inloggningstjänst (IdP) eller e-legitimation."
+  },
   "landing-link": {
     "string": "Gå till inloggningstjänst"
   },
@@ -159,6 +165,12 @@
   },
   "manageGroup-exportLabel": {
     "string": "Exportera valda rader till Excel:"
+  },
+  "manageGroup-generateNewPasswordDialogHeading": {
+    "string": "Generera ett nytt lösenord"
+  },
+  "manageGroup-generateNewPasswordDialogParagraph": {
+    "string": "Är du säker på att du vill skapa ett nytt lösenord för {name}? Klicka i så fall på knappen OK nedan."
   },
   "manageGroup-givenNameColumn": {
     "string": "Förnamn"
