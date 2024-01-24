@@ -118,8 +118,8 @@ export function MembersListTable({
             <th id="header-surname">
               <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
             </th>
-            <th id="header-eppn">
-              <FormattedMessage defaultMessage="EPPN/username" id="manageGroup-eppnColumn" />
+            <th id="header-username">
+              <FormattedMessage defaultMessage="Username" id="manageGroup-usernameColumn" />
             </th>
             <th id="header-password">
               <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />

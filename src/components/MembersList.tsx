@@ -152,12 +152,14 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
     const headerGivenName = document.getElementById("header-givenname")?.textContent ?? "Given name";
     const headerSurname = document.getElementById("header-surname")?.textContent ?? "Surname";
-    const headerEPPN = document.getElementById("header-eppn")?.textContent ?? "EPPN/username";
+    const headerUsername = document.getElementById("header-username")?.textContent ?? "Username";
+    const headerEPPN = "EPPN";
     const headerPassword = document.getElementById("header-password")?.textContent ?? "Password";
     worksheet.columns = [
       { header: headerGivenName, key: "given-name" },
       { header: headerSurname, key: "surname" },
       { header: headerEPPN, key: "eppn" },
+      { header: headerUsername, key: "username" },
       { header: headerPassword, key: "password" },
     ];
     worksheet.getRow(1).font = { bold: true };
@@ -167,6 +169,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
         "given-name": member.name.givenName,
         surname: member.name.familyName,
         eppn: member.externalId,
+        username: member.externalId.split("@")[0],
         password: member.password,
       });
     });

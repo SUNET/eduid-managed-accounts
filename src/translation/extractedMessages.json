@@ -154,8 +154,8 @@
   "manageGroup-editLabel": {
     "string": "Edit selected rows:"
   },
-  "manageGroup-eppnColumn": {
-    "string": "EPPN/username"
+  "manageGroup-usernameColumn": {
+    "string": "Username"
   },
   "manageGroup-exportButton": {
     "string": "Download Excel"
