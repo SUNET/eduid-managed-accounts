@@ -1,4 +1,5 @@
 import { GenerateKeyPairOptions, exportJWK, generateKeyPair } from "jose";
+import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { requestAccess } from "../apis/gnap/requestAccess";
 import { generateNonce } from "../common/CryptoUtils";
@@ -15,16 +16,22 @@ import getUsersSlice from "../slices/getUsers";
  * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-redirect-based-interaction
  */
 export function StartSession(): JSX.Element {
+  const dispatch = useAppDispatch();
   const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
   const redirect_url = useAppSelector((state) => state.config.redirect_url);
   const transaction_url = `${auth_server_url}/transaction`;
 
-  // TODO Inizialize store here?
-  const dispatch = useAppDispatch();
-  dispatch(getUsersSlice.actions.initialize());
-  dispatch(getGroupsSlice.actions.initialize());
-  dispatch(getPersonalDataSlice.actions.initialize());
-  dispatch(appSlice.actions.initialize());
+  useEffect(() => {
+    // TODO Inizialize store here?
+    const initializeStore = () => {
+      console.log("initializeStore");
+      dispatch(getUsersSlice.actions.initialize());
+      dispatch(getGroupsSlice.actions.initialize());
+      dispatch(getPersonalDataSlice.actions.initialize());
+      dispatch(appSlice.actions.initialize());
+    };
+    initializeStore();
+  }, []);
 
   async function redirect() {
     if (transaction_url && redirect_url) {
