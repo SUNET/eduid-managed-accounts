@@ -154,9 +154,6 @@
   "manageGroup-editLabel": {
     "string": "Edit selected rows:"
   },
-  "manageGroup-usernameColumn": {
-    "string": "Username"
-  },
   "manageGroup-exportButton": {
     "string": "Download Excel"
   },
@@ -240,6 +237,9 @@
   },
   "manageGroup-surnameColumn": {
     "string": "Surname"
+  },
+  "manageGroup-usernameColumn": {
+    "string": "Username"
   },
   "modal.close": {
     "developer_comment": "Notification modal close label",
