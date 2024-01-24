@@ -19,7 +19,6 @@ export function ManagedAccountApp(): JSX.Element {
             <Route path="/" element={<StartSession />} />
             <Route path="/manage" element={<GroupManagement />} />
             <Route path="/callback" element={<Callback />} />
-            {/* <Route path="/app" element={<App />} /> */}
           </Routes>
         </section>
       </main>

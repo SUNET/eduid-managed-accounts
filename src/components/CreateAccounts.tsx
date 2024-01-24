@@ -15,7 +15,6 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 export const GROUP_NAME = "Managed Accounts";
 
 interface CreateAccountsTypes {
-  readonly accessToken: string;
   readonly handleGroupVersion: () => void;
   readonly scope: string;
 }
@@ -23,7 +22,7 @@ interface ValidatePersonalData {
   [key: string]: string;
 }
 
-export default function CreateAccounts({ accessToken, handleGroupVersion, scope }: CreateAccountsTypes): JSX.Element {
+export default function CreateAccounts({ handleGroupVersion, scope }: CreateAccountsTypes): JSX.Element {
   const dispatch = useAppDispatch();
   const intl = useIntl();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
@@ -95,7 +94,6 @@ export default function CreateAccounts({ accessToken, handleGroupVersion, scope 
           postUser({
             familyName: name.surname,
             givenName: name.given_name,
-            accessToken: accessToken,
             scope: scope,
           })
         );
@@ -123,7 +121,6 @@ export default function CreateAccounts({ accessToken, handleGroupVersion, scope 
           ...managedAccountsDetails,
           members: updatedMembersList,
         },
-        accessToken: accessToken,
       })
     );
   }

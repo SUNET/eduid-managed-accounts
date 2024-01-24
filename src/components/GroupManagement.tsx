@@ -23,7 +23,6 @@ export default function GroupManagement(): JSX.Element {
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
   const locationState = location.state;
-  const accessToken = locationState?.access_token?.value;
   const value = locationState?.subject?.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
   const eduPersonPrincipalName: string = parsedUserInfo?.attributes?.eduPersonPrincipalName;
@@ -32,15 +31,16 @@ export default function GroupManagement(): JSX.Element {
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
+      dispatch(appSlice.actions.updateAccessToken(locationState?.access_token?.value));
       dispatch(getLoggedInUserInfoSlice.actions.updateUserInfo({ user: parsedUserInfo }));
     }
-  }, [parsedUserInfo]);
+  }, [parsedUserInfo, locationState]);
 
   useEffect(() => {
     if (!locationState) {
       navigate("/", { replace: true, state: null });
     }
-  }, [navigate, locationState]);
+  }, [locationState]);
 
   function checkAllMembersDetailsAreLoaded(groupResponseMembers: any): any {
     const state = managedAccountsStore.getState();
@@ -61,7 +61,7 @@ export default function GroupManagement(): JSX.Element {
       if (chunk) {
         await Promise.all(
           chunk?.map(async (member: GroupMember) => {
-            await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
+            await dispatch(getUserDetails({ id: member.value }));
           })
         );
       }
@@ -71,7 +71,7 @@ export default function GroupManagement(): JSX.Element {
   }
 
   async function handleGroupVersion() {
-    const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id }));
     if (getGroupDetails.fulfilled.match(response)) {
       if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
         const members = response.payload.members;
@@ -91,14 +91,12 @@ export default function GroupManagement(): JSX.Element {
       try {
         dispatch(getUsersSlice.actions.initialize());
         dispatch(getGroupsSlice.actions.initialize());
-        const result = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME, accessToken: accessToken }));
+        const result = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
         if (getGroupsSearch.fulfilled.match(result)) {
           if (!result.payload?.Resources?.length) {
-            dispatch(createGroup({ displayName: GROUP_NAME, accessToken: accessToken }));
+            dispatch(createGroup({ displayName: GROUP_NAME }));
           } else if (result.payload.Resources?.length === 1) {
-            const response = await dispatch(
-              getGroupDetails({ id: result.payload.Resources[0].id, accessToken: accessToken })
-            );
+            const response = await dispatch(getGroupDetails({ id: result.payload.Resources[0].id }));
             if (getGroupDetails.fulfilled.match(response)) {
               const members = response.payload.members;
               if (members) await reloadMembersDetails(members);
@@ -115,7 +113,7 @@ export default function GroupManagement(): JSX.Element {
       initializeManagedAccountsGroup();
       dispatch(appSlice.actions.appIsLoaded(true));
     }
-  }, [dispatch, accessToken]);
+  }, []);
 
   return (
     <React.Fragment>
@@ -150,15 +148,10 @@ export default function GroupManagement(): JSX.Element {
         </div>
       </section>
       <section>
-        <CreateAccounts handleGroupVersion={handleGroupVersion} accessToken={accessToken} scope={scope} />
+        <CreateAccounts handleGroupVersion={handleGroupVersion} scope={scope} />
       </section>
       <section>
-        <MembersList
-          handleGroupVersion={handleGroupVersion}
-          accessToken={accessToken}
-          members={members}
-          setMembers={setMembers}
-        />
+        <MembersList handleGroupVersion={handleGroupVersion} members={members} setMembers={setMembers} />
       </section>
     </React.Fragment>
   );
