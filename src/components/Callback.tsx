@@ -3,18 +3,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { postContinueRequest } from "../apis/gnap/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
+import { INTERACTION_RESPONSE, NONCE } from "../initSessionStorage";
 
 export default function Callback() {
   const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
   const dispatch = useAppDispatch();
 
-  // Get "InteractionResponse" from LocalStorage
-  const value = localStorage.getItem(INTERACTION_RESPONSE) ?? "";
+  // Get "InteractionResponse" from sessionStorage
+  const value = sessionStorage.getItem(INTERACTION_RESPONSE) ?? "";
   const interactions = JSON.parse(value) ? JSON.parse(value) : {};
-  // Get "finish" and "nonce" from LocalStorage
+  // Get "finish" and "nonce" from sessionStorage
   const finish = interactions.interact.finish;
-  const nonce = localStorage.getItem(NONCE);
+  const nonce = sessionStorage.getItem(NONCE);
 
   // Get "hash" and "interact_ref" from URL query parameters
   const location = useLocation();
@@ -53,6 +53,7 @@ export default function Callback() {
     if (interactions && interactRef) {
       const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
       if (postContinueRequest.fulfilled.match(response)) {
+        sessionStorage.clear(); // remove unnecessary data from sessionStorage
         navigate("/manage", {
           state: response.payload,
         });

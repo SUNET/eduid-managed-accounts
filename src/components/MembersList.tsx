@@ -28,17 +28,11 @@ export interface MembersDetailsTypes {
 export interface MembersListTypes {
   readonly members: Array<MembersDetailsTypes & { selected: boolean }>;
   readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
-  readonly accessToken: string;
-  handleGroupVersion(): void;
+  readonly handleGroupVersion: () => void;
 }
 export const DEFAULT_POST_PER_PAGE = 20;
 
-export default function MembersList({
-  members,
-  setMembers,
-  accessToken,
-  handleGroupVersion,
-}: MembersListTypes): JSX.Element {
+export default function MembersList({ members, setMembers, handleGroupVersion }: MembersListTypes): JSX.Element {
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
   const isMemberSelected = members.filter((member) => member.selected);
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
@@ -108,12 +102,12 @@ export default function MembersList({
           id: member.id,
           version: member.meta.version,
         };
-        const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete, accessToken: accessToken }));
+        const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete }));
         if (deleteUser.fulfilled.match(deleteUserResponse)) {
           setShowModal(false);
         }
       }
-      dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+      dispatch(getGroupDetails({ id: managedAccountsDetails.id }));
     } else {
       console.warn("No matching users found to be removed.");
     }
