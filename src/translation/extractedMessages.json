@@ -11,9 +11,6 @@
   "Data owner requested in access token denied": {
     "string": "Access denied: Data owner requested in access token denied"
   },
-  "Failed with status 401: Unknown data_owner": {
-    "string": "Unknown data owner please contact support"
-  },
   "Missing correct entitlement in saml data": {
     "string": "Access denied: Missing correct entitlement in saml data"
   },
@@ -21,7 +18,7 @@
     "string": "Access denied: No authentication header found"
   },
   "Unknown data_owner": {
-    "string": "Access denied: Unknown data_owner"
+    "string": "Access denied: Unknown data owner please contact support"
   },
   "addToGroup-addButton": {
     "string": "Add"
