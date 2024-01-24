@@ -22,9 +22,7 @@ export function StartSession(): JSX.Element {
   const transaction_url = `${auth_server_url}/transaction`;
 
   useEffect(() => {
-    // TODO Inizialize store here?
     const initializeStore = () => {
-      console.log("initializeStore");
       dispatch(getUsersSlice.actions.initialize());
       dispatch(getGroupsSlice.actions.initialize());
       dispatch(getPersonalDataSlice.actions.initialize());
