@@ -83,6 +83,14 @@ export function StartSession(): JSX.Element {
           <FormattedMessage defaultMessage="Go to login service" id="landing-link" />
         </button>
       </div>
+      <div className="text-small">
+        <em>
+          <FormattedMessage
+            defaultMessage="This is a product development of eduID as part of Sunet's government assignment to assist Skolverket with digital identity regarding the digital national exam and assessment support, by offering school principals in need thereof an IdP or e-identity. "
+            id="landing-info"
+          />
+        </em>
+      </div>
       {/* </Splash> */}
     </>
   );

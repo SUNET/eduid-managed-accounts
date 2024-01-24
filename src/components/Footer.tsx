@@ -45,14 +45,19 @@ const Footer = (): JSX.Element => {
         </a>
         <span>&copy; 2013-2024</span>
       </div>
-
+      <div className="support-link">
+        Skolverket support:
+        <a
+          href="https://www.skolverket.se/om-oss/kontakta-oss"
+          aria-label="skolverket.se"
+          title="skolverket.se"
+          target="_blank"
+        >
+          &nbsp;www.skolverket.se
+        </a>
+      </div>
       <nav>
         <ul>
-          <li>
-            {/* <Link className="help-link" to="#">
-              Help
-            </Link> */}
-          </li>
           <li id="language-selector">
             <span className="lang-selected" data-lang={locale}>
               <a className="link" href="#" onClick={(e) => changeLanguage(e)}>
