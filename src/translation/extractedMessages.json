@@ -130,6 +130,9 @@
   "landing-header": {
     "string": "Welcome to Managed Accounts with eduID"
   },
+  "landing-info": {
+    "string": "This is a product development of eduID as part of Sunet's government assignment to assist Skolverket with digital identity regarding the digital national exam and assessment support, by offering school principals in need thereof an IdP or e-identity."
+  },
   "landing-link": {
     "string": "Go to login service"
   },
