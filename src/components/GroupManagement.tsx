@@ -140,7 +140,7 @@ export default function GroupManagement(): JSX.Element {
             <em>
               <FormattedMessage
                 defaultMessage="The contents can be presented in Swedish or English, choose language in the footer of this web page. 
-              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility and to read the full instructions under the READ MORE... links."
+              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility and to read the full instructions under the READ MORE... links. If you are managing accounts for the first time, or many at once, it may take some time until complete."
                 id="intro-leadEmphasis"
               />
             </em>
