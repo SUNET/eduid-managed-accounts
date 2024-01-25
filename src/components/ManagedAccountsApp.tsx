@@ -17,8 +17,8 @@ export function ManagedAccountApp(): JSX.Element {
         <section id="content" className="horizontal-content-margin content">
           <Routes>
             <Route path="/" element={<StartSession />} />
-            <Route path="/manage" element={<GroupManagement />} />
             <Route path="/callback" element={<Callback />} />
+            <Route path="/manage" element={<GroupManagement />} />
           </Routes>
         </section>
       </main>

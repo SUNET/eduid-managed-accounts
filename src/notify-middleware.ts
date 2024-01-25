@@ -1,6 +1,6 @@
+import appSlice from "./slices/appReducers";
 import { showNotification } from "./slices/Notifications";
 
-showNotification;
 const notifyAndDispatch = () => (next: any) => (action: any) => {
   if (action.type.endsWith("FAIL")) {
     //TODO: display an error message when there are no access token
@@ -11,9 +11,16 @@ const notifyAndDispatch = () => (next: any) => (action: any) => {
         // window.scroll isn't available in the tests jsdom environment
       }
     }, 100);
-  } //SCIM api error messages
-  else if (action.error?.message) {
-    next(showNotification({ message: action.payload }));
+  }
+  //SCIM api error messages
+  else if (action.type.includes("scim") && action.error) {
+    let messageDetail: string = action.payload.detail;
+    if (action.payload.status === 401) {
+      next(appSlice.actions.forcedLogout());
+      messageDetail = `Access denied: ${messageDetail}`;
+    }
+    next(showNotification({ message: messageDetail }));
+
     setTimeout(() => {
       try {
         window.scroll(0, 0);
