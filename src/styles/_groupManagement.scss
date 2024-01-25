@@ -129,17 +129,18 @@ p {
   margin-left: 0.5rem;
 }
 
-fieldset {
-  margin-bottom: 0;
-  margin-right: 1rem;
-}
-
 .input-validate-error {
   margin-top: 3px;
 }
 
 hr.border-line {
   margin: 2rem 0;
+}
+
+.fieldset {
+  width: 100%;
+  margin-bottom: 0;
+  margin-right: 1rem;
 }
 
 input {
@@ -157,4 +158,10 @@ input {
   &[type="text"] {
     margin-bottom: 0;
   }
+}
+
+.fieldset {
+  width: 100%;
+  margin-bottom: 0;
+  margin-right: 1rem;
 }

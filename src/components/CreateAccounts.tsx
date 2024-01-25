@@ -426,7 +426,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               <div className="flex-between">
                 <Field name="given_name">
                   {({ input, meta }) => (
-                    <fieldset>
+                    <div className="fieldset">
                       <label htmlFor="givenName">
                         <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
                       </label>
@@ -440,13 +440,13 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                         disabled={!managedAccountsDetails?.id}
                       />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
+                    </div>
                   )}
                 </Field>
 
                 <Field name="surname">
                   {({ input, meta }) => (
-                    <fieldset>
+                    <div className="fieldset">
                       <label htmlFor="surName">
                         <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                       </label>
@@ -458,7 +458,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                         disabled={!managedAccountsDetails?.id}
                       />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
+                    </div>
                   )}
                 </Field>
 
