@@ -96,8 +96,9 @@ label.btn-cover:hover {
   transform: scale(0.95);
 
   &:disabled,
-  .disabled {
+  &.disabled {
     transform: scale(1);
+    cursor: not-allowed;
   }
 }
 
