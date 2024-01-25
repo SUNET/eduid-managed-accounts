@@ -92,7 +92,11 @@ label.btn-cover {
 button.btn-primary:hover,
 button.btn-secondary:hover,
 select:hover,
-label.btn-cover:hover {
+label.btn-cover:hover,
+button.btn-primary:focus-visible,
+button.btn-secondary:focus-visible,
+select:focus-visible,
+label.btn-cover:focus-visible {
   transform: scale(0.95);
 
   &:disabled,
