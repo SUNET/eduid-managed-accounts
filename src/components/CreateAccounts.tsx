@@ -357,27 +357,28 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           <form onSubmit={excelImport} id="import-excel-form">
             <ol className="listed-steps">
               <li>
-                <fieldset className="flex-between">
-                  <label>
+                <div className="flex-between">
+                  <span>
                     <FormattedMessage
                       defaultMessage="Create Excel document with account names, e.g. using this empty template:"
                       id="addToGroup-downloadLabel"
                     />
-                  </label>
+                  </span>
                   <a
+                    id="link"
                     href="src/assets/hanterade_konton.xlsx"
                     target="_blank"
                     className={!managedAccountsDetails?.id ? "disabled" : ""}
                   >
                     <FormattedMessage defaultMessage="Download template" id="addToGroup-downloadLink" />
                   </a>
-                </fieldset>
+                </div>
               </li>
               <li>
-                <fieldset className="flex-between">
-                  <label>
+                <div className="flex-between">
+                  <span>
                     <FormattedMessage defaultMessage="Select filled in Excel document:" id="addToGroup-selectLabel" />
-                  </label>
+                  </span>
                   <div className="flex-between file-input">
                     <span className="file-name"></span>
                     <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
@@ -388,20 +389,20 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                       <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />
                     </label>
                   </div>
-                </fieldset>
+                </div>
               </li>
               <li>
-                <fieldset className="flex-between">
-                  <label>
+                <div className="flex-between">
+                  <span>
                     <FormattedMessage
                       defaultMessage="Create accounts from selected Excel document:"
                       id="addToGroup-importLabel"
                     />
-                  </label>
+                  </span>
                   <button type="submit" className="btn btn-primary btn-sm" disabled={!selectedFile}>
                     <FormattedMessage defaultMessage="Create accounts" id="excel-import" />
                   </button>
-                </fieldset>
+                </div>
               </li>
             </ol>
           </form>
@@ -425,7 +426,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               <div className="flex-between">
                 <Field name="given_name">
                   {({ input, meta }) => (
-                    <fieldset>
+                    <div className="fieldset">
                       <label htmlFor="givenName">
                         <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
                       </label>
@@ -439,13 +440,13 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                         disabled={!managedAccountsDetails?.id}
                       />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
+                    </div>
                   )}
                 </Field>
 
                 <Field name="surname">
                   {({ input, meta }) => (
-                    <fieldset>
+                    <div className="fieldset">
                       <label htmlFor="surName">
                         <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
                       </label>
@@ -457,7 +458,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                         disabled={!managedAccountsDetails?.id}
                       />
                       {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
+                    </div>
                   )}
                 </Field>
 

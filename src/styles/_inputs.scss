@@ -163,7 +163,8 @@ input:focus {
   font-size: $txt-sm;
   color: $error-red;
 
-  fieldset & {
+  fieldset &,
+  .fieldset & {
     position: absolute;
   }
 }

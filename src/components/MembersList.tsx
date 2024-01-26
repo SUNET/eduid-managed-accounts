@@ -276,9 +276,9 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
           )}
           <div className="form-controls">
             <div className="flex-between">
-              <label>
+              <span>
                 <FormattedMessage defaultMessage="Export selected rows to Excel:" id="manageGroup-exportLabel" />
-              </label>
+              </span>
               <div className="buttons">
                 <button
                   disabled={!isMemberSelected.length}
@@ -290,9 +290,9 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
               </div>
             </div>
             <div className="flex-between">
-              <label>
-                <FormattedMessage defaultMessage="Edit selected rows:" id="manageGroup-editLabel" />
-              </label>
+              <span>
+                <FormattedMessage defaultMessage="Handle selected rows:" id="manageGroup-editLabel" />
+              </span>
               <div className="buttons">
                 <button
                   disabled={!isMemberSelected.length}
@@ -315,9 +315,9 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
               </div>
             </div>
             <div className="flex-between">
-              <label htmlFor="sortOrder">
+              <span>
                 <FormattedMessage defaultMessage="Show/sort rows:" id="manageGroup-showLabel" />
-              </label>
+              </span>
               <div className="buttons">
                 {membersDetails.length >= 11 &&
                   (showAll ? (
