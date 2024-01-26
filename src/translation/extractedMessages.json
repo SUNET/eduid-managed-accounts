@@ -122,7 +122,7 @@
     "string": "In the forms below you can manage your organisations accounts by adding students, to create their individual account with a unique username - EPPN - and the password that they will need to be able to perform the Digital National Exam."
   },
   "intro-leadEmphasis": {
-    "string": "The contents can be presented in Swedish or English, choose language in the footer of this web page. You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility and to read the full instructions under the READ MORE... links."
+    "string": "The contents can be presented in Swedish or English, choose language in the footer of this web page. You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility and to read the full instructions under the READ MORE... links. If you are managing accounts for the first time, or many at once, it may take some time until complete."
   },
   "intro-scope": {
     "string": "CURRENT SCOPE:"
@@ -155,7 +155,7 @@
     "string": "Copy row"
   },
   "manageGroup-editLabel": {
-    "string": "Edit selected rows:"
+    "string": "Handle selected rows:"
   },
   "manageGroup-exportButton": {
     "string": "Download Excel"
