@@ -41,6 +41,24 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     description: "Placeholder for surname text input",
   });
 
+  const excelImportErrorPart1 = intl.formatMessage({
+    id: "excel-file-contains-errors-in-row",
+    defaultMessage: "Excel file contains errors in row",
+    description: "Excel file contains errors in row",
+  });
+
+  const excelImportErrorPart2 = intl.formatMessage({
+    id: "for-values",
+    defaultMessage: "for values",
+    description: "for values",
+  });
+
+  const excelImportErrorPart3 = intl.formatMessage({
+    id: "errors",
+    defaultMessage: "errors",
+    description: "errors",
+  });
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [showMore, setShowMore] = useState(true);
 
@@ -217,8 +235,9 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 };
                 // Validate happens when reading the values, before creating the users
                 const errors = validatePersonalData(name);
+                console.log("EXCEL IMPORT VALIDATION ERRORS:", errors);
                 if (errors && Object.keys(errors).length > 0) {
-                  const errorMessage: string = `Excel file contains errors: row "${name.given_name} ${name.surname}" - errors: ${errors.given_name.props.defaultMessage} - ${errors.surname.props.defaultMessage}`;
+                  const errorMessage: string = `${excelImportErrorPart1} ${rowIndex} ${excelImportErrorPart2}: "${name.given_name} ${name.surname}" - ${excelImportErrorPart3}: ${errors.given_name.props.defaultMessage} - ${errors.surname.props.defaultMessage}`;
                   throw new Error(errorMessage);
                 }
                 newNames.push(name);

@@ -13,4 +13,9 @@ export const apiResponses = {
       defaultMessage="Could not load all members details. Try again"
     />
   ),
+  "excel-file-contains-errors-in-row": (
+    <FormattedMessage id="excel-file-contains-errors-in-row" defaultMessage="Excel file contains errors in row" />
+  ),
+  "for-values": <FormattedMessage id="for-values" defaultMessage="for values" />,
+  errors: <FormattedMessage id="errors" defaultMessage="errors" />,
 };
