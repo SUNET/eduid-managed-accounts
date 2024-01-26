@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { GroupResponse, ListResponse } from "typescript-clients/scim";
 import { AppDispatch, AppRootState } from "../../init-app";
-import { handleErrorResponse } from "./error";
 
 export const scimHeaders = (token: string) => {
   return {
@@ -14,7 +13,7 @@ export const createGroup = createAsyncThunk<
   GroupResponse, // return type
   { displayName: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/createGroup", async (args, thunkAPI) => {
+>("scim/createGroup", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
@@ -35,8 +34,7 @@ export const createGroup = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        const result = await scimResponse.json();
-        return await handleErrorResponse(result);
+        throw await scimResponse.json();
       }
     }
   } catch (error) {
@@ -48,7 +46,7 @@ export const getGroupsSearch = createAsyncThunk<
   ListResponse, // return type
   { searchFilter: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/getGroupsSearch", async (args, thunkAPI) => {
+>("scim/getGroupsSearch", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
@@ -69,8 +67,7 @@ export const getGroupsSearch = createAsyncThunk<
         const scimResponseJSON = await scimResponse.json();
         return scimResponseJSON;
       } else {
-        const result = await scimResponse.json();
-        return await handleErrorResponse(result);
+        throw await scimResponse.json();
       }
     }
   } catch (error) {
@@ -82,7 +79,7 @@ export const getGroupDetails = createAsyncThunk<
   GroupResponse, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/getGroupDetails", async (args, thunkAPI) => {
+>("scim/getGroupDetails", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
@@ -98,8 +95,7 @@ export const getGroupDetails = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        const result = await scimResponse.json();
-        return await handleErrorResponse(result);
+        throw await scimResponse.json();
       }
     }
   } catch (error) {
@@ -111,7 +107,7 @@ export const putGroup = createAsyncThunk<
   GroupResponse, // return type
   { group: any }, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/putGroup", async (args, thunkAPI) => {
+>("scim/putGroup", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const version = state.groups.managedAccounts.meta.version;
@@ -136,7 +132,7 @@ export const putGroup = createAsyncThunk<
       if (scimResponse.ok) {
         return jsonResponse;
       } else {
-        return await handleErrorResponse(jsonResponse);
+        throw await scimResponse.json();
       }
     }
   } catch (error) {

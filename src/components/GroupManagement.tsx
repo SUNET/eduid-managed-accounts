@@ -22,6 +22,7 @@ export default function GroupManagement(): JSX.Element {
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
+  const forcedLogout = useAppSelector((state) => state.app.forcedLogout);
   const locationState = location.state;
   const value = locationState?.subject?.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
@@ -37,10 +38,10 @@ export default function GroupManagement(): JSX.Element {
   }, [parsedUserInfo, locationState]);
 
   useEffect(() => {
-    if (!locationState) {
+    if (forcedLogout || !locationState) {
       navigate("/", { replace: true, state: null });
     }
-  }, [locationState]);
+  }, [forcedLogout, locationState]);
 
   function checkAllMembersDetailsAreLoaded(groupResponseMembers: any): any {
     const state = managedAccountsStore.getState();

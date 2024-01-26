@@ -130,7 +130,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
   }
 
   const validatePersonalData = (values: ValidatePersonalData): ValidationErrors => {
-    console.log("validatePersonalData", values);
     const errors: ValidationErrors = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
@@ -148,7 +147,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
         }
       });
     }
-    console.log("validatePersonalData ERRORS: ", errors);
     return errors;
   };
 
@@ -194,7 +192,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     const wb = new ExcelJS.Workbook();
     const reader = new FileReader();
     const file = document.getElementById("file") as HTMLInputElement;
-    console.log("files", file);
     if (!file?.files) {
       return;
     }
