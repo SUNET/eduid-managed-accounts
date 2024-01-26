@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import getUsersSlice from "../slices/getUsers";
 import { MembersDetailsTypes } from "./MembersList";
 import NotificationModal from "./NotificationModal";
+import Splash from "./Splash";
 
 interface MembersDetailsAndSelectedType extends MembersDetailsTypes {
   selected: boolean;
@@ -29,6 +30,7 @@ export function MembersListTable({
   setMembers,
 }: MembersListTableTypes) {
   const membersDetails = useAppSelector((state) => state.members.members);
+  const isFetching = useAppSelector((state) => state.app.isFetching);
   const [showGeneratePasswordModal, setShowGeneratePasswordModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<{
     id: string | null;
@@ -101,86 +103,90 @@ export function MembersListTable({
 
   return (
     <Fragment>
-      <table className="group-management">
-        <thead>
-          <tr>
-            <th>
-              <span className="flex-between">
-                <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} id="selectAll" />
-                <label htmlFor="selectAll">
-                  <FormattedMessage defaultMessage="All" id="manageGroup-selectAllCheckbox" />
-                </label>
-              </span>
-            </th>
-            <th id="header-givenname">
-              <FormattedMessage defaultMessage="Given name" id="manageGroup-givenNameColumn" />
-            </th>
-            <th id="header-surname">
-              <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
-            </th>
-            <th id="header-username">
-              <FormattedMessage defaultMessage="Username" id="manageGroup-usernameColumn" />
-            </th>
-            <th id="header-password">
-              <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentPosts?.map((member: any, index: number) => (
-            <tr key={member.id}>
-              <td>
+      <Splash showChildren={!isFetching}>
+        <table className="group-management">
+          <thead>
+            <tr>
+              <th>
                 <span className="flex-between">
-                  <input
-                    type="checkbox"
-                    checked={member.selected}
-                    onChange={() => handleSelect(member.id)}
-                    id={"selectMember" + (index + 1)}
-                  />
-                  <label htmlFor={"selectMember" + (index + 1)}>{(currentPage - 1) * postsPerPage + index + 1}</label>
+                  <input type="checkbox" checked={selectAll} onChange={() => handleSelectAll()} id="selectAll" />
+                  <label htmlFor="selectAll">
+                    <FormattedMessage defaultMessage="All" id="manageGroup-selectAllCheckbox" />
+                  </label>
                 </span>
-              </td>
-              <td>{member.name.givenName}</td>
-              <td>{member.name.familyName}</td>
-              <td>
-                {member.externalId.split("@")[0]}
-                <button
-                  id="clipboard"
-                  className="icon-only copybutton"
-                  onClick={() => copyToClipboard(member.externalId)}
-                >
-                  <FontAwesomeIcon id={`icon-copy ${member.externalId}`} icon={faCopy as IconProp} />
-                  <FontAwesomeIcon id={`icon-check ${member.externalId}`} icon={faCheck as IconProp} />
-                  <div className="tool-tip-text" id="tool-tip">
-                    {tooltipCopied ? (
-                      <span>
-                        <FormattedMessage defaultMessage="Copied EPPN" id="manageGroup-copiedEppnDialog" />
-                      </span>
-                    ) : (
-                      <span>
-                        <FormattedMessage defaultMessage="Copy EPPN" id="manageGroup-copyEppnDialog" />
-                      </span>
-                    )}
-                  </div>
-                </button>
-              </td>
-              <td>
-                {member.password ? (
-                  member.password
-                ) : (
-                  <button
-                    id="generate-new-password"
-                    className="btn btn-link btn-sm"
-                    onClick={() => handleGenerateNewPassword(member.id)}
-                  >
-                    <FormattedMessage defaultMessage="New password" id="manageGroup-newPasswordLink" />
-                  </button>
-                )}
-              </td>
+              </th>
+              <th id="header-givenname">
+                <FormattedMessage defaultMessage="Given name" id="manageGroup-givenNameColumn" />
+              </th>
+              <th id="header-surname">
+                <FormattedMessage defaultMessage="Surname" id="manageGroup-surnameColumn" />
+              </th>
+              <th id="header-username">
+                <FormattedMessage defaultMessage="Username" id="manageGroup-usernameColumn" />
+              </th>
+              <th id="header-password">
+                <FormattedMessage defaultMessage="Password" id="manageGroup-passwordColumn" />
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {currentPosts?.map((member: any, index: number) => (
+              <tr key={member.id}>
+                <td>
+                  <span className="flex-between">
+                    <input
+                      type="checkbox"
+                      checked={member.selected}
+                      onChange={() => handleSelect(member.id)}
+                      id={"selectMember" + (index + 1)}
+                    />
+                    <label htmlFor={"selectMember" + (index + 1)}>{(currentPage - 1) * postsPerPage + index + 1}</label>
+                  </span>
+                </td>
+                <td>{member.name.givenName}</td>
+                <td>{member.name.familyName}</td>
+                <td>
+                  {member.externalId.split("@")[0]}
+                  <button
+                    id="clipboard"
+                    className="icon-only copybutton"
+                    onClick={() => copyToClipboard(member.externalId)}
+                    disabled={isFetching}
+                  >
+                    <FontAwesomeIcon id={`icon-copy ${member.externalId}`} icon={faCopy as IconProp} />
+                    <FontAwesomeIcon id={`icon-check ${member.externalId}`} icon={faCheck as IconProp} />
+                    <div className="tool-tip-text" id="tool-tip">
+                      {tooltipCopied ? (
+                        <span>
+                          <FormattedMessage defaultMessage="Copied EPPN" id="manageGroup-copiedEppnDialog" />
+                        </span>
+                      ) : (
+                        <span>
+                          <FormattedMessage defaultMessage="Copy EPPN" id="manageGroup-copyEppnDialog" />
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                </td>
+                <td>
+                  {member.password ? (
+                    member.password
+                  ) : (
+                    <button
+                      id="generate-new-password"
+                      className="btn btn-link btn-sm"
+                      onClick={() => handleGenerateNewPassword(member.id)}
+                    >
+                      <FormattedMessage defaultMessage="New password" id="manageGroup-newPasswordLink" />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Splash>
+
       <NotificationModal
         id="generate-new-password-modal"
         title={

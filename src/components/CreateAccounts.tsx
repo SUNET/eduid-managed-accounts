@@ -28,6 +28,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
   const intl = useIntl();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const isFetching = useAppSelector((state) => state.app.isFetching);
 
   const placeholderGivenName = intl.formatMessage({
     id: "addToGroup-givenNamePlaceholder",
@@ -407,7 +408,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                       id="addToGroup-importLabel"
                     />
                   </span>
-                  <button type="submit" className="btn btn-primary btn-sm" disabled={!selectedFile}>
+                  <button type="submit" className="btn btn-primary btn-sm" disabled={!selectedFile || isFetching}>
                     <FormattedMessage defaultMessage="Create accounts" id="excel-import" />
                   </button>
                 </div>
@@ -470,7 +471,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                   )}
                 </Field>
 
-                <button disabled={submitting || invalid} className="btn btn-primary">
+                <button disabled={submitting || invalid || isFetching} className="btn btn-primary">
                   <FormattedMessage defaultMessage="Add" id="addToGroup-addButton" />
                 </button>
               </div>

@@ -48,6 +48,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = sortedData.slice(indexOfFirstPost, indexOfLastPost);
   const [showMore, setShowMore] = useState(true);
+  const isFetching = useAppSelector((state) => state.app.isFetching);
 
   function toggleShowMore() {
     setShowMore(!showMore);
@@ -273,7 +274,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
               </span>
               <div className="buttons">
                 <button
-                  disabled={!isMemberSelected.length}
+                  disabled={!isMemberSelected.length || isFetching}
                   className={`btn btn-sm btn-primary`}
                   onClick={() => exportExcel()}
                 >
@@ -330,7 +331,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
                       {membersDetails.length})
                     </button>
                   ))}
-                <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
+                <select id="sortOrder" value={selectedValue} onChange={handleSorting} disabled={isFetching}>
                   <option value="">
                     <FormattedMessage defaultMessage="Latest (default)" id="manageGroup-selectOptionLatest" />
                   </option>
