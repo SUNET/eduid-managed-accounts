@@ -122,7 +122,7 @@
     "string": "I formulären nedan kan du hantera din organisations konton genom att lägga till elever, för att skapa deras individuella konton med unika användarnamn - EPPN - och lösenord, som de behöver för att kunna genomföra Digitala Nationella Provet."
   },
   "intro-leadEmphasis": {
-    "string": "Innehållet kan presenteras på svenska eller engelska, välj språk i sidfoten. Användning av tjänsten lämpar sig bäst i större format än mobila enheter. Läs gärna instruktionerna i sin helhet under LÄS MER OM... länkarna."
+    "string": "Innehållet kan presenteras på svenska eller engelska, välj språk i sidfoten. Användning av tjänsten lämpar sig bäst i större format än mobila enheter. Läs gärna instruktionerna i sin helhet under LÄS MER OM... länkarna. Vid första gången eller många samtidigt, kan hanteringen av konton ta tid."
   },
   "intro-scope": {
     "string": "Scope:"
@@ -155,7 +155,7 @@
     "string": "Kopiera rad"
   },
   "manageGroup-editLabel": {
-    "string": "Ändra valda rader:"
+    "string": "Hantera valda rader:"
   },
   "manageGroup-exportButton": {
     "string": "Ladda ned Excel-fil"
