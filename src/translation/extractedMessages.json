@@ -109,17 +109,8 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "surname"
   },
-  "errors": {
-    "string": "errors"
-  },
-  "excel-file-contains-errors-in-row": {
-    "string": "Excel file contains errors in row"
-  },
   "excel-import": {
     "string": "Create accounts"
-  },
-  "for-values": {
-    "string": "for values"
   },
   "header-logoutLink": {
     "string": "Log out"
