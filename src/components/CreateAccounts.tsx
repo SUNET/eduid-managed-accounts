@@ -217,7 +217,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 };
                 // Validate happens when reading the values, before creating the users
                 const errors = validatePersonalData(name);
-                console.log("EXCEL IMPORT VALIDATION ERRORS:", errors);
                 if (errors && Object.keys(errors).length > 0) {
                   const errorMessage: string = `Excel file contains errors in row ${rowIndex} for values: "${name.given_name} ${name.surname}" - errors: ${errors.given_name.props.defaultMessage} - ${errors.surname.props.defaultMessage}`;
                   throw new Error(errorMessage);
