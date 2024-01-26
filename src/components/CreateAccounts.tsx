@@ -11,6 +11,7 @@ import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { putGroup } from "../apis/scim/groupsRequest";
 import { postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { showNotification } from "../slices/Notifications";
 
 export const GROUP_NAME = "Managed Accounts";
 
@@ -207,22 +208,32 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           //      - VALIDATE DATA
           //      - create/POST a new user with these values
           let newNames: any[] = [];
-          sheet.eachRow((row, rowIndex) => {
-            if (rowIndex > 1) {
-              const name = {
-                given_name: row.getCell(1).text,
-                surname: row.getCell(2).text,
-              };
-              // Validate happens when reading the values, before creating the users
-              const errors = validatePersonalData(name);
-              if (errors && Object.keys(errors).length > 0) {
-                console.error("ERRORS EXCEL IMPORT: validatePersonalData", errors);
-                //throw errors;
+          try {
+            sheet.eachRow((row, rowIndex) => {
+              if (rowIndex > 1) {
+                const name = {
+                  given_name: row.getCell(1).text,
+                  surname: row.getCell(2).text,
+                };
+                // Validate happens when reading the values, before creating the users
+                const errors = validatePersonalData(name);
+                if (errors && Object.keys(errors).length > 0) {
+                  const errorMessage: string = `Excel file contains errors: row "${name.given_name} ${name.surname}" - errors: ${errors.given_name.props.defaultMessage} - ${errors.surname.props.defaultMessage}`;
+                  throw new Error(errorMessage);
+                }
+                newNames.push(name);
               }
-              newNames.push(name);
+            });
+            await addUsers(newNames);
+          } catch (error) {
+            let errorMessage: string;
+            if (error instanceof Error) {
+              errorMessage = error.message;
+            } else {
+              errorMessage = String(error);
             }
-          });
-          await addUsers(newNames);
+            dispatch(showNotification({ message: errorMessage }));
+          }
           // reset input
           cleanFileInput();
         });
