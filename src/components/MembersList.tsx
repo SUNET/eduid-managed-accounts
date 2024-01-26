@@ -139,14 +139,6 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     setShowAll(false);
   }
 
-  function handleRemoveUsers() {
-    if (selectedUserIds.length >= 2) {
-      setShowModal(true);
-    } else {
-      removeSelectedUser();
-    }
-  }
-
   function handleSorting(e: React.ChangeEvent<HTMLSelectElement>) {
     const value = e.target?.value;
     setSelectedValue(value);
@@ -308,7 +300,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
                 <button
                   disabled={!isMemberSelected.length}
                   className="btn btn-secondary btn-sm"
-                  onClick={() => handleRemoveUsers()}
+                  onClick={() => setShowModal(true)}
                 >
                   <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
                 </button>
