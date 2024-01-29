@@ -4,12 +4,14 @@ interface AppState {
   isLoaded: boolean;
   accessToken: any;
   forcedLogout: boolean;
+  isFetching: boolean;
 }
 
 export const initialState: AppState = {
   isLoaded: false,
   accessToken: null,
   forcedLogout: false,
+  isFetching: false,
 };
 
 export const appSlice = createSlice({
@@ -29,6 +31,9 @@ export const appSlice = createSlice({
     },
     appIsLoaded: (state, action) => {
       state.isLoaded = action.payload;
+    },
+    isFetching: (state, action) => {
+      state.isFetching = action.payload;
     },
   },
 });

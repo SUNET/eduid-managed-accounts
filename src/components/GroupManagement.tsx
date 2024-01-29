@@ -94,6 +94,7 @@ export default function GroupManagement(): JSX.Element {
         dispatch(getGroupsSlice.actions.initialize());
         const result = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
         if (getGroupsSearch.fulfilled.match(result)) {
+          dispatch(appSlice.actions.isFetching(true));
           if (!result.payload?.Resources?.length) {
             dispatch(createGroup({ displayName: GROUP_NAME }));
           } else if (result.payload.Resources?.length === 1) {
@@ -103,6 +104,7 @@ export default function GroupManagement(): JSX.Element {
               if (members) await reloadMembersDetails(members);
             }
           }
+          dispatch(appSlice.actions.isFetching(false));
         } else if (getGroupsSearch.rejected.match(result)) {
           // when user get 401 error, it will redirect to login page or landing page
         }

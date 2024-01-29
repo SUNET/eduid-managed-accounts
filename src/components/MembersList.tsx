@@ -9,6 +9,7 @@ import { getGroupDetails } from "../apis/scim/groupsRequest";
 import { deleteUser } from "../apis/scim/usersRequest";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import appSlice from "../slices/appReducers";
 import { MembersListTable } from "./MembersListTable";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
@@ -48,6 +49,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = sortedData.slice(indexOfFirstPost, indexOfLastPost);
   const [showMore, setShowMore] = useState(true);
+  const isFetching = useAppSelector((state) => state.app.isFetching);
 
   function toggleShowMore() {
     setShowMore(!showMore);
@@ -108,6 +110,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
+    dispatch(appSlice.actions.isFetching(true));
     await handleGroupVersion();
     const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
     if (memberToBeRemoved && memberToBeRemoved.length > 0) {
@@ -125,6 +128,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     } else {
       console.warn("No matching users found to be removed.");
     }
+    dispatch(appSlice.actions.isFetching(false));
   }
 
   function showAllMembers() {
@@ -273,7 +277,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
               </span>
               <div className="buttons">
                 <button
-                  disabled={!isMemberSelected.length}
+                  disabled={!isMemberSelected.length || isFetching}
                   className={`btn btn-sm btn-primary`}
                   onClick={() => exportExcel()}
                 >
@@ -287,7 +291,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
               </span>
               <div className="buttons">
                 <button
-                  disabled={!isMemberSelected.length}
+                  disabled={!isMemberSelected.length || isFetching}
                   className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
                   onClick={() => copyToClipboardAllMembers()}
                 >
@@ -298,7 +302,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
                   )}
                 </button>
                 <button
-                  disabled={!isMemberSelected.length}
+                  disabled={!isMemberSelected.length || isFetching}
                   className="btn btn-secondary btn-sm"
                   onClick={() => setShowModal(true)}
                 >
@@ -322,7 +326,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
                     </button>
                   ) : (
                     <button
-                      disabled={!membersDetails.length}
+                      disabled={!membersDetails.length || isFetching}
                       className={`btn btn-sm btn-secondary`}
                       onClick={() => showAllMembers()}
                     >
@@ -330,7 +334,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
                       {membersDetails.length})
                     </button>
                   ))}
-                <select id="sortOrder" value={selectedValue} onChange={handleSorting}>
+                <select id="sortOrder" value={selectedValue} onChange={handleSorting} disabled={isFetching}>
                   <option value="">
                     <FormattedMessage defaultMessage="Latest (default)" id="manageGroup-selectOptionLatest" />
                   </option>
