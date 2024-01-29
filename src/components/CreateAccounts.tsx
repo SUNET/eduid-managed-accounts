@@ -43,6 +43,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [showMore, setShowMore] = useState(true);
+  const [msg, setMsg] = useState({ rowIndex: 0, given_name: "", sur_name: "", defaultMessage: "" });
 
   function toggleShowMore() {
     setShowMore(!showMore);
@@ -218,14 +219,29 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 // Validate happens when reading the values, before creating the users
                 const errors = validatePersonalData(name);
                 if (errors && Object.keys(errors).length > 0) {
+                  setMsg(() => ({
+                    ...msg,
+                    rowIndex: rowIndex,
+                  }));
                   let errorMessage: string = `Excel file contains errors in row ${rowIndex}. `;
-                  if (errors.hasOwnProperty("given_name")) {
+                  if (errorMessage.hasOwnProperty("given_name")) {
+                    console.log("name.given_name", name.given_name);
+                    console.log("errors.given_name.props.defaultMessage", errors.given_name.props.defaultMessage);
+                    setMsg((msg) => ({
+                      ...msg,
+                      given_name: name.given_name,
+                      defaultMessage: errors.given_name.props.defaultMessage,
+                    }));
                     errorMessage += `Given Name "${name.given_name}" has error: ${errors.given_name.props.defaultMessage}. `;
                   }
-                  if (errors.hasOwnProperty("surname")) {
+                  if (errorMessage.hasOwnProperty("surname")) {
+                    setMsg((msg) => ({
+                      ...msg,
+                      sur_name: name.surname,
+                      defaultMessage: errors.given_name.props.defaultMessage,
+                    }));
                     errorMessage += `Surname "${name.surname}" has error: ${errors.surname.props.defaultMessage}. `;
                   }
-                  throw new Error(errorMessage);
                 }
                 newNames.push(name);
               }
@@ -247,6 +263,35 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     };
   }
 
+  let formattedErrorMessages;
+
+  if (msg.rowIndex > 0) {
+    return (
+      <FormattedMessage
+        defaultMessage="test {msg}"
+        id="addToGroup-paragraph"
+        values={{
+          msg: msg.rowIndex,
+        }}
+      />
+    );
+  } else if (msg.given_name) {
+    <FormattedMessage
+      defaultMessage="test {msg}"
+      id="addToGroup-paragraph"
+      values={{
+        msg: msg.given_name,
+      }}
+    />;
+  } else if (msg.sur_name) {
+    <FormattedMessage
+      defaultMessage="test {msg}"
+      id="addToGroup-paragraph"
+      values={{
+        msg: msg.sur_name,
+      }}
+    />;
+  }
   return (
     <React.Fragment>
       <h2>
@@ -393,9 +438,38 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                   <span>
                     <FormattedMessage defaultMessage="Select filled in Excel document:" id="addToGroup-selectLabel" />
                   </span>
+
                   <div className="flex-between file-input">
                     <span className="file-name"></span>
+
                     <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
+
+                    {/* <Form
+                      onSubmit={() => {}}
+                      render={() => (
+                        <form>
+                          <Field name="excelFile">
+                            {({ input, meta }) => (
+                              <div className="fieldset">
+                                <input
+                                  className="file"
+                                  type="file"
+                                  id="file"
+                                  onChange={(e) => {
+                                    input.onChange(e);
+                                    handleFileChange(e);
+                                  }}
+                                />
+
+                                {meta.touched && meta.error && (
+                                  <span className="input-validate-error">{meta.error}</span>
+                                )}
+                              </div>
+                            )}
+                          </Field>
+                        </form>
+                      )}
+                    /> */}
                     <label
                       className={`btn-cover btn-sm ${!managedAccountsDetails?.id ? "disabled" : ""}`}
                       htmlFor="file"
@@ -404,6 +478,19 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                     </label>
                   </div>
                 </div>
+                {formattedErrorMessages}
+                {msg.rowIndex > 1 || msg?.given_name || msg?.sur_name || msg?.defaultMessage ? (
+                  <FormattedMessage
+                    defaultMessage="test {msg} {msg1} {msg2}{msg3}{msg4}"
+                    id="addToGroup-paragraph"
+                    values={{
+                      msg: msg.rowIndex,
+                      msg2: msg.given_name,
+                      msg3: msg.sur_name,
+                      msg4: msg.defaultMessage,
+                    }}
+                  />
+                ) : null}
               </li>
               <li>
                 <div className="flex-between">
