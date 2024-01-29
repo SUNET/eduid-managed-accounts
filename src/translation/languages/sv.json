@@ -109,17 +109,8 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "efternamn"
   },
-  "errors": {
-    "string": "fel"
-  },
-  "excel-file-contains-errors-in-row": {
-    "string": "Excel-fil innehåller fel i raden"
-  },
   "excel-import": {
     "string": "Skapa konton"
-  },
-  "for-values": {
-    "string": "för värden"
   },
   "header-logoutLink": {
     "string": "Logga ut"
