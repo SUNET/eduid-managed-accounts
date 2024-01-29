@@ -12,6 +12,7 @@ import { putGroup } from "../apis/scim/groupsRequest";
 import { postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { showNotification } from "../slices/Notifications";
+import appSlice from "../slices/appReducers";
 
 export const GROUP_NAME = "Managed Accounts";
 
@@ -86,6 +87,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
    * @param names
    */
   async function addUsers(names: { given_name: string; surname: string }[]) {
+    dispatch(appSlice.actions.isFetching(true));
     // 0 - Disable "create accounts" button, to avoid users can click multiple times while we create accounts
     setSelectedFile(null);
     // 1 - Create Users
@@ -125,6 +127,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
         },
       })
     );
+    dispatch(appSlice.actions.isFetching(false));
   }
 
   function handleAddUser(values: any) {
@@ -390,9 +393,16 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                   </span>
                   <div className="flex-between file-input">
                     <span className="file-name"></span>
-                    <input className="file" type="file" name="excelFile" id="file" onChange={handleFileChange} />
+                    <input
+                      className="file"
+                      type="file"
+                      name="excelFile"
+                      id="file"
+                      onChange={handleFileChange}
+                      disabled={isFetching}
+                    />
                     <label
-                      className={`btn-cover btn-sm ${!managedAccountsDetails?.id ? "disabled" : ""}`}
+                      className={`btn-cover btn-sm ${!managedAccountsDetails?.id || isFetching ? "disabled" : ""}`}
                       htmlFor="file"
                     >
                       <FormattedMessage defaultMessage="Select document" id="addToGroup-selectButton" />

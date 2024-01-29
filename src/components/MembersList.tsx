@@ -9,6 +9,7 @@ import { getGroupDetails } from "../apis/scim/groupsRequest";
 import { deleteUser } from "../apis/scim/usersRequest";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import appSlice from "../slices/appReducers";
 import { MembersListTable } from "./MembersListTable";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
@@ -109,6 +110,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
+    dispatch(appSlice.actions.isFetching(true));
     await handleGroupVersion();
     const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
     if (memberToBeRemoved && memberToBeRemoved.length > 0) {
@@ -126,6 +128,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     } else {
       console.warn("No matching users found to be removed.");
     }
+    dispatch(appSlice.actions.isFetching(false));
   }
 
   function showAllMembers() {
@@ -288,7 +291,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
               </span>
               <div className="buttons">
                 <button
-                  disabled={!isMemberSelected.length}
+                  disabled={!isMemberSelected.length || isFetching}
                   className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
                   onClick={() => copyToClipboardAllMembers()}
                 >
@@ -299,7 +302,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
                   )}
                 </button>
                 <button
-                  disabled={!isMemberSelected.length}
+                  disabled={!isMemberSelected.length || isFetching}
                   className="btn btn-secondary btn-sm"
                   onClick={() => setShowModal(true)}
                 >
@@ -323,7 +326,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
                     </button>
                   ) : (
                     <button
-                      disabled={!membersDetails.length}
+                      disabled={!membersDetails.length || isFetching}
                       className={`btn btn-sm btn-secondary`}
                       onClick={() => showAllMembers()}
                     >
