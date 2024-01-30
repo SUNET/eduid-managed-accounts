@@ -7,7 +7,8 @@ import { useAppSelector } from "../hooks";
 
 export function Header(): JSX.Element {
   const loggedInUser = useAppSelector((state) => state.personalData.loggedInUser);
-  const userMail = loggedInUser?.user?.attributes?.mail;
+  const accessToken = useAppSelector((state) => state.app.accessToken);
+  const eduPersonPrincipalName = loggedInUser?.user?.attributes?.eduPersonPrincipalName;
   const navigate = useNavigate();
   let logoutButton;
 
@@ -15,7 +16,7 @@ export function Header(): JSX.Element {
     navigate("/", { replace: true, state: null });
   }
 
-  if (userMail) {
+  if (accessToken) {
     logoutButton = (
       <button className="btn btn-link btn-sm" id="logout" onClick={logout}>
         <FontAwesomeIcon icon={faArrowRightFromBracket as IconProp} />
@@ -29,7 +30,7 @@ export function Header(): JSX.Element {
       <div id="eduid-logo" className="eduid-logo" />
 
       <span className="header-user">
-        <div>{userMail}</div>
+        <div>{eduPersonPrincipalName}</div>
         {logoutButton}
       </span>
     </header>

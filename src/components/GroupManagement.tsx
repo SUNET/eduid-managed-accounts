@@ -126,7 +126,7 @@ export default function GroupManagement(): JSX.Element {
             defaultMessage="Welcome {user}"
             id="intro-heading"
             values={{
-              user: parsedUserInfo?.attributes?.displayName,
+              user: `${parsedUserInfo?.attributes?.givenName} ${parsedUserInfo?.attributes?.sn}`,
             }}
           />
         </h1>
