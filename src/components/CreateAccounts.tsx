@@ -29,6 +29,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
   const intl = useIntl();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [excelImportError, setExcelImportError] = useState<string | null>(null);
   const isFetching = useAppSelector((state) => state.app.isFetching);
 
   const placeholderGivenName = intl.formatMessage({
@@ -175,6 +176,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (file) {
+      setExcelImportError(null);
       setSelectedFile(file);
     }
   }
@@ -224,10 +226,10 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 if (errors && Object.keys(errors).length > 0) {
                   let errorMessage: string = `Excel file contains errors in row ${rowIndex}. `;
                   if (errors.hasOwnProperty("given_name")) {
-                    errorMessage += `Given Name "${name.given_name}" has error: ${errors.given_name.props.defaultMessage}. `;
+                    errorMessage += `Given name "${name.given_name}" does not validate: ${errors.given_name.props.defaultMessage}. `;
                   }
                   if (errors.hasOwnProperty("surname")) {
-                    errorMessage += `Surname "${name.surname}" has error: ${errors.surname.props.defaultMessage}. `;
+                    errorMessage += `Surname "${name.surname}" does not validate: ${errors.surname.props.defaultMessage}. `;
                   }
                   throw new Error(errorMessage);
                 }
@@ -242,7 +244,13 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
             } else {
               errorMessage = String(error);
             }
-            dispatch(showNotification({ message: errorMessage }));
+            setExcelImportError(errorMessage);
+            dispatch(
+              showNotification({
+                message:
+                  'Some data in the Excel file do not validate. No new accounts has been created. For more details check the error message in the "Add account by file import" area.',
+              })
+            );
           }
           // reset input
           cleanFileInput();
@@ -431,6 +439,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               </li>
             </ol>
           </form>
+          {excelImportError && <span className="input-validate-error">{excelImportError}</span>}
         </div>
 
         <hr className="border-line"></hr>
