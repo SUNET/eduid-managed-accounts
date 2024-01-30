@@ -118,6 +118,15 @@
   "intro-heading": {
     "string": "Välkommen {user}"
   },
+  "excel-file-rowIndex-error": {
+    "string": "SV_Excel file contains errors in row {row}."
+  },
+  "excel-file-givenName-error": {
+    "string": "SV_Given name {givenName} does not validate: It is not allowed to save a national ID number."
+  },
+  "excel-file-surName-error": {
+    "string": "SV_Surname {surName} does not validate: It is not allowed to save a national ID number."
+  },
   "intro-lead": {
     "string": "I formulären nedan kan du hantera din organisations konton genom att lägga till elever, för att skapa deras individuella konton med unika användarnamn - EPPN - och lösenord, som de behöver för att kunna genomföra Digitala Nationella Provet."
   },

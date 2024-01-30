@@ -24,12 +24,24 @@ interface ValidatePersonalData {
   [key: string]: string;
 }
 
+interface ExcelImportErrorType {
+  fullName?: {
+    givenName?: string;
+    surName?: string;
+  };
+  errors?: {
+    rowIndex?: number;
+    givenName?: string;
+    surName?: string;
+  };
+}
+
 export default function CreateAccounts({ handleGroupVersion, scope }: CreateAccountsTypes): JSX.Element {
   const dispatch = useAppDispatch();
   const intl = useIntl();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [excelImportError, setExcelImportError] = useState<string | null>(null);
+  const [excelImportError, setExcelImportError] = useState<ExcelImportErrorType | null>(null);
   const isFetching = useAppSelector((state) => state.app.isFetching);
 
   const placeholderGivenName = intl.formatMessage({
@@ -224,13 +236,56 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 // Validate happens when reading the values, before creating the users
                 const errors = validatePersonalData(name);
                 if (errors && Object.keys(errors).length > 0) {
+                  console.log("rowError", rowIndex);
                   let errorMessage: string = `Excel file contains errors in row ${rowIndex}. `;
+
+                  setExcelImportError(() => ({
+                    ...excelImportError,
+                    errors: {
+                      rowIndex: rowIndex,
+                    },
+                  }));
+
                   if (errors.hasOwnProperty("given_name")) {
+                    console.log("name.given_name", name.given_name);
                     errorMessage += `Given name "${name.given_name}" does not validate: ${errors.given_name.props.defaultMessage}. `;
+
+                    setExcelImportError(() => ({
+                      ...excelImportError,
+                      fullName: {
+                        givenName: name.given_name,
+                      },
+                      // ...errors,
+                      errors: {
+                        givenName: errors.given_name.props.defaultMessage,
+                      },
+                    }));
                   }
                   if (errors.hasOwnProperty("surname")) {
+                    console.log("name.surname", name.surname);
                     errorMessage += `Surname "${name.surname}" does not validate: ${errors.surname.props.defaultMessage}. `;
+
+                    setExcelImportError(() => ({
+                      ...excelImportError,
+                      fullName: {
+                        surName: name.surname,
+                      },
+                      // ...errors,
+                      errors: {
+                        surName: errors.surname.props.defaultMessage,
+                      },
+                    }));
                   }
+                  // const error: ExcelImportErrorType = {
+                  //   rowIndex: rowIndex,
+                  //   givenName: name.given_name,
+                  //   surName: name.surname,
+                  // };
+                  // setExcelImportError({
+                  //   rowIndex: rowIndex,
+                  //   givenName: name.given_name,
+                  //   surName: name.surname,
+                  // });
                   throw new Error(errorMessage);
                 }
                 newNames.push(name);
@@ -244,7 +299,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
             } else {
               errorMessage = String(error);
             }
-            setExcelImportError(errorMessage);
+
             dispatch(
               showNotification({
                 message:
@@ -257,6 +312,10 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
         });
       });
     };
+  }
+
+  {
+    console.log(excelImportError);
   }
 
   return (
@@ -439,7 +498,33 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               </li>
             </ol>
           </form>
-          {excelImportError && <span className="input-validate-error">{excelImportError}</span>}
+
+          {excelImportError?.errors?.rowIndex && (
+            <span className="input-validate-error">
+              <FormattedMessage
+                defaultMessage="Excel file contains errors in row {row}. "
+                id="excel-file-rowIndex-error"
+                values={{ row: excelImportError?.errors?.rowIndex }}
+              />
+              {excelImportError?.errors?.givenName && (
+                <FormattedMessage
+                  defaultMessage=" Given name {givenName} does not validate: {error} "
+                  id="excel-file-givenName-error"
+                  values={{
+                    givenName: excelImportError?.fullName?.givenName,
+                    error: excelImportError.errors.givenName,
+                  }}
+                />
+              )}
+              {excelImportError?.errors.surName && (
+                <FormattedMessage
+                  defaultMessage="Surname {surName} does not validate: {error}"
+                  id="excel-file-surName-error"
+                  values={{ surName: excelImportError?.fullName?.surName, error: excelImportError.errors.surName }}
+                />
+              )}
+            </span>
+          )}
         </div>
 
         <hr className="border-line"></hr>
