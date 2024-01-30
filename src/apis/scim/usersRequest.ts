@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 import { UserResponse } from "typescript-clients/scim";
-import { fakeEPPN } from "../../common/testEPPNData";
+import { fakeEPPNaccount } from "../../common/testEPPNData";
 import { scimHeaders } from "./groupsRequest";
 
 export const postUser = createAsyncThunk<
@@ -9,7 +9,7 @@ export const postUser = createAsyncThunk<
   {
     familyName: string;
     givenName: string;
-    scope: string;
+    loggedInUserScope: string;
   }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("scim/postUser", async (args, thunkAPI) => {
@@ -18,18 +18,20 @@ export const postUser = createAsyncThunk<
     const scim_server_url = state.config.scim_server_url;
     const accessToken = state.app.accessToken;
     if (accessToken) {
-      const eduIdEppn: string = fakeEPPN(); // what could be expected from eppn API
-      const organizerEppn: string = `${eduIdEppn.split("@")[0]}@${args.scope}`;
+      const eduIdEppnAccount: string = fakeEPPNaccount(); // what could be expected from Eppn API?
+      //const organizerEppn: string = `${eduIdEppn.split("@")[0]}@${args.scope}`;
       const headers = scimHeaders(accessToken);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User", "https://scim.eduid.se/schema/nutid/user/v1"],
-        externalId: eduIdEppn,
+        externalId: `${eduIdEppnAccount}@dev.eduid.se`, // PRODUCTION @eduid.se or STAGING @dev.eduid.se
         name: {
           familyName: args.familyName,
           givenName: args.givenName,
         },
         "https://scim.eduid.se/schema/nutid/user/v1": {
-          profiles: { connectIdp: { attributes: { eduPersonPrincipalName: organizerEppn } } },
+          profiles: {
+            connectIdp: { attributes: { eduPersonPrincipalName: `${eduIdEppnAccount}@${args.loggedInUserScope}` } },
+          },
         },
       };
       const scimRequest = {

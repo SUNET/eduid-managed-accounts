@@ -10,9 +10,9 @@ import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
-import getUsersSlice from "../slices/getUsers";
+import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
 import CreateAccounts from "./CreateAccounts";
-import MembersList, { DEFAULT_POST_PER_PAGE, MembersDetailsTypes } from "./MembersList";
+import MembersList, { DEFAULT_POST_PER_PAGE } from "./MembersList";
 
 export const GROUP_NAME = "Managed Accounts";
 
@@ -28,7 +28,7 @@ export default function GroupManagement(): JSX.Element {
   const parsedUserInfo = value ? JSON.parse(value) : null;
   const eduPersonPrincipalName: string = parsedUserInfo?.attributes?.eduPersonPrincipalName;
   const scope = eduPersonPrincipalName?.split("@")[1];
-  const [members, setMembers] = useState<Array<MembersDetailsTypes & { selected: boolean }>>([]);
+  const [members, setMembers] = useState<Array<ExtendedUserResponse & { selected: boolean }>>([]);
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {

@@ -5,12 +5,11 @@ import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { fakePassword } from "../common/testEPPNData";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import getUsersSlice from "../slices/getUsers";
-import { MembersDetailsTypes } from "./MembersList";
+import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
 import NotificationModal from "./NotificationModal";
 import Splash from "./Splash";
 
-interface MembersDetailsAndSelectedType extends MembersDetailsTypes {
+interface MembersDetailsAndSelectedType extends ExtendedUserResponse {
   selected: boolean;
 }
 
@@ -146,15 +145,30 @@ export function MembersListTable({
                 <td>{member.name.givenName}</td>
                 <td>{member.name.familyName}</td>
                 <td>
-                  {member.externalId.split("@")[0]}
+                  {
+                    member[
+                      "https://scim.eduid.se/schema/nutid/user/v1"
+                    ].profiles.connectIdp.attributes.eduPersonPrincipalName.split("@")[0]
+                  }
                   <button
                     id="clipboard"
                     className="icon-only copybutton"
-                    onClick={() => copyToClipboard(member.externalId)}
+                    onClick={() =>
+                      copyToClipboard(
+                        member["https://scim.eduid.se/schema/nutid/user/v1"].profiles.connectIdp.attributes
+                          .eduPersonPrincipalName
+                      )
+                    }
                     disabled={isFetching}
                   >
-                    <FontAwesomeIcon id={`icon-copy ${member.externalId}`} icon={faCopy as IconProp} />
-                    <FontAwesomeIcon id={`icon-check ${member.externalId}`} icon={faCheck as IconProp} />
+                    <FontAwesomeIcon
+                      id={`icon-copy ${member["https://scim.eduid.se/schema/nutid/user/v1"].profiles.connectIdp.attributes.eduPersonPrincipalName}`}
+                      icon={faCopy as IconProp}
+                    />
+                    <FontAwesomeIcon
+                      id={`icon-check ${member["https://scim.eduid.se/schema/nutid/user/v1"].profiles.connectIdp.attributes.eduPersonPrincipalName}`}
+                      icon={faCheck as IconProp}
+                    />
                     <div className="tool-tip-text" id="tool-tip">
                       {tooltipCopied ? (
                         <span>
