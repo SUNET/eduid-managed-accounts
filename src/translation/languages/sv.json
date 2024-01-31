@@ -116,7 +116,7 @@
     "string": "Excelfilen innehåller fel i rad {row}."
   },
   "excel-file-surName-error": {
-    "string": "Efternamn \"{surName}\" validerar inte: {error}."
+    "string": "Efternamn \"{surName}\"är ogiltigt: {error}."
   },
   "excel-import": {
     "string": "Skapa konton"
