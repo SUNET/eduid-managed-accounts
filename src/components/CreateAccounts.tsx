@@ -14,8 +14,6 @@ import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 
-export const GROUP_NAME = "Managed Accounts";
-
 interface CreateAccountsTypes {
   readonly handleGroupVersion: () => void;
   readonly scope: string;
