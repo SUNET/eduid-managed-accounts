@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, AppRootState } from "init-app";
-import { UserResponse } from "typescript-clients/scim";
 import { fakeEPPN } from "../../common/testEPPNData";
+import { AppDispatch, AppRootState } from "../../init-app";
+import { UserResponse } from "../../typescript-clients/scim";
 import { scimHeaders } from "./groupsRequest";
 
 export const postUser = createAsyncThunk<
