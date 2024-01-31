@@ -2,7 +2,8 @@
 
 .btn.disabled,
 .btn:disabled,
-label.btn-cover.disabled {
+label.btn-cover.disabled,
+select:disabled {
   opacity: 0.4;
 }
 
