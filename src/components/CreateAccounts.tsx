@@ -271,6 +271,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               }
             });
             await addUsers(newNames);
+            cleanFileInput();
           } catch (error) {
             dispatch(
               showNotification({
@@ -279,8 +280,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               })
             );
           }
-          // reset input
-          cleanFileInput();
         });
       });
     };
