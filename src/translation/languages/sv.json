@@ -110,7 +110,7 @@
     "string": "efternamn"
   },
   "excel-file-error": {
-    "string": "Data i Excelfilen är ogiltigt och nya konton har inte skapats. För mer detaljer se felmeddelande under sektionen 'Lägg till konton genom fil-import'."
+    "string": "Data i Excelfilen är ogiltig och nya konton har inte skapats. För mer detaljer se felmeddelande under sektionen 'Lägg till konton genom fil-import'."
   },
   "excel-file-givenName-error": {
     "string": "Förnamn \"{givenName}\" är ogiltigt:"
