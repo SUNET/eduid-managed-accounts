@@ -110,7 +110,7 @@
     "string": "efternamn"
   },
   "excel-file-givenName-error": {
-    "string": "Förnamn \"{givenName}\" validerar inte: {error}."
+    "string": "Förnamn \"{givenName}\" är ogiltigt: {error}."
   },
   "excel-file-rowIndex-error": {
     "string": "Excelfilen innehåller fel i rad {row}."
