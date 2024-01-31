@@ -265,7 +265,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                     }));
                   }
                   if (errors.hasOwnProperty("surname")) {
-                    console.log("errors.surname.defaultMessage", errors.surname.props);
                     setExcelImportError((prevError) => ({
                       fullName: {
                         ...prevError?.fullName,
