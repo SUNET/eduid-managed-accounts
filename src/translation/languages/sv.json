@@ -33,7 +33,7 @@
     "string": "Ladda ned mall"
   },
   "addToGroup-emptyValidation": {
-    "string": "Nödvändig"
+    "string": "Nödvändig."
   },
   "addToGroup-givenName": {
     "string": "Förnamn*"
@@ -88,7 +88,7 @@
     "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
   },
   "addToGroup-ninValidation": {
-    "string": "Det är inte tillåtet att spara personnummer"
+    "string": "Det är inte tillåtet att spara personnummer."
   },
   "addToGroup-paragraph": {
     "string": "Lägg till varje konto, antingen genom att först skapa och importera ett förberett Excel-dokument eller ett i taget med hjälp av formuläret."
@@ -109,14 +109,17 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "efternamn"
   },
+  "excel-file-error": {
+    "string": "Data i Excelfilen är ogiltigt och nya konton har inte skapats. För mer detaljer se felmeddelande under sektionen 'Lägg till konton genom fil-import'."
+  },
   "excel-file-givenName-error": {
-    "string": "Förnamn \"{givenName}\" är ogiltigt: {error}."
+    "string": "Förnamn \"{givenName}\" är ogiltigt:"
   },
   "excel-file-rowIndex-error": {
     "string": "Excelfilen innehåller fel i rad {row}."
   },
   "excel-file-surName-error": {
-    "string": "Efternamn \"{surName}\" är ogiltigt: {error}."
+    "string": "Efternamn \"{surName}\" är ogiltigt:"
   },
   "excel-import": {
     "string": "Skapa konton"
