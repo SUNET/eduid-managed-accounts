@@ -267,6 +267,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                       },
                     }));
                   }
+                  throw new Error();
                 }
                 newNames.push(name);
               }
@@ -275,8 +276,8 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           } catch (error) {
             dispatch(
               showNotification({
-                message:
-                  'Some data in the Excel file do not validate. No new accounts has been created. For more details check the error message in the "Add account by file import" area.',
+                message: `Some data in the Excel file do not validate. No new accounts has been created. For more details 
+                  check the error message in the 'Add account by file import' area.`,
               })
             );
           }
@@ -299,7 +300,8 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
       </p>
       <p>
         <FormattedMessage
-          defaultMessage="Add every account, either by first importing your prepared Excel-document or one by one using the form."
+          defaultMessage={`Add every account, either by first importing your prepared Excel-document or one by one using 
+            the form.`}
           id="addToGroup-paragraph"
         />
       </p>
@@ -331,19 +333,23 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           <ol className="listed-steps">
             <li>
               <FormattedMessage
-                defaultMessage="Create a 2-column Excel-document containing the given names and surnames of the accounts you wish to add. You can download the example file to fill in using the DOWNLOAD DOCUMENT link."
+                defaultMessage={`Create a 2-column Excel-document containing the given names and surnames of the accounts 
+                you wish to add. You can download the example file to fill in using the DOWNLOAD DOCUMENT link.`}
                 id="addToGroup-list2Item1"
               />
             </li>
             <li>
               <FormattedMessage
-                defaultMessage="Import your filled in document by clicking on the SELECT DOCUMENT button to choose your .xls or .xlsx file. You will see the name of the last imported file next to the button."
+                defaultMessage={`Import your filled in document by clicking on the SELECT DOCUMENT button to choose your 
+                  .xls or .xlsx file. You will see the name of the last imported file next to the button.`}
                 id="addToGroup-list2Item2"
               />
             </li>
             <li>
               <FormattedMessage
-                defaultMessage='Then create the accounts listed in the document by clicking on the CREATE ACCOUNTS button. The accounts will be added to the organisation, with usernames and passwords, and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
+                defaultMessage={`Then create the accounts listed in the document by clicking on the CREATE ACCOUNTS button. 
+                The accounts will be added to the organisation, with usernames and passwords, and appearing in a table 
+                below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.`}
                 id="addToGroup-list2Item3"
               />
             </li>
@@ -356,7 +362,9 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               </strong>
               ,&nbsp;
               <FormattedMessage
-                defaultMessage="transfer it to an external system of your choice, e.g. by exporting to another Excel document or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and page load."
+                defaultMessage={`transfer it to an external system of your choice, e.g. by exporting to another Excel 
+                  document or copying, as you will not be able to retrieve the same password afterwards, 
+                  and it will only be visible during this logged in session and page load.`}
                 id="addToGroup-list2Item4"
               />
             </li>
@@ -373,14 +381,16 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
             </li>
             <li>
               <FormattedMessage
-                defaultMessage="Write the name so that you can distinguish the identity of the person even if there are 
-                identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
+                defaultMessage={`Write the name so that you can distinguish the identity of the person even if there are 
+                identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use.`}
                 id="addToGroup-list1Item2"
               />
             </li>
             <li>
               <FormattedMessage
-                defaultMessage='When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
+                defaultMessage={`When you click the ADD button the account will be added to the organisation with a 
+                  created username and password and appearing in a table below in the "Manage added accounts" section, 
+                  where the newly added accounts will be pre-selected.`}
                 id="addToGroup-list1Item3"
               />
             </li>
@@ -393,7 +403,9 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               </strong>
               ,&nbsp;
               <FormattedMessage
-                defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session and page load."
+                defaultMessage={`transfer it to an external system of your choice, e.g. by exporting to Excel or copying, 
+                  as you will not be able to retrieve the same password afterwards, and it will only be visible during 
+                  this logged in session and page load.`}
                 id="addToGroup-list1Item4"
               />
             </li>
@@ -466,7 +478,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               </li>
             </ol>
           </form>
-
           {excelImportError?.errors?.rowIndex && (
             <span className="input-validate-error">
               <FormattedMessage
@@ -494,7 +505,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
             </span>
           )}
         </div>
-
         <hr className="border-line"></hr>
         <h3>
           <FormattedMessage defaultMessage="Add account manually" id="addToGroup-headingManually" />
@@ -530,7 +540,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                     </div>
                   )}
                 </Field>
-
                 <Field name="surname">
                   {({ input, meta }) => (
                     <div className="fieldset">
@@ -548,7 +557,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                     </div>
                   )}
                 </Field>
-
                 <button disabled={submitting || invalid || isFetching} className="btn btn-primary">
                   <FormattedMessage defaultMessage="Add" id="addToGroup-addButton" />
                 </button>
