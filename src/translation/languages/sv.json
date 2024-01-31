@@ -20,6 +20,9 @@
   "No authentication header found": {
     "string": "Åtkomst nekades: No authentication header found"
   },
+  "Some data in the Excel file is invalid. No new accounts has been created. For more details check the error message in the 'Add account by file import' area.": {
+    "string": "Data i Excelfilen är ogiltig och nya konton har inte skapats. För mer detaljer se felmeddelande under sektionen 'Lägg till konton genom fil-import'."
+  },
   "Unknown data_owner": {
     "string": "Åtkomst nekades: Unknown data_owner"
   },
@@ -108,9 +111,6 @@
   "addToGroup-surnamePlaceholder": {
     "developer_comment": "Placeholder for surname text input",
     "string": "efternamn"
-  },
-  "excel-file-error": {
-    "string": "Data i Excelfilen är ogiltig och nya konton har inte skapats. För mer detaljer se felmeddelande under sektionen 'Lägg till konton genom fil-import'."
   },
   "excel-file-givenName-error": {
     "string": "Förnamn \"{givenName}\" är ogiltigt:"
