@@ -109,6 +109,9 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "surname"
   },
+  "excel-file-error": {
+    "string": "Some data in the Excel file do not validate. No new accounts has been created. For more details check the error message in the 'Add account by file import' area."
+  },
   "excel-file-givenName-error": {
     "string": "Given name \"{givenName}\" is invalid:"
   },
