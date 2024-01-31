@@ -1,10 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { Group } from "typescript-clients/scim/models/Group";
+import { Name } from "typescript-clients/scim/models/Name";
+import { NutidUserExtensionV1 } from "typescript-clients/scim/models/NutidUserExtensionV1";
+import { UserResponse } from "typescript-clients/scim/models/UserResponse";
 import { deleteUser, getUserDetails, postUser } from "../apis/scim/usersRequest";
 import { fakePassword } from "../common/testEPPNData";
 
-interface GetUsersState {
-  //members: UserResponse[];
-  members: any[];
+// connectIdp: { attributes: { eduPersonPrincipalName: string } }
+type ExternalProfileWithScope = {
+  profiles: { connectIdp: { attributes: { eduPersonPrincipalName: string } } } & NutidUserExtensionV1;
+};
+
+// Managed Accounts required data format
+export type ExtendedUserResponse = UserResponse & {
+  externalId: string;
+  name: {
+    familyName: string;
+    givenName: string;
+  } & Name;
+  groups: Array<Group>;
+  "https://scim.eduid.se/schema/nutid/user/v1": ExternalProfileWithScope;
+  password?: string;
+};
+
+export interface GetUsersState {
+  members: ExtendedUserResponse[];
 }
 
 export const initialState: GetUsersState = {

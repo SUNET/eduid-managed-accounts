@@ -115,7 +115,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           postUser({
             familyName: name.surname,
             givenName: name.given_name,
-            scope: scope,
+            loggedInUserScope: scope,
           })
         );
         // TODO: create EPPN and password request

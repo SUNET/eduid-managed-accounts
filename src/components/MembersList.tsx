@@ -9,25 +9,13 @@ import { deleteUser } from "../apis/scim/usersRequest";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import appSlice from "../slices/appReducers";
-import { Meta } from "../typescript-clients/scim";
+import { ExtendedUserResponse } from "../slices/getUsers";
 import { MembersListTable } from "./MembersListTable";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
 
-export interface MembersDetailsTypes {
-  emails: [];
-  externalId: string;
-  groups: [{ display: string; value: string }];
-  id: string;
-  meta: Meta;
-  name: { familyName: string; givenName: string };
-  phoneNumbers: [];
-  schemas: [];
-  password?: string;
-}
-
 export interface MembersListTypes {
-  readonly members: Array<MembersDetailsTypes & { selected: boolean }>;
+  readonly members: Array<ExtendedUserResponse & { selected: boolean }>;
   readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
   readonly handleGroupVersion: () => void;
 }
@@ -61,7 +49,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
 
   useEffect(() => {
     setMembers(
-      membersDetails.map((member: MembersDetailsTypes) => {
+      membersDetails.map((member: ExtendedUserResponse) => {
         if (member.password) {
           return { ...member, selected: true };
         }
@@ -80,11 +68,19 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   }
 
   function copyToClipboardAllMembers() {
-    const memberGivenName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.givenName);
-    const memberFamilyName = isMemberSelected.map((member: MembersDetailsTypes) => member.name.familyName);
-    const memberEPPN = isMemberSelected.map((member: MembersDetailsTypes) => member.externalId);
-    const memberUsername = isMemberSelected.map((member: MembersDetailsTypes) => member.externalId.split("@")[0]);
-    const memberPassword = isMemberSelected.map((member: MembersDetailsTypes) => member.password);
+    const memberGivenName = isMemberSelected.map((member: ExtendedUserResponse) => member.name.givenName);
+    const memberFamilyName = isMemberSelected.map((member: ExtendedUserResponse) => member.name.familyName);
+    const memberEPPN = isMemberSelected.map(
+      (member: ExtendedUserResponse) =>
+        member["https://scim.eduid.se/schema/nutid/user/v1"].profiles.connectIdp.attributes.eduPersonPrincipalName
+    );
+    const memberUsername = isMemberSelected.map(
+      (member: ExtendedUserResponse) =>
+        member[
+          "https://scim.eduid.se/schema/nutid/user/v1"
+        ].profiles.connectIdp.attributes.eduPersonPrincipalName.split("@")[0]
+    );
+    const memberPassword = isMemberSelected.map((member: ExtendedUserResponse) => member.password);
     const membersArray = [];
     // Headers
     const [headerGivenName, headerSurname, headerEPPN, headerUsername, headerPassword] = exportHeaders();
@@ -174,8 +170,12 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
       worksheet.addRow({
         "given-name": member.name.givenName,
         surname: member.name.familyName,
-        eppn: member.externalId,
-        username: member.externalId.split("@")[0],
+        eppn: member["https://scim.eduid.se/schema/nutid/user/v1"].profiles.connectIdp.attributes
+          .eduPersonPrincipalName,
+        username:
+          member[
+            "https://scim.eduid.se/schema/nutid/user/v1"
+          ].profiles.connectIdp.attributes.eduPersonPrincipalName.split("@")[0],
         password: member.password,
       });
     });
