@@ -7,12 +7,12 @@ import Personnummer from "personnummer";
 import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage, useIntl } from "react-intl";
-import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { putGroup } from "../apis/scim/groupsRequest";
 import { postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
+import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 
 export const GROUP_NAME = "Managed Accounts";
 
