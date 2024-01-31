@@ -109,6 +109,15 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "surname"
   },
+  "excel-file-givenName-error": {
+    "string": "Given name \"{givenName}\" does not validate: {error}."
+  },
+  "excel-file-rowIndex-error": {
+    "string": "Excel file contains errors in row {row}."
+  },
+  "excel-file-surName-error": {
+    "string": "Surname \"{surName}\" does not validate: {error}."
+  },
   "excel-import": {
     "string": "Create accounts"
   },
