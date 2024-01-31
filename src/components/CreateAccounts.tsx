@@ -236,70 +236,43 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 // Validate happens when reading the values, before creating the users
                 const errors = validatePersonalData(name);
                 if (errors && Object.keys(errors).length > 0) {
-                  console.log("rowError", rowIndex);
-                  let errorMessage: string = `Excel file contains errors in row ${rowIndex}. `;
-
-                  setExcelImportError(() => ({
-                    ...excelImportError,
+                  setExcelImportError((prevError) => ({
+                    ...prevError,
                     errors: {
                       rowIndex: rowIndex,
                     },
                   }));
 
                   if (errors.hasOwnProperty("given_name")) {
-                    console.log("name.given_name", name.given_name);
-                    errorMessage += `Given name "${name.given_name}" does not validate: ${errors.given_name.props.defaultMessage}. `;
-
-                    setExcelImportError(() => ({
-                      ...excelImportError,
+                    setExcelImportError((prevError) => ({
                       fullName: {
+                        ...prevError?.fullName,
                         givenName: name.given_name,
                       },
-                      // ...errors,
                       errors: {
+                        ...prevError?.errors,
                         givenName: errors.given_name.props.defaultMessage,
                       },
                     }));
                   }
                   if (errors.hasOwnProperty("surname")) {
-                    console.log("name.surname", name.surname);
-                    errorMessage += `Surname "${name.surname}" does not validate: ${errors.surname.props.defaultMessage}. `;
-
-                    setExcelImportError(() => ({
-                      ...excelImportError,
+                    setExcelImportError((prevError) => ({
                       fullName: {
+                        ...prevError?.fullName,
                         surName: name.surname,
                       },
-                      // ...errors,
                       errors: {
+                        ...prevError?.errors,
                         surName: errors.surname.props.defaultMessage,
                       },
                     }));
                   }
-                  // const error: ExcelImportErrorType = {
-                  //   rowIndex: rowIndex,
-                  //   givenName: name.given_name,
-                  //   surName: name.surname,
-                  // };
-                  // setExcelImportError({
-                  //   rowIndex: rowIndex,
-                  //   givenName: name.given_name,
-                  //   surName: name.surname,
-                  // });
-                  throw new Error(errorMessage);
                 }
                 newNames.push(name);
               }
             });
             await addUsers(newNames);
           } catch (error) {
-            let errorMessage: string;
-            if (error instanceof Error) {
-              errorMessage = error.message;
-            } else {
-              errorMessage = String(error);
-            }
-
             dispatch(
               showNotification({
                 message:
@@ -313,11 +286,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
       });
     };
   }
-
-  {
-    console.log(excelImportError);
-  }
-
   return (
     <React.Fragment>
       <h2>
