@@ -20,6 +20,9 @@
   "No authentication header found": {
     "string": "Access denied: No authentication header found"
   },
+  "Some data in the Excel file is invalid. No new accounts has been created. For more details check the error message in the 'Add account by file import' area.": {
+    "string": "Some data in the Excel file is invalid. No new accounts has been created. For more details check the error message in the 'Add account by file import' area."
+  },
   "Unknown data_owner": {
     "string": "Access denied: Unknown data_owner"
   },
@@ -108,9 +111,6 @@
   "addToGroup-surnamePlaceholder": {
     "developer_comment": "Placeholder for surname text input",
     "string": "surname"
-  },
-  "excel-file-error": {
-    "string": "Some data in the Excel file is invalid. No new accounts has been created. For more details check the error message in the 'Add account by file import' area."
   },
   "excel-file-givenName-error": {
     "string": "Given name \"{givenName}\" is invalid:"
