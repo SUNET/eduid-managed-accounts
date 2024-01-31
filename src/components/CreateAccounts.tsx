@@ -286,8 +286,8 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           } catch (error) {
             dispatch(
               showNotification({
-                message: `Some data in the Excel file do not validate. No new accounts has been created. For more details 
-                  check the error message in the 'Add account by file import' area.`,
+                message:
+                  "Some data in the Excel file do not validate. No new accounts has been created. For more details check the error message in the 'Add account by file import' area.",
               })
             );
           }
