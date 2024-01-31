@@ -109,6 +109,15 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "efternamn"
   },
+  "excel-file-givenName-error": {
+    "string": "Förnamn \"{givenName}\" validerar inte: {error}."
+  },
+  "excel-file-rowIndex-error": {
+    "string": "Excelfilen innehåller fel i rad {row}."
+  },
+  "excel-file-surName-error": {
+    "string": "Efternamn \"{surName}\" validerar inte: {error}."
+  },
   "excel-import": {
     "string": "Skapa konton"
   },
