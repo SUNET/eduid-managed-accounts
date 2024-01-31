@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
 import { ValidationErrors } from "final-form";
 import Personnummer from "personnummer";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage, useIntl } from "react-intl";
 import { putGroup } from "../apis/scim/groupsRequest";
@@ -29,8 +29,14 @@ interface ExcelImportErrorType {
   };
   errors?: {
     rowIndex?: number;
-    givenName?: string;
-    surName?: string;
+    givenName?: {
+      id: string;
+      value: string;
+    };
+    surName?: {
+      id: string;
+      value: string;
+    };
   };
 }
 
@@ -151,12 +157,12 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
       ["given_name", "surname"].forEach((inputName) => {
         // check if the input is empty or it contains only spaces
         if (!values[inputName]?.trim()) {
-          errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
+          errors[inputName] = <FormattedMessage defaultMessage="Required." id="addToGroup-emptyValidation" />;
           // check if it is national ID number
         } else if (containsNationalIDNumber(values[inputName])) {
           errors[inputName] = (
             <FormattedMessage
-              defaultMessage="It is not allowed to save a national ID number"
+              defaultMessage="It is not allowed to save a national ID number."
               id="addToGroup-ninValidation"
             />
           );
@@ -249,7 +255,10 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                       },
                       errors: {
                         ...prevError?.errors,
-                        givenName: errors.given_name.props.defaultMessage,
+                        givenName: {
+                          id: errors?.given_name.props.id,
+                          value: errors.given_name.props.defaultMessage,
+                        },
                       },
                     }));
                   }
@@ -261,7 +270,10 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                       },
                       errors: {
                         ...prevError?.errors,
-                        surName: errors.surname.props.defaultMessage,
+                        surName: {
+                          id: errors.surname.props.id,
+                          value: errors.surname.props.defaultMessage,
+                        },
                       },
                     }));
                   }
@@ -275,8 +287,8 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           } catch (error) {
             dispatch(
               showNotification({
-                message: `Some data in the Excel file do not validate. No new accounts has been created. For more details 
-                  check the error message in the 'Add account by file import' area.`,
+                message:
+                  "Some data in the Excel file is invalid. No new accounts has been created. For more details check the error message in the 'Add account by file import' area.",
               })
             );
           }
@@ -482,22 +494,35 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 id="excel-file-rowIndex-error"
                 values={{ row: excelImportError?.errors?.rowIndex }}
               />
+              <br />
               {excelImportError?.errors?.givenName && (
-                <FormattedMessage
-                  defaultMessage='Given name "{givenName}" is invalid: {error}. '
-                  id="excel-file-givenName-error"
-                  values={{
-                    givenName: excelImportError?.fullName?.givenName,
-                    error: excelImportError.errors.givenName,
-                  }}
-                />
+                <Fragment>
+                  <FormattedMessage
+                    defaultMessage='Given name "{givenName}" is invalid: '
+                    id="excel-file-givenName-error"
+                    values={{
+                      givenName: excelImportError?.fullName?.givenName,
+                    }}
+                  />
+                  <FormattedMessage
+                    defaultMessage={excelImportError.errors.givenName.value}
+                    id={excelImportError.errors.givenName.id}
+                  />
+                </Fragment>
               )}
+              <br />
               {excelImportError?.errors.surName && (
-                <FormattedMessage
-                  defaultMessage='Surname "{surName}" is invalid: {error}.'
-                  id="excel-file-surName-error"
-                  values={{ surName: excelImportError?.fullName?.surName, error: excelImportError.errors.surName }}
-                />
+                <Fragment>
+                  <FormattedMessage
+                    defaultMessage='Surname "{surName}" is invalid:'
+                    id="excel-file-surName-error"
+                    values={{ surName: excelImportError?.fullName?.surName }}
+                  />
+                  <FormattedMessage
+                    defaultMessage={excelImportError.errors.surName.value}
+                    id={excelImportError.errors.surName.id}
+                  />
+                </Fragment>
               )}
             </span>
           )}
