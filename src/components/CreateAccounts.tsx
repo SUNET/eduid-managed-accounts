@@ -487,7 +487,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               />
               {excelImportError?.errors?.givenName && (
                 <FormattedMessage
-                  defaultMessage='Given name "{givenName}" does not validate: {error}. '
+                  defaultMessage='Given name "{givenName}" is invalid: {error}. '
                   id="excel-file-givenName-error"
                   values={{
                     givenName: excelImportError?.fullName?.givenName,
@@ -497,7 +497,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               )}
               {excelImportError?.errors.surName && (
                 <FormattedMessage
-                  defaultMessage='Surname "{surName}" does not validate: {error}.'
+                  defaultMessage='Surname "{surName}" is invalid: {error}.'
                   id="excel-file-surName-error"
                   values={{ surName: excelImportError?.fullName?.surName, error: excelImportError.errors.surName }}
                 />
