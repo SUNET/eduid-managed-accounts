@@ -33,7 +33,7 @@
     "string": "Download template"
   },
   "addToGroup-emptyValidation": {
-    "string": "Required"
+    "string": "Required."
   },
   "addToGroup-givenName": {
     "string": "Given name*"
@@ -88,7 +88,7 @@
     "string": "Then note the corresponding EPPN/username and password which appears in the table"
   },
   "addToGroup-ninValidation": {
-    "string": "It is not allowed to save a national ID number"
+    "string": "It is not allowed to save a national ID number."
   },
   "addToGroup-paragraph": {
     "string": "Add every account, either by first importing your prepared Excel-document or one by one using the form."
@@ -109,14 +109,17 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "surname"
   },
+  "excel-file-error": {
+    "string": "Some data in the Excel file is invalid. No new accounts has been created. For more details check the error message in the 'Add account by file import' area."
+  },
   "excel-file-givenName-error": {
-    "string": "Given name \"{givenName}\" does not validate: {error}."
+    "string": "Given name \"{givenName}\" is invalid:"
   },
   "excel-file-rowIndex-error": {
     "string": "Excel file contains errors in row {row}."
   },
   "excel-file-surName-error": {
-    "string": "Surname \"{surName}\" does not validate: {error}."
+    "string": "Surname \"{surName}\" is invalid:"
   },
   "excel-import": {
     "string": "Create accounts"
