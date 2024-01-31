@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useLocation, useNavigate } from "react-router-dom";
-import { GroupMember } from "typescript-clients/scim/models/GroupMember";
 import { createGroup, getGroupDetails, getGroupsSearch } from "../apis/scim/groupsRequest";
 import { getUserDetails } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -11,10 +10,11 @@ import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
+import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 import CreateAccounts from "./CreateAccounts";
 import MembersList, { DEFAULT_POST_PER_PAGE } from "./MembersList";
 
-export const GROUP_NAME = "Managed Accounts";
+const GROUP_NAME = "Managed Accounts";
 
 export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();

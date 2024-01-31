@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { GroupResponse, ListResponse } from "typescript-clients/scim";
 import { AppDispatch, AppRootState } from "../../init-app";
+import { GroupResponse, ListResponse } from "../../typescript-clients/scim";
 
 export const scimHeaders = (token: string) => {
   return {
