@@ -83,11 +83,13 @@ export function MembersListTable({
   function handleGenerateNewPassword(id: string) {
     setShowGeneratePasswordModal(true);
     const selectedMember = membersDetails.find((member: any) => member.id === id);
-    setSelectedUser({
-      id: selectedMember.id,
-      familyName: selectedMember.name.familyName,
-      givenName: selectedMember.name.givenName,
-    });
+    if (selectedMember) {
+      setSelectedUser({
+        id: selectedMember.id,
+        familyName: selectedMember.name.familyName,
+        givenName: selectedMember.name.givenName,
+      });
+    }
   }
 
   function generateNewPassword() {
