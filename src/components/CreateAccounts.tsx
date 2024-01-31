@@ -489,39 +489,46 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           </form>
           {excelImportError?.errors?.rowIndex && (
             <span className="input-validate-error">
-              <FormattedMessage
-                defaultMessage="Excel file contains errors in row {row}. "
-                id="excel-file-rowIndex-error"
-                values={{ row: excelImportError?.errors?.rowIndex }}
-              />
-              <br />
+              <div>
+                <FormattedMessage
+                  defaultMessage="Excel file contains errors in row {row}. "
+                  id="excel-file-rowIndex-error"
+                  values={{ row: excelImportError?.errors?.rowIndex }}
+                />
+              </div>
               {excelImportError?.errors?.givenName && (
                 <Fragment>
-                  <FormattedMessage
-                    defaultMessage='Given name "{givenName}" is invalid: '
-                    id="excel-file-givenName-error"
-                    values={{
-                      givenName: excelImportError?.fullName?.givenName,
-                    }}
-                  />
-                  <FormattedMessage
-                    defaultMessage={excelImportError.errors.givenName.value}
-                    id={excelImportError.errors.givenName.id}
-                  />
+                  <div>
+                    <FormattedMessage
+                      defaultMessage='Given name "{givenName}" is invalid: '
+                      id="excel-file-givenName-error"
+                      values={{
+                        givenName: excelImportError?.fullName?.givenName,
+                      }}
+                    />
+                    &nbsp;
+                    <FormattedMessage
+                      defaultMessage={excelImportError.errors.givenName.value}
+                      id={excelImportError.errors.givenName.id}
+                    />
+                  </div>
                 </Fragment>
               )}
-              <br />
+
               {excelImportError?.errors.surName && (
                 <Fragment>
-                  <FormattedMessage
-                    defaultMessage='Surname "{surName}" is invalid:'
-                    id="excel-file-surName-error"
-                    values={{ surName: excelImportError?.fullName?.surName }}
-                  />
-                  <FormattedMessage
-                    defaultMessage={excelImportError.errors.surName.value}
-                    id={excelImportError.errors.surName.id}
-                  />
+                  <div>
+                    <FormattedMessage
+                      defaultMessage='Surname "{surName}" is invalid:'
+                      id="excel-file-surName-error"
+                      values={{ surName: excelImportError?.fullName?.surName }}
+                    />
+                    &nbsp;
+                    <FormattedMessage
+                      defaultMessage={excelImportError.errors.surName.value}
+                      id={excelImportError.errors.surName.id}
+                    />
+                  </div>
                 </Fragment>
               )}
             </span>
