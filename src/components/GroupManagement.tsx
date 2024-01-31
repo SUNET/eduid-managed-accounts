@@ -14,7 +14,7 @@ import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 import CreateAccounts from "./CreateAccounts";
 import MembersList, { DEFAULT_POST_PER_PAGE, MembersDetailsTypes } from "./MembersList";
 
-export const GROUP_NAME = "Managed Accounts";
+const GROUP_NAME = "Managed Accounts";
 
 export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
