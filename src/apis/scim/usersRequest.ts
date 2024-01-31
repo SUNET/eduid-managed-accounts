@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
-import { UserResponse } from "typescript-clients/scim";
 import { fakeEPPNaccount } from "../../common/testEPPNData";
+import { ExtendedUserResponse } from "../../slices/getUsers";
 import { scimHeaders } from "./groupsRequest";
 
 export const postUser = createAsyncThunk<
-  UserResponse, // return type
+  ExtendedUserResponse, // return type
   {
     familyName: string;
     givenName: string;
@@ -53,7 +53,7 @@ export const postUser = createAsyncThunk<
 });
 
 export const getUserDetails = createAsyncThunk<
-  UserResponse, // return type
+  ExtendedUserResponse, // return type
   { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("scim/getUserDetails", async (args, thunkAPI) => {
