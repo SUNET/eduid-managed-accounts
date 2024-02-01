@@ -36,6 +36,7 @@
           font-weight: unset;
           font-size: 1.65rem;
           margin-bottom: 0.75em;
+
           @media (max-width: $bp-md) {
             font-size: 1.5rem;
           }
@@ -53,59 +54,9 @@
         flex-direction: column;
         font-size: 1.25rem;
         line-height: 1.4;
-        // captcha image
-        img {
-          padding-bottom: 20px;
-        }
-        input {
-          background-color: $body-gray;
-        }
-
-        form {
-          margin-top: 0;
-        }
-
-        // move to lists?
-        ol {
-          list-style-position: inside;
-          list-style-type: decimal;
-
-          li {
-            margin-bottom: 1.125rem;
-
-            span {
-              margin-top: 0.5rem;
-              font-family: $inter-bold;
-              display: block;
-              font-size: 1rem;
-            }
-          }
-        }
-
-        // .resend-code-container {
-        //   margin-top: 1rem;
-
-        //   a {
-        //     font-size: 1rem;
-        //   }
-        // }
 
         @media (max-width: $bp-lg) {
           font-size: 1.125rem;
-
-          .form-control,
-          input {
-            font-size: inherit;
-
-            &::placeholder {
-              font-size: inherit;
-            }
-          }
-
-          // .resend-code-container {
-          //   margin-top: 1rem;
-          //   font-size: 0.9rem;
-          // }
         }
       }
 
@@ -133,20 +84,6 @@
 
       .modal-body {
         font-size: 1.125rem;
-
-        .form-control,
-        input {
-          font-size: inherit;
-
-          &::placeholder {
-            font-size: inherit;
-          }
-        }
-
-        // .resend-code-container {
-        //   margin-top: 1rem;
-        //   font-size: 0.9rem;
-        // }
       }
     }
 

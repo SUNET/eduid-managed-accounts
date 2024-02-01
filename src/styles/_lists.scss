@@ -26,20 +26,3 @@
     }
   }
 }
-
-dl.terms {
-  dt {
-    @extend .heading-4 !optional;
-  }
-  dd {
-    margin-bottom: 0.5rem;
-    font-size: $txt-md;
-    display: list-item;
-    list-style-position: inside;
-
-    + dt {
-      margin-top: 1.5rem;
-    }
-  }
-  margin-bottom: 1rem;
-}
