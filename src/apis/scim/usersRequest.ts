@@ -10,6 +10,7 @@ export const postUser = createAsyncThunk<
     familyName: string;
     givenName: string;
     loggedInUserScope: string;
+    externalId: string;
   }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("scim/postUser", async (args, thunkAPI) => {
@@ -19,11 +20,10 @@ export const postUser = createAsyncThunk<
     const accessToken = state.app.accessToken;
     if (accessToken) {
       const eduIdEppnAccount: string = fakeEPPNaccount(); // what could be expected from Eppn API?
-      //const organizerEppn: string = `${eduIdEppn.split("@")[0]}@${args.scope}`;
       const headers = scimHeaders(accessToken);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User", "https://scim.eduid.se/schema/nutid/user/v1"],
-        externalId: `${eduIdEppnAccount}@dev.eduid.se`, // PRODUCTION @eduid.se or STAGING @dev.eduid.se
+        externalId: args.externalId, // PRODUCTION @eduid.se or STAGING @dev.eduid.se
         name: {
           familyName: args.familyName,
           givenName: args.givenName,

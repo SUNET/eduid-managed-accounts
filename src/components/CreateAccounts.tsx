@@ -7,6 +7,7 @@ import Personnummer from "personnummer";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage, useIntl } from "react-intl";
+import { createUser } from "../apis/maccapi/request";
 import { putGroup } from "../apis/scim/groupsRequest";
 import { postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -111,14 +112,23 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     let newMembersList: GroupMember[] = []; // for PUT Groups
     for (const name of names) {
       try {
+        let externalId: string = "";
+        // TODO: create EPPN and password request
+        const maccapiUserResponse = await dispatch(
+          createUser({ familyName: name.surname, givenName: name.given_name })
+        );
+        console.log("maccapiUserResponse", maccapiUserResponse);
+        if (createUser.fulfilled.match(maccapiUserResponse)) {
+          externalId = `${maccapiUserResponse.payload.user.eppn}@${maccapiUserResponse.payload.scope} `;
+        }
         const createdUserResponse = await dispatch(
           postUser({
             familyName: name.surname,
             givenName: name.given_name,
             loggedInUserScope: scope,
+            externalId: externalId,
           })
         );
-        // TODO: create EPPN and password request
         if (postUser.fulfilled.match(createdUserResponse)) {
           const newGroupMember: GroupMember = {
             $ref: createdUserResponse.payload.meta?.location,
