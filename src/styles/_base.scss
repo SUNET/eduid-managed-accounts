@@ -25,8 +25,26 @@ body {
   flex-direction: column;
 }
 
-// same styling as .phoneview-form-container, #delete-account-container,#change-password-container
-// in Email.js = replaced these with with <article>
+.panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-bottom: 4rem;
+  background-color: $body-gray;
+
+  @media (max-width: $bp-lg) {
+    padding-bottom: 3rem;
+  }
+
+  .content {
+    padding-top: 2rem;
+
+    @media (max-width: $bp-lg) {
+      padding-top: 1.5rem;
+    }
+  }
+}
+
 #content article {
   margin-bottom: 2.5rem;
   padding-bottom: 2.5rem;

@@ -16,14 +16,6 @@ figure,
     color: $txt-black;
   }
 
-  &.identity-summary {
-    padding: 1em 0.5em;
-    margin-bottom: 3em;
-
-    @media (max-width: $bp-md) {
-      padding: 0.5em;
-    }
-  }
   &.add-account {
     text-align: left;
     width: 100%;
@@ -34,13 +26,5 @@ figure,
     hr {
       border-bottom-style: dashed;
     }
-  }
-}
-
-.captcha-responsive {
-  width: 70%;
-
-  @media (max-width: $bp-md) {
-    width: 100%;
   }
 }
