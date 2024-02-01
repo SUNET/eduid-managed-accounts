@@ -443,6 +443,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                     href="/hanterade_konton.xlsx"
                     target="_blank"
                     className={!managedAccountsDetails?.id ? "disabled" : ""}
+                    download
                   >
                     <FormattedMessage defaultMessage="Download template" id="addToGroup-downloadLink" />
                   </a>
