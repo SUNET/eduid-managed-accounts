@@ -8,14 +8,6 @@ figure,
   margin: 1em 0;
   padding: 1em;
 
-  figcaption,
-  .figcaption {
-    font-size: $txt-sm;
-    font-weight: bold;
-    font-family: $akkurat;
-    color: $txt-black;
-  }
-
   &.add-account {
     text-align: left;
     width: 100%;

@@ -4,10 +4,9 @@
 @import "./styles/_fonts.scss";
 @import "./styles/_typography.scss";
 @import "./styles/_base.scss";
+@import "./styles/_buttons.scss";
 @import "./styles/_forms.scss";
 @import "./styles/_inputs.scss";
-@import "./styles/_label.scss";
-@import "./styles/_buttons.scss";
 @import "./styles/_links.scss";
 @import "./styles/_img.scss";
 @import "./styles/_modals.scss";

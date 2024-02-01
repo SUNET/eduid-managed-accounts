@@ -8,55 +8,36 @@ form {
 label {
   display: flex;
   font-size: 1rem;
-  font-family: "Inter-SemiBold", "Arial", "Helvetica", "sans-serif" !important;
+  font-family: $inter-bold;
   letter-spacing: 0.5px;
   line-height: 1;
+  color: $txt-black;
   margin: 0 5px 5px 0;
 }
 
 select {
-  padding: 5px;
-  border-radius: 3px;
   width: 100%;
   background-color: $white;
-  height: 40px;
-  margin-top: 3px;
+  padding: 2px 20px 0 10px;
+  border-radius: 15px;
+  height: 30px;
+  margin-top: 0;
+  border: 2px solid $bright-orange;
+  font-size: 13px;
+  color: $txt-orange;
+  width: auto;
 }
 
-fieldset {
+fieldset,
+.fieldset {
   width: 100%;
   position: relative;
-
   border: none;
+  margin-bottom: 0;
+  margin-right: 1rem;
+
   > div {
     margin-bottom: 1rem;
-  }
-
-  legend {
-    @extend label !optional;
-  }
-
-  legend.required::after {
-    content: " *";
-    color: $txt-orange;
-  }
-}
-
-/* smallish grayish additional info underneath corresponding form elements */
-.help-text {
-  margin: 0.5rem 0 0;
-  line-height: 1.2;
-  color: $txt-gray;
-  font-size: 14px;
-
-  .btn + & {
-    @media (max-width: $bp-md) {
-      text-align: center;
-    }
-
-    @media (max-width: $bp-xs) {
-      margin: 0 0 0.75rem;
-    }
   }
 }
 
