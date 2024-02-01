@@ -21,6 +21,7 @@ export async function requestAccess(
 ) {
   const atr: AccessTokenRequest = {
     // when "type" is fixed in SCIM it will be "access: [{ type: "scim-api" }],"
+    access: [{ type: "scim-api" }, { type: "maccapi" }],
     flags: [AccessTokenFlags.BEARER],
   };
 
