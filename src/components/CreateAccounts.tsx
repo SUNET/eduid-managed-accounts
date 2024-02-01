@@ -440,7 +440,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                   </span>
                   <a
                     id="link"
-                    href="src/assets/hanterade_konton.xlsx"
+                    href="/hanterade_konton.xlsx"
                     target="_blank"
                     className={!managedAccountsDetails?.id ? "disabled" : ""}
                   >
