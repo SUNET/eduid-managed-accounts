@@ -14,40 +14,6 @@ label {
   margin: 0 5px 5px 0;
 }
 
-#reset-password-email-form {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.transparent-input-error {
-  background-color: transparent;
-  color: transparent;
-}
-
-.form-control:disabled,
-.form-control[readonly] {
-  border-bottom: none;
-  color: $txt-gray;
-}
-
-input.form-control,
-input.form-control.is-valid,
-input.form-control.is-invalid,
-input.form-control:focus,
-input.form-control.is-valid:focus,
-input.form-control.is-invalid:focus {
-  border-color: initial;
-  background-image: none;
-}
-
-input.form-control:focus,
-input.form-control.is-valid:focus,
-input.form-control.is-invalid:focus {
-  box-shadow: 0 0 0 0.2rem $border-gray;
-}
-
-// Possible not used due to react-select
 select {
   padding: 5px;
   border-radius: 3px;
@@ -64,10 +30,6 @@ fieldset {
   border: none;
   > div {
     margin-bottom: 1rem;
-  }
-
-  &:not(:empty) {
-    //margin-bottom: 0.5em;
   }
 
   legend {
@@ -96,37 +58,6 @@ fieldset {
       margin: 0 0 0.75rem;
     }
   }
-}
-
-@media (max-width: $bp-sm) {
-  #reset-password-email-form {
-    flex-direction: column;
-    align-items: unset;
-
-    button {
-      width: 100%;
-      margin-top: 1rem;
-    }
-  }
-}
-
-.search-box {
-  font-size: 30px;
-  padding: 14px 19px;
-  border: 1px solid #c1c1c1;
-  background-color: white;
-  width: 9.8em;
-  border-radius: 10px;
-  transition: 0.2s;
-}
-
-.search-box:hover {
-  border-color: #aaaaaa;
-}
-
-.search-box:focus-within {
-  border-color: #ff0080;
-  box-shadow: 0 0 0 5px rgba(255, 0, 128, 0.4);
 }
 
 input {
