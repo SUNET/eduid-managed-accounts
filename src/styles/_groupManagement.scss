@@ -73,13 +73,6 @@
 
 // Table contents
 table.group-management {
-  counter-reset: rowNumber;
-
-  caption {
-    background: $bg-orange;
-    padding: 0.75rem;
-  }
-
   th,
   td {
     text-align: left;
