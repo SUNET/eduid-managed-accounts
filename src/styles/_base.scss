@@ -22,12 +22,7 @@ body {
 #root {
   display: flex;
   flex: 1;
-
-  // height: 100vh;
   flex-direction: column;
-
-  // this is commented out to accommodate DashboardMain, should be introduced again for login app
-  // background-color: #f4f4f4;
 }
 
 .panel {
@@ -50,8 +45,6 @@ body {
   }
 }
 
-// same styling as .phoneview-form-container, #delete-account-container,#change-password-container
-// in Email.js = replaced these with with <article>
 #content article {
   margin-bottom: 2.5rem;
   padding-bottom: 2.5rem;
@@ -68,9 +61,7 @@ body {
   }
 }
 
-// this is a horizontal-margin and should be renamed
-.horizontal-content-margin,
-.vertical-content-margin {
+.horizontal-content-margin {
   padding: 0;
   width: 58%;
   max-width: 870px;
@@ -83,53 +74,32 @@ body {
 
 // Mimic lead paragraph border
 hr.border-line {
-  margin: 0.5rem 0 2rem;
+  margin: 2rem 0;
   border-bottom: 2px solid $border-gray;
   border-top: none;
   opacity: unset;
 }
 
-// TODO: Remove after checking scrollbar in tables
-// ::-webkit-scrollbar {
-//   margin-top: -1rem;
-//   width: 0.125rem;
-//   height: 0.125rem;
-//   width: 0;
-// }
-
-// ::-webkit-scrollbar-thumb {
-//   background-color: #7c7c7c;
-//   border-radius: 1rem;
-// }
-
-// ::-webkit-scrollbar-track {
-//   background-color: #ececec;
-// }
-
 @media (max-width: $bp-lg) {
-  .horizontal-content-margin,
-  .vertical-content-margin {
+  .horizontal-content-margin {
     width: calc(80% - 2rem);
   }
 }
 
 @media (max-width: $bp-md) {
-  .horizontal-content-margin,
-  .vertical-content-margin {
+  .horizontal-content-margin {
     width: calc(80% - 1.25rem);
   }
 }
 
 @media (max-width: $bp-sm) {
-  .horizontal-content-margin,
-  .vertical-content-margin {
+  .horizontal-content-margin {
     width: calc(100% - 2rem);
   }
 }
 
 @media (max-width: $bp-xs) {
-  .horizontal-content-margin,
-  .vertical-content-margin {
+  .horizontal-content-margin {
     width: calc(100% - #{2 * $margin});
   }
 }

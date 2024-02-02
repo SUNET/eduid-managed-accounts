@@ -4,14 +4,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
 import { ValidationErrors } from "final-form";
 import Personnummer from "personnummer";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage, useIntl } from "react-intl";
+import { createUser } from "../apis/maccapi/request";
 import { putGroup } from "../apis/scim/groupsRequest";
 import { postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
+import getUsersSlice from "../slices/getUsers";
 import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 
 interface CreateAccountsTypes {
@@ -111,21 +113,33 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     let newMembersList: GroupMember[] = []; // for PUT Groups
     for (const name of names) {
       try {
-        const createdUserResponse = await dispatch(
-          postUser({
-            familyName: name.surname,
-            givenName: name.given_name,
-            loggedInUserScope: scope,
-          })
+        const maccapiUserResponse = await dispatch(
+          createUser({ familyName: name.surname, givenName: name.given_name })
         );
-        // TODO: create EPPN and password request
-        if (postUser.fulfilled.match(createdUserResponse)) {
-          const newGroupMember: GroupMember = {
-            $ref: createdUserResponse.payload.meta?.location,
-            value: createdUserResponse.payload.id,
-            display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
-          };
-          newMembersList.push(newGroupMember);
+        if (createUser.fulfilled.match(maccapiUserResponse)) {
+          const externalId = `${maccapiUserResponse.payload?.user.eppn}@${maccapiUserResponse.payload?.scope}`;
+          const createdUserResponse = await dispatch(
+            postUser({
+              familyName: name.surname,
+              givenName: name.given_name,
+              loggedInUserScope: scope,
+              externalId: externalId,
+            })
+          );
+          dispatch(
+            getUsersSlice.actions.addPassword({
+              password: maccapiUserResponse.payload.user.password,
+              externalId: externalId,
+            })
+          );
+          if (postUser.fulfilled.match(createdUserResponse)) {
+            const newGroupMember: GroupMember = {
+              $ref: createdUserResponse.payload.meta?.location,
+              value: createdUserResponse.payload.id,
+              display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
+            };
+            newMembersList.push(newGroupMember);
+          }
         }
       } catch (error) {
         console.log("error", error);
@@ -498,39 +512,34 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 />
               </div>
               {excelImportError?.errors?.givenName && (
-                <Fragment>
-                  <div>
-                    <FormattedMessage
-                      defaultMessage='Given name "{givenName}" is invalid: '
-                      id="excel-file-givenName-error"
-                      values={{
-                        givenName: excelImportError?.fullName?.givenName,
-                      }}
-                    />
-                    &nbsp;
-                    <FormattedMessage
-                      defaultMessage={excelImportError.errors.givenName.value}
-                      id={excelImportError.errors.givenName.id}
-                    />
-                  </div>
-                </Fragment>
+                <div>
+                  <FormattedMessage
+                    defaultMessage='Given name "{givenName}" is invalid: '
+                    id="excel-file-givenName-error"
+                    values={{
+                      givenName: excelImportError?.fullName?.givenName,
+                    }}
+                  />
+                  &nbsp;
+                  <FormattedMessage
+                    defaultMessage={excelImportError.errors.givenName.value}
+                    id={excelImportError.errors.givenName.id}
+                  />
+                </div>
               )}
-
               {excelImportError?.errors.surName && (
-                <Fragment>
-                  <div>
-                    <FormattedMessage
-                      defaultMessage='Surname "{surName}" is invalid:'
-                      id="excel-file-surName-error"
-                      values={{ surName: excelImportError?.fullName?.surName }}
-                    />
-                    &nbsp;
-                    <FormattedMessage
-                      defaultMessage={excelImportError.errors.surName.value}
-                      id={excelImportError.errors.surName.id}
-                    />
-                  </div>
-                </Fragment>
+                <div>
+                  <FormattedMessage
+                    defaultMessage='Surname "{surName}" is invalid:'
+                    id="excel-file-surName-error"
+                    values={{ surName: excelImportError?.fullName?.surName }}
+                  />
+                  &nbsp;
+                  <FormattedMessage
+                    defaultMessage={excelImportError.errors.surName.value}
+                    id={excelImportError.errors.surName.id}
+                  />
+                </div>
               )}
             </span>
           )}
