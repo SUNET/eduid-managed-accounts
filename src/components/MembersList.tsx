@@ -169,12 +169,12 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
       worksheet.addRow({
         "given-name": member.name.givenName,
         surname: member.name.familyName,
-        eppn: member["https://scim.eduid.se/schema/nutid/user/v1"].profiles.connectIdp.attributes
+        eppn: member["https://scim.eduid.se/schema/nutid/user/v1"]?.profiles.connectIdp.attributes
           .eduPersonPrincipalName,
         username:
           member[
             "https://scim.eduid.se/schema/nutid/user/v1"
-          ].profiles.connectIdp.attributes.eduPersonPrincipalName.split("@")[0],
+          ]?.profiles.connectIdp.attributes.eduPersonPrincipalName.split("@")[0],
         password: member.password,
       });
     });

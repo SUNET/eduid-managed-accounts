@@ -55,7 +55,7 @@ export const createUser = createAsyncThunk<
 });
 
 export const removeUser = createAsyncThunk<
-  any, // return type
+  MaccapiResponse, // return type
   {
     eppn: string;
   }, // args type
@@ -88,7 +88,7 @@ export const removeUser = createAsyncThunk<
 });
 
 export const resetPassword = createAsyncThunk<
-  any, // return type
+  MaccapiResponse, // return type
   {
     eppn: string;
   }, // args type

@@ -48,9 +48,7 @@ export const getUsersSlice = createSlice({
     addPassword: (state, action) => {
       // find externalId and add password to that object
       const index = state.members.findIndex((member) => member.externalId === action.payload.externalId);
-      // add space between every 4 characters
-      const passwordSpaced = action.payload.password.match(/.{1,4}/g).join(" ");
-      state.members[index].password = passwordSpaced;
+      state.members[index].password = action.payload.password;
     },
   },
   extraReducers: (builder) => {

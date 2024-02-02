@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
-import { fakeEPPNaccount } from "../../common/testEPPNData";
 import { ExtendedUserResponse } from "../../slices/getUsers";
 import { scimHeaders } from "./groupsRequest";
 
@@ -19,7 +18,7 @@ export const postUser = createAsyncThunk<
     const scim_server_url = state.config.scim_server_url;
     const accessToken = state.app.accessToken;
     if (accessToken) {
-      const eduIdEppnAccount: string = fakeEPPNaccount(); // what could be expected from Eppn API?
+      const eduIdEppnAccount: string = args.externalId.split("@")[0];
       const headers = scimHeaders(accessToken);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User", "https://scim.eduid.se/schema/nutid/user/v1"],

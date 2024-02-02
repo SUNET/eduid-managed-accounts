@@ -96,19 +96,17 @@ export function MembersListTable({
 
   async function generateNewPassword() {
     if (selectedUser?.externalId) {
-      console.log("selectedUser", selectedUser);
-      const response = await dispatch(resetPassword({ eppn: selectedUser?.externalId?.split("@")[0] }));
-      const memberWithGeneratedPassword = membersDetails.map((member: any) =>
-        member.id === selectedUser.id ? { ...member, password: response.payload.password } : member
-      );
-      dispatch(
-        getUsersSlice.actions.addPassword({
-          password: response.payload.user.password,
-          externalId: selectedUser?.externalId,
-        })
-      );
-      setShowGeneratePasswordModal(false);
-      setSelectedUser({ id: null, familyName: null, givenName: null, externalId: null });
+      const maccapiUserResponse = await dispatch(resetPassword({ eppn: selectedUser?.externalId?.split("@")[0] }));
+      if (resetPassword.fulfilled.match(maccapiUserResponse)) {
+        dispatch(
+          getUsersSlice.actions.addPassword({
+            password: maccapiUserResponse.payload.user.password,
+            externalId: selectedUser?.externalId,
+          })
+        );
+        setShowGeneratePasswordModal(false);
+        setSelectedUser({ id: null, familyName: null, givenName: null, externalId: null });
+      }
     }
   }
 
