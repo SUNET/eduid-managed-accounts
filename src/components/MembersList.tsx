@@ -110,7 +110,6 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     dispatch(appSlice.actions.isFetching(true));
     await handleGroupVersion();
     const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
-    console.log("memberToBeRemoved", memberToBeRemoved);
     if (memberToBeRemoved && memberToBeRemoved.length > 0) {
       for (const member of memberToBeRemoved) {
         await dispatch(removeUser({ eppn: member.externalId.split("@")[0] }));
