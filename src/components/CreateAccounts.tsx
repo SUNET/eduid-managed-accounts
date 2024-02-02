@@ -13,6 +13,7 @@ import { postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
+import getUsersSlice from "../slices/getUsers";
 import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 
 interface CreateAccountsTypes {
@@ -112,15 +113,12 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     let newMembersList: GroupMember[] = []; // for PUT Groups
     for (const name of names) {
       try {
-        let externalId: string = "";
         // TODO: create EPPN and password request
         const maccapiUserResponse = await dispatch(
           createUser({ familyName: name.surname, givenName: name.given_name })
         );
         console.log("maccapiUserResponse", maccapiUserResponse);
-        if (createUser.fulfilled.match(maccapiUserResponse)) {
-          externalId = `${maccapiUserResponse.payload.user.eppn}@${maccapiUserResponse.payload.scope} `;
-        }
+        const externalId = `${maccapiUserResponse.payload.user.eppn}@${maccapiUserResponse.payload.scope}`;
         const createdUserResponse = await dispatch(
           postUser({
             familyName: name.surname,
@@ -136,6 +134,14 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
             display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
           };
           newMembersList.push(newGroupMember);
+        }
+        if (createUser.fulfilled.match(maccapiUserResponse)) {
+          dispatch(
+            getUsersSlice.actions.addPassword({
+              password: maccapiUserResponse.payload.user.password,
+              externalId: externalId,
+            })
+          );
         }
       } catch (error) {
         console.log("error", error);

@@ -82,7 +82,7 @@ export const getUserDetails = createAsyncThunk<
 
 export const deleteUser = createAsyncThunk<
   any, // return type
-  { user: { id: string; version: string } }, // args type
+  { id: string; version: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("scim/deleteUser", async (args, thunkAPI) => {
   try {
@@ -90,14 +90,14 @@ export const deleteUser = createAsyncThunk<
     const scim_server_url = state.config.scim_server_url;
     const accessToken = state.app.accessToken;
     if (accessToken) {
-      const headers = { ...scimHeaders(accessToken), "If-Match": args.user.version };
+      const headers = { ...scimHeaders(accessToken), "If-Match": args.version };
       const scimRequest = {
         headers: headers,
         method: "DELETE",
       };
-      const scimResponse = await fetch(scim_server_url + "/Users/" + args.user.id, scimRequest);
+      const scimResponse = await fetch(scim_server_url + "/Users/" + args.id, scimRequest);
       if (scimResponse.ok) {
-        return args.user;
+        return args;
       } else {
         throw await scimResponse.json();
       }

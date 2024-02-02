@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { removeUser } from "../apis/maccapi/request";
 import { getGroupDetails } from "../apis/scim/groupsRequest";
 import { deleteUser } from "../apis/scim/usersRequest";
 import currentDateTimeToString from "../common/time";
@@ -72,13 +73,13 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     const memberFamilyName = isMemberSelected.map((member: ExtendedUserResponse) => member.name.familyName);
     const memberEPPN = isMemberSelected.map(
       (member: ExtendedUserResponse) =>
-        member["https://scim.eduid.se/schema/nutid/user/v1"].profiles.connectIdp.attributes.eduPersonPrincipalName
+        member["https://scim.eduid.se/schema/nutid/user/v1"]?.profiles.connectIdp.attributes.eduPersonPrincipalName
     );
     const memberUsername = isMemberSelected.map(
       (member: ExtendedUserResponse) =>
         member[
           "https://scim.eduid.se/schema/nutid/user/v1"
-        ].profiles.connectIdp.attributes.eduPersonPrincipalName.split("@")[0]
+        ]?.profiles.connectIdp.attributes.eduPersonPrincipalName.split("@")[0]
     );
     const memberPassword = isMemberSelected.map((member: ExtendedUserResponse) => member.password);
     const membersArray = [];
@@ -109,13 +110,11 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     dispatch(appSlice.actions.isFetching(true));
     await handleGroupVersion();
     const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
+    console.log("memberToBeRemoved", memberToBeRemoved);
     if (memberToBeRemoved && memberToBeRemoved.length > 0) {
       for (const member of memberToBeRemoved) {
-        const userToDelete = {
-          id: member.id,
-          version: member.meta.version,
-        };
-        const deleteUserResponse = await dispatch(deleteUser({ user: userToDelete }));
+        await dispatch(removeUser({ eppn: member.externalId.split("@")[0] }));
+        const deleteUserResponse = await dispatch(deleteUser({ id: member.id, version: member.meta.version }));
         if (deleteUser.fulfilled.match(deleteUserResponse)) {
           setShowModal(false);
         }
