@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, AppRootState } from "init-app";
+import { AppDispatch, AppRootState } from "../../init-app";
 
 type MaccapiResponse = {
   status: string;

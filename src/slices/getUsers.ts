@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Group } from "typescript-clients/scim/models/Group";
-import { Name } from "typescript-clients/scim/models/Name";
-import { NutidUserExtensionV1 } from "typescript-clients/scim/models/NutidUserExtensionV1";
-import { UserResponse } from "typescript-clients/scim/models/UserResponse";
 import { deleteUser, getUserDetails, postUser } from "../apis/scim/usersRequest";
+import { Group } from "../typescript-clients/scim/models/Group";
+import { Name } from "../typescript-clients/scim/models/Name";
+import { NutidUserExtensionV1 } from "../typescript-clients/scim/models/NutidUserExtensionV1";
+import { UserResponse } from "../typescript-clients/scim/models/UserResponse";
 
 type ExternalProfileWithScope = {
   profiles: { connectIdp: { attributes: { eduPersonPrincipalName: string } } } & NutidUserExtensionV1;

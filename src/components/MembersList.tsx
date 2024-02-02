@@ -2,7 +2,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { removeUser } from "../apis/maccapi/request";
 import { getGroupDetails } from "../apis/scim/groupsRequest";
@@ -82,7 +82,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
         ]?.profiles.connectIdp.attributes.eduPersonPrincipalName.split("@")[0]
     );
     const memberPassword = isMemberSelected.map((member: ExtendedUserResponse) => member.password);
-    const membersArray = [];
+    const membersArray: any = [];
     // Headers
     const [headerGivenName, headerSurname, headerEPPN, headerUsername, headerPassword] = exportHeaders();
     const headers = `${headerGivenName}, ${headerSurname}, ${headerEPPN}, ${headerUsername}, ${headerPassword}`;
