@@ -16,7 +16,6 @@ label {
 }
 
 select {
-  width: 100%;
   background-color: $white;
   padding: 2px 20px 0 10px;
   border-radius: 15px;
@@ -41,24 +40,12 @@ fieldset,
   }
 }
 
-input {
-  font-family: Proxima Nova;
-  letter-spacing: -0.2px;
-  font-size: 30px;
-  border: none;
-  color: #323232;
-}
-
 button:hover {
   cursor: pointer;
 }
 
 input:focus {
   outline: none;
-}
-
-input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none;
 }
 
 .clear:not(:valid) ~ .search-clear {
