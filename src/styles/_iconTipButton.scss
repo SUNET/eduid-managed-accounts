@@ -1,0 +1,55 @@
+@import "./variables";
+
+button.copybutton {
+  position: absolute;
+  margin-left: 0.5rem;
+  margin-top: -4px;
+  height: auto;
+
+  svg {
+    color: $txt-black;
+  }
+
+  [id^="icon-check"] {
+    display: none;
+  }
+
+  .tool-tip-text {
+    visibility: hidden;
+    width: 100px;
+    background-color: $txt-black;
+    color: $white;
+    font-size: $txt-sm;
+    font-family: $inter-regular;
+    border-radius: 4px;
+    padding: 0.5rem;
+    line-height: normal;
+    position: absolute;
+    z-index: 5;
+    bottom: 85%;
+    left: 1rem;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-transform: capitalize;
+  }
+
+  .tool-tip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 2.6rem;
+    margin-left: 20px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: $txt-black transparent transparent transparent;
+  }
+
+  &:hover,
+  &:focus-visible {
+    .tool-tip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}

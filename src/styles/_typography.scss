@@ -83,7 +83,7 @@ h5,
 }
 
 p {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   line-height: 1.5;
   margin-bottom: 1rem;
   font-family: $inter-regular;
@@ -91,24 +91,6 @@ p {
   + p {
     margin-top: -0.5rem;
   }
-
-  @media (max-width: $bp-md) {
-    font-size: 1.125rem;
-  }
-}
-
-p.verified {
-  color: $txt-black;
-}
-
-// these styles are the same as input values and placeholder
-p.data {
-  font-size: 1.5rem;
-  font-weight: 500;
-}
-
-p.no-data.data {
-  color: $txt-gray;
 }
 
 .text-large {
@@ -129,8 +111,4 @@ em {
   font-style: italic;
 
   @extend i !optional;
-}
-
-.verbatim {
-  text-transform: none;
 }
