@@ -126,6 +126,7 @@ button.btn-close {
   margin: 0;
   box-shadow: none;
   height: 1rem;
+  background-image: url("../img/close.svg");
 
   &:hover,
   &:not(:disabled):not(.disabled):active,
