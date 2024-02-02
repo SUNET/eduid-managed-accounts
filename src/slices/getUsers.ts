@@ -5,7 +5,6 @@ import { NutidUserExtensionV1 } from "typescript-clients/scim/models/NutidUserEx
 import { UserResponse } from "typescript-clients/scim/models/UserResponse";
 import { deleteUser, getUserDetails, postUser } from "../apis/scim/usersRequest";
 
-// connectIdp: { attributes: { eduPersonPrincipalName: string } }
 type ExternalProfileWithScope = {
   profiles: { connectIdp: { attributes: { eduPersonPrincipalName: string } } } & NutidUserExtensionV1;
 };
@@ -42,9 +41,6 @@ export const getUsersSlice = createSlice({
         return new Date(b.meta.created).valueOf() - new Date(a.meta.created).valueOf();
       });
     },
-    // generatedNewPassword: (state, action) => {
-    //   state.members = action.payload;
-    // },
     addPassword: (state, action) => {
       // find externalId and add password to that object
       const index = state.members.findIndex((member) => member.externalId === action.payload.externalId);
@@ -55,16 +51,7 @@ export const getUsersSlice = createSlice({
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
       state.members.push(action.payload);
     });
-    // builder.addCase(createUser.fulfilled, (state, action) => {
-    //   const payloadWithExternalId = {
-    //     // ...action.payload,
-    //     externalId: `${action.payload.user.eppn}@${action.payload.scope} `,
-    //     password: action.payload.user.password,
-    //   };
-    //   state.members.unshift(payloadWithExternalId);
-    // });
     builder.addCase(postUser.fulfilled, (state, action) => {
-      //const payloadWithPassword = { ...action.payload, password: fakePassword() };
       state.members.unshift(action.payload);
     });
     builder.addCase(deleteUser.fulfilled, (state, action) => {

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
 import { ValidationErrors } from "final-form";
 import Personnummer from "personnummer";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FormattedMessage, useIntl } from "react-intl";
 import { createUser } from "../apis/maccapi/request";
@@ -113,7 +113,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     let newMembersList: GroupMember[] = []; // for PUT Groups
     for (const name of names) {
       try {
-        // TODO: create EPPN and password request
         const maccapiUserResponse = await dispatch(
           createUser({ familyName: name.surname, givenName: name.given_name })
         );
@@ -513,39 +512,34 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                 />
               </div>
               {excelImportError?.errors?.givenName && (
-                <Fragment>
-                  <div>
-                    <FormattedMessage
-                      defaultMessage='Given name "{givenName}" is invalid: '
-                      id="excel-file-givenName-error"
-                      values={{
-                        givenName: excelImportError?.fullName?.givenName,
-                      }}
-                    />
-                    &nbsp;
-                    <FormattedMessage
-                      defaultMessage={excelImportError.errors.givenName.value}
-                      id={excelImportError.errors.givenName.id}
-                    />
-                  </div>
-                </Fragment>
+                <div>
+                  <FormattedMessage
+                    defaultMessage='Given name "{givenName}" is invalid: '
+                    id="excel-file-givenName-error"
+                    values={{
+                      givenName: excelImportError?.fullName?.givenName,
+                    }}
+                  />
+                  &nbsp;
+                  <FormattedMessage
+                    defaultMessage={excelImportError.errors.givenName.value}
+                    id={excelImportError.errors.givenName.id}
+                  />
+                </div>
               )}
-
               {excelImportError?.errors.surName && (
-                <Fragment>
-                  <div>
-                    <FormattedMessage
-                      defaultMessage='Surname "{surName}" is invalid:'
-                      id="excel-file-surName-error"
-                      values={{ surName: excelImportError?.fullName?.surName }}
-                    />
-                    &nbsp;
-                    <FormattedMessage
-                      defaultMessage={excelImportError.errors.surName.value}
-                      id={excelImportError.errors.surName.id}
-                    />
-                  </div>
-                </Fragment>
+                <div>
+                  <FormattedMessage
+                    defaultMessage='Surname "{surName}" is invalid:'
+                    id="excel-file-surName-error"
+                    values={{ surName: excelImportError?.fullName?.surName }}
+                  />
+                  &nbsp;
+                  <FormattedMessage
+                    defaultMessage={excelImportError.errors.surName.value}
+                    id={excelImportError.errors.surName.id}
+                  />
+                </div>
               )}
             </span>
           )}
