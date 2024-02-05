@@ -3,7 +3,7 @@ import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { fakePassword } from "../common/testEPPNData";
+import { resetPassword } from "../apis/maccapi/request";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
 import NotificationModal from "./NotificationModal";
@@ -35,7 +35,8 @@ export function MembersListTable({
     id: string | null;
     familyName: string | null;
     givenName: string | null;
-  }>({ id: null, familyName: null, givenName: null });
+    externalId: string | null;
+  }>({ id: null, familyName: null, givenName: null, externalId: null });
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -88,18 +89,25 @@ export function MembersListTable({
         id: selectedMember.id,
         familyName: selectedMember.name.familyName,
         givenName: selectedMember.name.givenName,
+        externalId: selectedMember.externalId,
       });
     }
   }
 
-  function generateNewPassword() {
-    const generatedPassword = fakePassword();
-    const memberWithGeneratedPassword = membersDetails.map((member: any) =>
-      member.id === selectedUser.id ? { ...member, password: generatedPassword } : member
-    );
-    dispatch(getUsersSlice.actions.generatedNewPassword(memberWithGeneratedPassword));
-    setShowGeneratePasswordModal(false);
-    setSelectedUser({ id: null, familyName: null, givenName: null });
+  async function generateNewPassword() {
+    if (selectedUser?.externalId) {
+      const maccapiUserResponse = await dispatch(resetPassword({ eppn: selectedUser?.externalId?.split("@")[0] }));
+      if (resetPassword.fulfilled.match(maccapiUserResponse)) {
+        dispatch(
+          getUsersSlice.actions.addPassword({
+            password: maccapiUserResponse.payload.user.password,
+            externalId: selectedUser?.externalId,
+          })
+        );
+        setShowGeneratePasswordModal(false);
+        setSelectedUser({ id: null, familyName: null, givenName: null, externalId: null });
+      }
+    }
   }
 
   return (
