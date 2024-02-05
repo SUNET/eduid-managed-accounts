@@ -124,15 +124,21 @@ label.btn-cover {
 button.btn-close {
   background-color: transparent;
   margin: 0;
+  padding: 8px;
   box-shadow: none;
-  height: 1rem;
+  height: 1.25rem;
+  width: auto;
   background-image: url("../img/close.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.5;
 
   &:hover,
   &:not(:disabled):not(.disabled):active,
   &:not(:disabled):not(.disabled):focus,
   &:not(:disabled):not(.disabled):active:focus {
     color: $txt-gray;
+    opacity: 1;
     background-color: transparent;
     box-shadow: none;
   }
