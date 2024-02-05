@@ -1,5 +1,5 @@
 import { GenerateKeyPairOptions, exportJWK, generateKeyPair } from "jose";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { requestAccess } from "../apis/gnap/requestAccess";
 import { generateNonce } from "../common/CryptoUtils";
@@ -60,8 +60,7 @@ export function StartSession(): JSX.Element {
   }
 
   return (
-    <>
-      {/* <Splash showChildren={token !== null}> */}
+    <React.Fragment>
       <h1>
         <FormattedMessage defaultMessage="Welcome to Managed Accounts with eduID" id="landing-header" />
       </h1>
@@ -91,7 +90,6 @@ export function StartSession(): JSX.Element {
           />
         </em>
       </div>
-      {/* </Splash> */}
-    </>
+    </React.Fragment>
   );
 }
