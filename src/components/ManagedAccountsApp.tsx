@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import GroupManagement from "./GroupManagement";
 import { Header } from "./Header";
 import { Notifications } from "./Notifications";
-import { StartSession } from "./StartSession";
+import { REDIRECT_PATH, StartSession } from "./StartSession";
 
 export function ManagedAccountApp(): JSX.Element {
   return (
@@ -17,7 +17,7 @@ export function ManagedAccountApp(): JSX.Element {
         <section id="content" className="horizontal-content-margin content">
           <Routes>
             <Route path="/" element={<StartSession />} />
-            <Route path="/callback" element={<Callback />} />
+            <Route path={REDIRECT_PATH} element={<Callback />} />
             <Route path="/manage" element={<GroupManagement />} />
           </Routes>
         </section>
