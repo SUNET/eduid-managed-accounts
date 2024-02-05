@@ -10,7 +10,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 200;
+  z-index: 210;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
@@ -108,7 +108,7 @@
 }
 
 .modal-backdrop {
-  z-index: 210;
+  z-index: 200;
   background: #000;
   position: fixed;
   top: 0;
