@@ -10,6 +10,8 @@ import getGroupsSlice from "../slices/getGroups";
 import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
 
+export const REDIRECT_PATH = "/callback";
+
 /**
  * Implement Redirect-based Interaction flow
  *
@@ -18,7 +20,8 @@ import getUsersSlice from "../slices/getUsers";
 export function StartSession(): JSX.Element {
   const dispatch = useAppDispatch();
   const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
-  const redirect_url = useAppSelector((state) => state.config.redirect_url);
+  const ma_website_url = useAppSelector((state) => state.config.ma_website_url);
+  const redirect_url = ma_website_url + REDIRECT_PATH;
   const transaction_url = `${auth_server_url}/transaction`;
 
   useEffect(() => {
