@@ -4,14 +4,14 @@ interface AppState {
   auth_server_url?: string;
   scim_server_url?: string;
   redirect_url?: string;
-  backend_url?: string;
+  maccapi_url?: string;
 }
 
 export const initialState: AppState = {
   auth_server_url: undefined,
   scim_server_url: undefined,
   redirect_url: undefined,
-  backend_url: undefined,
+  maccapi_url: undefined,
 };
 
 export const configSlice = createSlice({
@@ -23,7 +23,7 @@ export const configSlice = createSlice({
       state.auth_server_url = removeTrailingSlash(action.payload.auth_server_url);
       state.scim_server_url = removeTrailingSlash(action.payload.scim_server_url);
       state.redirect_url = removeTrailingSlash(action.payload.redirect_url);
-      state.backend_url = removeTrailingSlash(action.payload.backend_url);
+      state.maccapi_url = removeTrailingSlash(action.payload.maccapi_url);
     },
   },
 });
