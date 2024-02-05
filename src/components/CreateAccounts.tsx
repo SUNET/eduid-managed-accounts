@@ -17,7 +17,7 @@ import getUsersSlice from "../slices/getUsers";
 import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 
 interface CreateAccountsTypes {
-  readonly handleGroupVersion: () => void;
+  readonly handleGroupVersion: () => Promise<void>;
   readonly scope: string;
 }
 interface ValidatePersonalData {
@@ -107,6 +107,8 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
    */
   async function addUsers(names: { given_name: string; surname: string }[]) {
     dispatch(appSlice.actions.isFetching(true));
+    // check/update Group version - do this operation first, so that extraReducer "postUser.fulfilled" works correctly
+    await handleGroupVersion();
     // 0 - Disable "create accounts" button, to avoid users can click multiple times while we create accounts
     setSelectedFile(null);
     // 1 - Create Users
@@ -147,9 +149,11 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     }
 
     // 2 - update group with new members
+    console.log("managedAccountsDetails", managedAccountsDetails.members); // here managedAccountsDetails has not updated members, with the risk of removing members that were added in the meantime
     let newMembersListCopy = managedAccountsDetails?.members?.slice(); // copy array
     const updatedMembersList = newMembersListCopy?.concat(newMembersList);
-    await handleGroupVersion(); // check/update Group version
+    console.log("updatedMembersList", updatedMembersList);
+
     await dispatch(
       putGroup({
         group: {
