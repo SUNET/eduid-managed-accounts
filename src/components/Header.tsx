@@ -28,7 +28,6 @@ export function Header(): JSX.Element {
   return (
     <header id="header">
       <div id="eduid-logo" className="eduid-logo" />
-
       <span className="header-user">
         <div>{eduPersonPrincipalName}</div>
         {logoutButton}
