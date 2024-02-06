@@ -146,7 +146,6 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     const state = managedAccountsStore.getState();
     let newMembersListCopy = state.groups.managedAccounts.members?.slice(); // copy array from store
     const updatedMembersList = newMembersListCopy?.concat(newMembersList);
-    console.log("updatedMembersList", updatedMembersList);
 
     await dispatch(
       putGroup({
