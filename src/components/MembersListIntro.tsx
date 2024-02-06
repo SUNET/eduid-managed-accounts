@@ -3,10 +3,8 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useAppSelector } from "../hooks";
 
 export default function MembersListIntro(): JSX.Element {
-  const membersDetails = useAppSelector((state) => state.members.members);
   const [showMore, setShowMore] = useState(true);
 
   function toggleShowMore() {
