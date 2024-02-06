@@ -166,6 +166,9 @@
   "manageGroup-copyRowButton": {
     "string": "Kopiera rad"
   },
+  "manageGroup-downloading": {
+    "string": "Laddar ned..."
+  },
   "manageGroup-editLabel": {
     "string": "Hantera valda rader:"
   },
