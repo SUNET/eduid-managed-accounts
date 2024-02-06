@@ -1,6 +1,3 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ExcelJS from "exceljs";
 import { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -191,188 +188,97 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
 
   return (
     <Fragment>
-      {membersDetails.length > 0 && (
-        <Fragment>
-          <hr className="border-line"></hr>
-          <h2>
-            <FormattedMessage defaultMessage="Manage added accounts" id="manageGroup-heading" />
-          </h2>
-          <p>
-            <FormattedMessage
-              defaultMessage={`Export, copy or note down the corresponding EPPN/username and password for every account 
-                during the session and page load in which it was added.`}
-              id="manageGroup-paragraph"
-            />
-          </p>
-
-          {showMore ? (
+      <div className="form-controls">
+        <div className="flex-between">
+          <span>
+            <FormattedMessage defaultMessage="Export selected rows to Excel:" id="manageGroup-exportLabel" />
+          </span>
+          <div className="buttons">
             <button
-              type="button"
-              aria-label={showMore ? "hide instructions" : "show instructions"}
-              className="btn btn-link"
-              onClick={toggleShowMore}
+              disabled={!isMemberSelected.length || isFetching}
+              className={`btn btn-sm btn-primary`}
+              onClick={() => exportExcel()}
             >
-              <FormattedMessage defaultMessage="READ MORE ON HOW TO MANAGE ADDED ACCOUNTS" id="manageGroup-showList" />
-              <FontAwesomeIcon icon={faChevronDown as IconProp} />
+              <FormattedMessage defaultMessage="Download Excel" id="manageGroup-exportButton" />
             </button>
-          ) : (
-            <>
-              <button
-                type="button"
-                aria-label={showMore ? "hide instructions" : "show instructions"}
-                className="btn btn-link"
-                onClick={toggleShowMore}
-              >
-                <FormattedMessage
-                  defaultMessage="READ LESS ON HOW TO MANAGE ADDED ACCOUNTS"
-                  id="manageGroup-hideList"
-                />
-                <FontAwesomeIcon icon={faChevronUp as IconProp} />
-              </button>
-              <ol className="listed-steps">
-                <li>
-                  <FormattedMessage
-                    defaultMessage={`You can select accounts by using the corresponding checkbox for each row, one by 
-                      one or all. Note: the accounts added in the current session - with a retrievable password, 
-                      are pre-selected.`}
-                    id="manageGroup-listItem1"
-                  />
-                </li>
-                <li>
-                  <FormattedMessage
-                    defaultMessage={`You can export all selected accounts to a new Excel file by clicking DOWNLOAD EXCEL, 
-                      to save or edit locally.`}
-                    id="manageGroup-listItem2"
-                  />
-                </li>
-                <li>
-                  <FormattedMessage
-                    defaultMessage={`You can copy several/all entire selected rows at once using the COPY ROW button, 
-                      you can also copy the entire row or copy just the individual EPPN/username with the copy icon next 
-                      to it. When copying and exporting, the full scope will be included as the username, not just 
-                      the EPPN.`}
-                    id="manageGroup-listItem3"
-                  />
-                </li>
-                <li>
-                  <FormattedMessage
-                    defaultMessage={`If you get a new password by clicking the NEW PASSWORD link, it must be used by 
-                      the account holder (i.e. by the student for the exam), as the previous password will be invalid.`}
-                    id="manageGroup-listItem4"
-                  />
-                </li>
-                <li>
-                  <FormattedMessage
-                    defaultMessage={`If you need to make changes to added accounts, select the appropriate row/s and 
-                      click the REMOVE ROW button, you can now add the account again if needed, in the same way - but 
-                      with a new EPPN/username and password.`}
-                    id="manageGroup-listItem5"
-                  />
-                </li>
-                <li>
-                  <FormattedMessage
-                    defaultMessage={`To find an account you can sort the table by entry-order or names, use the
-                      pagination arrows underneath or show the entire table by clicking the SHOW ALL button, 
-                      if your table is spanning several pages.`}
-                    id="manageGroup-listItem6"
-                  />
-                </li>
-              </ol>
-            </>
-          )}
-          <div className="form-controls">
-            <div className="flex-between">
-              <span>
-                <FormattedMessage defaultMessage="Export selected rows to Excel:" id="manageGroup-exportLabel" />
-              </span>
-              <div className="buttons">
-                <button
-                  disabled={!isMemberSelected.length || isFetching}
-                  className={`btn btn-sm btn-primary`}
-                  onClick={() => exportExcel()}
-                >
-                  <FormattedMessage defaultMessage="Download Excel" id="manageGroup-exportButton" />
-                </button>
-              </div>
-            </div>
-            <div className="flex-between">
-              <span>
-                <FormattedMessage defaultMessage="Handle selected rows:" id="manageGroup-editLabel" />
-              </span>
-              <div className="buttons">
-                <button
-                  disabled={!isMemberSelected.length || isFetching}
-                  className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
-                  onClick={() => copyToClipboardAllMembers()}
-                >
-                  {copiedRowToClipboard ? (
-                    <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
-                  ) : (
-                    <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
-                  )}
-                </button>
-                <button
-                  disabled={!isMemberSelected.length || isFetching}
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => setShowModal(true)}
-                >
-                  <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
-                </button>
-              </div>
-            </div>
-            <div className="flex-between">
-              <span>
-                <FormattedMessage defaultMessage="Show/sort rows:" id="manageGroup-showLabel" />
-              </span>
-              <div className="buttons">
-                {membersDetails.length >= 11 &&
-                  (showAll ? (
-                    <button
-                      disabled={!membersDetails.length}
-                      className={`btn btn-sm btn-secondary`}
-                      onClick={() => showLessMembers()}
-                    >
-                      <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
-                    </button>
-                  ) : (
-                    <button
-                      disabled={!membersDetails.length || isFetching}
-                      className={`btn btn-sm btn-secondary`}
-                      onClick={() => showAllMembers()}
-                    >
-                      <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />(
-                      {membersDetails.length})
-                    </button>
-                  ))}
-                <select id="sortOrder" value={selectedValue} onChange={handleSorting} disabled={isFetching}>
-                  <option value="">
-                    <FormattedMessage defaultMessage="Latest (default)" id="manageGroup-selectOptionLatest" />
-                  </option>
-                  <option value="givenName">
-                    <FormattedMessage defaultMessage="Given name (ABC)" id="manageGroup-selectOptionGivenName" />
-                  </option>
-                  <option value="surName">
-                    <FormattedMessage defaultMessage="Surname (ABC)" id="manageGroup-selectOptionSurname" />
-                  </option>
-                </select>
-              </div>
-            </div>
           </div>
-          <MembersListTable
-            currentPosts={currentPosts}
-            sortedData={sortedData}
-            setMembers={setMembers}
-            currentPage={currentPage}
-            postsPerPage={postsPerPage}
-          />
-          <Pagination
-            postsPerPage={postsPerPage}
-            totalPosts={membersDetails.length}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        </Fragment>
-      )}
+        </div>
+        <div className="flex-between">
+          <span>
+            <FormattedMessage defaultMessage="Handle selected rows:" id="manageGroup-editLabel" />
+          </span>
+          <div className="buttons">
+            <button
+              disabled={!isMemberSelected.length || isFetching}
+              className={`btn btn-sm ${copiedRowToClipboard ? "btn-primary" : "btn-secondary"}`}
+              onClick={() => copyToClipboardAllMembers()}
+            >
+              {copiedRowToClipboard ? (
+                <FormattedMessage defaultMessage="Copied row" id="manageGroup-copiedRowButton" />
+              ) : (
+                <FormattedMessage defaultMessage="Copy row" id="manageGroup-copyRowButton" />
+              )}
+            </button>
+            <button
+              disabled={!isMemberSelected.length || isFetching}
+              className="btn btn-secondary btn-sm"
+              onClick={() => setShowModal(true)}
+            >
+              <FormattedMessage defaultMessage="Remove row" id="manageGroup-removeRowButton" />
+            </button>
+          </div>
+        </div>
+        <div className="flex-between">
+          <span>
+            <FormattedMessage defaultMessage="Show/sort rows:" id="manageGroup-showLabel" />
+          </span>
+          <div className="buttons">
+            {membersDetails.length >= 11 &&
+              (showAll ? (
+                <button
+                  disabled={!membersDetails.length}
+                  className={`btn btn-sm btn-secondary`}
+                  onClick={() => showLessMembers()}
+                >
+                  <FormattedMessage defaultMessage="show less" id="manageGroup-showLessButton" />
+                </button>
+              ) : (
+                <button
+                  disabled={!membersDetails.length || isFetching}
+                  className={`btn btn-sm btn-secondary`}
+                  onClick={() => showAllMembers()}
+                >
+                  <FormattedMessage defaultMessage="show all" id="manageGroup-showAllButton" />({membersDetails.length})
+                </button>
+              ))}
+            <select id="sortOrder" value={selectedValue} onChange={handleSorting} disabled={isFetching}>
+              <option value="">
+                <FormattedMessage defaultMessage="Latest (default)" id="manageGroup-selectOptionLatest" />
+              </option>
+              <option value="givenName">
+                <FormattedMessage defaultMessage="Given name (ABC)" id="manageGroup-selectOptionGivenName" />
+              </option>
+              <option value="surName">
+                <FormattedMessage defaultMessage="Surname (ABC)" id="manageGroup-selectOptionSurname" />
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <MembersListTable
+        currentPosts={currentPosts}
+        sortedData={sortedData}
+        setMembers={setMembers}
+        currentPage={currentPage}
+        postsPerPage={postsPerPage}
+      />
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={membersDetails.length}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
+
       <NotificationModal
         id="remove-selected-users-modal"
         title={
