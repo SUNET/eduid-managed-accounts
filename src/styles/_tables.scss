@@ -7,6 +7,7 @@ table {
   font-family: $inter-light;
   table-layout: fixed;
   background-color: $white;
+  border-collapse: collapse;
 
   th,
   td {

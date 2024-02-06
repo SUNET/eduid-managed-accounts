@@ -35,6 +35,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = sortedData.slice(indexOfFirstPost, indexOfLastPost);
   const isFetching = useAppSelector((state) => state.app.isFetching);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
 
   useEffect(() => {
     setSortedData(members);
@@ -144,6 +145,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   }
 
   async function exportExcel() {
+    setIsClicked(() => !isClicked);
     await handleGroupVersion();
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
@@ -179,6 +181,9 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
       anchor.download = `EPPN-${currentDateTimeToString()}.xlsx`; // maybe use Scope as file name?
       anchor.click();
       window.URL.revokeObjectURL(url);
+      setTimeout(() => {
+        setIsClicked((prevIsClicked) => !prevIsClicked);
+      }, 1000);
     });
   }
 
@@ -191,11 +196,15 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
           </span>
           <div className="buttons">
             <button
-              disabled={!isMemberSelected.length || isFetching}
+              disabled={!isMemberSelected.length || isFetching || isClicked}
               className={`btn btn-sm btn-primary`}
               onClick={() => exportExcel()}
             >
-              <FormattedMessage defaultMessage="Download Excel" id="manageGroup-exportButton" />
+              {isClicked ? (
+                <FormattedMessage defaultMessage="Downloading..." id="manageGroup-downloading" />
+              ) : (
+                <FormattedMessage defaultMessage="Download Excel" id="manageGroup-exportButton" />
+              )}
             </button>
           </div>
         </div>
