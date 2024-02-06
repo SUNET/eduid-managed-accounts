@@ -2,9 +2,8 @@
 @import "variables.scss";
 
 .listed-steps {
-  margin-left: $list-indent;
-  list-style-type: decimal;
   margin-bottom: 2rem;
+  list-style-type: decimal;
 
   li {
     margin-bottom: 1rem;
@@ -23,7 +22,6 @@
 
   .add-account & {
     margin-bottom: 0;
-    margin-left: 1.75rem;
 
     li {
       margin-bottom: 0;
