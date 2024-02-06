@@ -1,6 +1,18 @@
 {
   "jest.jestCommandLine": "node_modules/.bin/jest",
-  "cSpell.words": ["gnap", "eduid", "scim"],
+  "cSpell.words": [
+    "gnap",
+    "eduid",
+    "scim",
+    "eppn",
+    "maccapi",
+    "Personnummer",
+    "Svenska",
+    "Skolverket",
+    "fortawesome",
+    "fontawesome",
+    "givenname"
+  ],
   "cSpell.language": "en,en-US,en-GB,sv",
   "editor.rulers": [120],
   "[scss]": {
