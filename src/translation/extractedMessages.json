@@ -166,6 +166,9 @@
   "manageGroup-copyRowButton": {
     "string": "Copy row"
   },
+  "manageGroup-downloading": {
+    "string": "Downloading..."
+  },
   "manageGroup-editLabel": {
     "string": "Handle selected rows:"
   },
@@ -197,7 +200,7 @@
     "string": "You can export all selected accounts to a new Excel file by clicking DOWNLOAD EXCEL, to save or edit locally."
   },
   "manageGroup-listItem3": {
-    "string": "You can copy several/all entire selected rows at once using the COPY ROW button, or copy just the individual EPPN/username with the copy icon next to it. When copying and exporting, the full scope will be included as the username, not just the EPPN."
+    "string": "You can copy several/all entire selected rows at once using the COPY ROW button, you can also copy the entire row or copy just the individual EPPN/username with the copy icon next to it. When copying and exporting, the full scope will be included as the username, not just the EPPN."
   },
   "manageGroup-listItem4": {
     "string": "If you get a new password by clicking the NEW PASSWORD link, it must be used by the account holder (i.e. by the student for the exam), as the previous password will be invalid."
