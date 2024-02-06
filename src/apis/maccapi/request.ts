@@ -1,14 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
 
-type MaccapiResponse = {
+type MaccapiResponseRemove = {
   status: string;
   scope: string;
   user: {
     eppn: string;
     given_name: string;
     surname: string;
-    password?: string;
+  };
+};
+
+type MaccapiResponse = MaccapiResponseRemove & {
+  user: {
+    password: string;
   };
 };
 
@@ -55,7 +60,7 @@ export const createUser = createAsyncThunk<
 });
 
 export const removeUser = createAsyncThunk<
-  MaccapiResponse, // return type
+  MaccapiResponseRemove, // return type
   {
     eppn: string;
   }, // args type
