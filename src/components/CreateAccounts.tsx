@@ -234,75 +234,77 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
       const buffer = reader.result as ArrayBuffer;
       wb.xlsx.load(buffer).then((workbook) => {
         // check/find right sheet name
-        workbook.eachSheet(async (sheet, id) => {
-          // 1 - skip the first row that contains headers
-          // 2 - for each row :
-          //      - read "Given name" and "Surname" columns
-          //      - VALIDATE DATA
-          //      - create/POST a new user with these values
-          let newNames: any[] = [];
-          try {
-            sheet.eachRow((row, rowIndex) => {
-              if (rowIndex > 1) {
-                const name = {
-                  given_name: row.getCell(1).text,
-                  surname: row.getCell(2).text,
-                };
-                // Validate happens when reading the values, before creating the users
-                const errors = validatePersonalData(name);
-                if (errors && Object.keys(errors).length > 0) {
-                  setExcelImportError((prevError) => ({
-                    ...prevError,
-                    errors: {
-                      rowIndex: rowIndex,
-                    },
-                  }));
+        workbook.eachSheet((sheet, id) => {
+          (async () => {
+            // 1 - skip the first row that contains headers
+            // 2 - for each row :
+            //      - read "Given name" and "Surname" columns
+            //      - VALIDATE DATA
+            //      - create/POST a new user with these values
+            let newNames: any[] = [];
+            try {
+              sheet.eachRow((row, rowIndex) => {
+                if (rowIndex > 1) {
+                  const name = {
+                    given_name: row.getCell(1).text,
+                    surname: row.getCell(2).text,
+                  };
+                  // Validate happens when reading the values, before creating the users
+                  const errors = validatePersonalData(name);
+                  if (errors && Object.keys(errors).length > 0) {
+                    setExcelImportError((prevError) => ({
+                      ...prevError,
+                      errors: {
+                        rowIndex: rowIndex,
+                      },
+                    }));
 
-                  if (errors.hasOwnProperty("given_name")) {
-                    setExcelImportError((prevError) => ({
-                      fullName: {
-                        ...prevError?.fullName,
-                        givenName: name.given_name,
-                      },
-                      errors: {
-                        ...prevError?.errors,
-                        givenName: {
-                          id: errors?.given_name.props.id,
-                          value: errors.given_name.props.defaultMessage,
+                    if (errors.hasOwnProperty("given_name")) {
+                      setExcelImportError((prevError) => ({
+                        fullName: {
+                          ...prevError?.fullName,
+                          givenName: name.given_name,
                         },
-                      },
-                    }));
-                  }
-                  if (errors.hasOwnProperty("surname")) {
-                    setExcelImportError((prevError) => ({
-                      fullName: {
-                        ...prevError?.fullName,
-                        surName: name.surname,
-                      },
-                      errors: {
-                        ...prevError?.errors,
-                        surName: {
-                          id: errors.surname.props.id,
-                          value: errors.surname.props.defaultMessage,
+                        errors: {
+                          ...prevError?.errors,
+                          givenName: {
+                            id: errors?.given_name.props.id,
+                            value: errors.given_name.props.defaultMessage,
+                          },
                         },
-                      },
-                    }));
+                      }));
+                    }
+                    if (errors.hasOwnProperty("surname")) {
+                      setExcelImportError((prevError) => ({
+                        fullName: {
+                          ...prevError?.fullName,
+                          surName: name.surname,
+                        },
+                        errors: {
+                          ...prevError?.errors,
+                          surName: {
+                            id: errors.surname.props.id,
+                            value: errors.surname.props.defaultMessage,
+                          },
+                        },
+                      }));
+                    }
+                    throw new Error();
                   }
-                  throw new Error();
+                  newNames.push(name);
                 }
-                newNames.push(name);
-              }
-            });
-            await addUsers(newNames);
-            cleanFileInput();
-          } catch (error) {
-            dispatch(
-              showNotification({
-                message: `Some data in the Excel file is invalid. No new accounts has been created. For more details 
+              });
+              await addUsers(newNames);
+              cleanFileInput();
+            } catch (error) {
+              dispatch(
+                showNotification({
+                  message: `Some data in the Excel file is invalid. No new accounts has been created. For more details 
                 check the error message in the 'Add account by file import' area.`,
-              })
-            );
-          }
+                })
+              );
+            }
+          })();
         });
       });
     };
