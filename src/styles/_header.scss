@@ -32,6 +32,9 @@ header#header {
     }
     @media (max-width: $bp-sm) {
       text-align: left;
+      div {
+        padding: 0.375rem 0;
+      }
     }
   }
 
