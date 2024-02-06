@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Group } from "typescript-clients/scim/models/Group";
 import { Name } from "typescript-clients/scim/models/Name";
 import { NutidUserExtensionV1 } from "typescript-clients/scim/models/NutidUserExtensionV1";
@@ -41,7 +41,7 @@ export const getUsersSlice = createSlice({
         return new Date(b.meta.created).valueOf() - new Date(a.meta.created).valueOf();
       });
     },
-    addPassword: (state, action) => {
+    addPassword: (state, action: PayloadAction<{ externalId: string; password: string }>) => {
       // find externalId and add password to that object
       const index = state.members.findIndex((member) => member.externalId === action.payload.externalId);
       state.members[index].password = action.payload.password;

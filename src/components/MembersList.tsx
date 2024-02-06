@@ -144,8 +144,9 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
     setSortedData(newData);
   }
 
-  function exportExcel() {
+  async function exportExcel() {
     setIsClicked(() => !isClicked);
+    await handleGroupVersion();
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
     const [headerGivenName, headerSurname, headerEPPN, headerUsername, headerPassword] = exportHeaders();

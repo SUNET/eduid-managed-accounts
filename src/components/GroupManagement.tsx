@@ -77,8 +77,30 @@ export default function GroupManagement(): JSX.Element {
     const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id }));
     if (getGroupDetails.fulfilled.match(response)) {
       if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
+        // to protect the "state" in the current session we should copy the "password" and "selected"
+
+        // 1 - create an array of members {id: id, password: password, selected: selected} from store
+        const state = managedAccountsStore.getState();
+        const storeCopyMembersDetails: Array<{ externalId: string; password?: string }> = state.members.members
+          .filter((member) => member.password)
+          .map((member) => ({
+            externalId: member.externalId,
+            password: member.password,
+          }));
+
+        // 2 - reloadMembersDetails()
         const members = response.payload.members;
         if (members) await reloadMembersDetails(members);
+
+        // 3 - apply the "password" and "selected" to the reloadMembersDetails (filter if some accounts have been removed)
+        const existingStoreCopyMembersDetails = storeCopyMembersDetails.filter((copyMember) =>
+          state.members.members.map((storeMember) => storeMember.externalId).includes(copyMember.externalId)
+        );
+        existingStoreCopyMembersDetails.forEach(
+          (member) =>
+            member.password &&
+            dispatch(getUsersSlice.actions.addPassword({ externalId: member.externalId, password: member.password }))
+        );
       }
     }
   }
