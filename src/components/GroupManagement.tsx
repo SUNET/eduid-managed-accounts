@@ -13,6 +13,7 @@ import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
 import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 import CreateAccounts from "./CreateAccounts";
 import MembersList, { DEFAULT_POST_PER_PAGE } from "./MembersList";
+import MembersListIntro from "./MembersListIntro";
 
 const GROUP_NAME = "Managed Accounts";
 
@@ -23,6 +24,7 @@ export default function GroupManagement(): JSX.Element {
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
   const forcedLogout = useAppSelector((state) => state.app.forcedLogout);
+  const membersDetails = useAppSelector((state) => state.members.members);
   const locationState = location.state;
   const value = locationState?.subject?.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
@@ -130,7 +132,6 @@ export default function GroupManagement(): JSX.Element {
             }}
           />
         </h1>
-
         <div className="lead">
           <p>
             <FormattedMessage
@@ -153,9 +154,12 @@ export default function GroupManagement(): JSX.Element {
       <section>
         <CreateAccounts handleGroupVersion={handleGroupVersion} scope={scope} />
       </section>
-      <section>
-        <MembersList handleGroupVersion={handleGroupVersion} members={members} setMembers={setMembers} />
-      </section>
+      {membersDetails.length > 0 ? (
+        <section>
+          <MembersListIntro />
+          <MembersList handleGroupVersion={handleGroupVersion} members={members} setMembers={setMembers} />
+        </section>
+      ) : null}
     </React.Fragment>
   );
 }

@@ -1,5 +1,5 @@
 import { GenerateKeyPairOptions, exportJWK, generateKeyPair } from "jose";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { requestAccess } from "../apis/gnap/requestAccess";
 import { generateNonce } from "../common/CryptoUtils";
@@ -63,8 +63,7 @@ export function StartSession(): JSX.Element {
   }
 
   return (
-    <>
-      {/* <Splash showChildren={token !== null}> */}
+    <React.Fragment>
       <h1>
         <FormattedMessage defaultMessage="Welcome to Managed Accounts with eduID" id="landing-header" />
       </h1>
@@ -76,8 +75,8 @@ export function StartSession(): JSX.Element {
       </p>
       <p>
         <FormattedMessage
-          defaultMessage="Continue by pressing the link below to log in at your appropriate service, after which you will automatically be
-        redirected back to this service, to start managing your account."
+          defaultMessage={`Continue by pressing the link below to log in at your appropriate service, after which you 
+            will automatically be redirected back to this service, to start managing your account.`}
           id="landing-paragraph-2"
         />
       </p>
@@ -89,12 +88,13 @@ export function StartSession(): JSX.Element {
       <div className="text-small">
         <em>
           <FormattedMessage
-            defaultMessage="This is a product development of eduID as part of Sunet's government assignment to assist Skolverket with digital identity regarding the digital national exam and assessment support, by offering school principals in need thereof an IdP or e-identity. "
+            defaultMessage={`This is a product development of eduID as part of Sunet's government assignment to assist 
+              Skolverket with digital identity regarding the digital national exam and assessment support, by offering 
+              school principals in need thereof an IdP or e-identity.`}
             id="landing-info"
           />
         </em>
       </div>
-      {/* </Splash> */}
-    </>
+    </React.Fragment>
   );
 }
