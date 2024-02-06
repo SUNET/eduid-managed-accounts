@@ -8,6 +8,7 @@ import { createUser } from "../apis/maccapi/request";
 import { putGroup } from "../apis/scim/groupsRequest";
 import { postUser } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { managedAccountsStore } from "../init-app";
 import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import getUsersSlice from "../slices/getUsers";
@@ -142,8 +143,8 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     }
 
     // 2 - update group with new members
-    console.log("managedAccountsDetails", managedAccountsDetails.members); // here managedAccountsDetails has not updated members, with the risk of removing members that were added in the meantime
-    let newMembersListCopy = managedAccountsDetails?.members?.slice(); // copy array
+    const state = managedAccountsStore.getState();
+    let newMembersListCopy = state.groups.managedAccounts.members?.slice(); // copy array from store
     const updatedMembersList = newMembersListCopy?.concat(newMembersList);
     console.log("updatedMembersList", updatedMembersList);
 
