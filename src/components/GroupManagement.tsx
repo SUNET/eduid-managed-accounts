@@ -81,13 +81,12 @@ export default function GroupManagement(): JSX.Element {
 
         // 1 - create an array of members {id: id, password: password, selected: selected} from store
         const state = managedAccountsStore.getState();
-        const storeCopyMembersDetails: Array<{ externalId: string; password: string }> = state.members.members
+        const storeCopyMembersDetails: Array<{ externalId: string; password?: string }> = state.members.members
           .filter((member) => member.password)
           .map((member) => ({
             externalId: member.externalId,
             password: member.password,
           }));
-        console.log("storeCopyMembersDetails", storeCopyMembersDetails);
 
         // 2 - reloadMembersDetails()
         const members = response.payload.members;
@@ -97,9 +96,10 @@ export default function GroupManagement(): JSX.Element {
         const existingStoreCopyMembersDetails = storeCopyMembersDetails.filter((copyMember) =>
           state.members.members.map((storeMember) => storeMember.externalId).includes(copyMember.externalId)
         );
-        console.log("existingStoreCopyMembersDetails", existingStoreCopyMembersDetails);
-        existingStoreCopyMembersDetails.forEach((member) =>
-          dispatch(getUsersSlice.actions.addPassword({ externalId: member.externalId, password: member.password }))
+        existingStoreCopyMembersDetails.forEach(
+          (member) =>
+            member.password &&
+            dispatch(getUsersSlice.actions.addPassword({ externalId: member.externalId, password: member.password }))
         );
       }
     }
