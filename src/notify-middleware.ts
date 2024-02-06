@@ -13,7 +13,7 @@ const notifyAndDispatch = () => (next: any) => (action: any) => {
     }, 100);
   }
   //SCIM api error messages
-  else if (action.type.includes("scim") && action.error) {
+  else if (action.type.includes("scim/") && action.error) {
     let messageDetail: string = action.payload.detail;
     if (action.payload.status === 401) {
       next(appSlice.actions.forcedLogout());

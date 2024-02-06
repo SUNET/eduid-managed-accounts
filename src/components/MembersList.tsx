@@ -18,7 +18,7 @@ import Pagination from "./Pagination";
 export interface MembersListTypes {
   readonly members: Array<ExtendedUserResponse & { selected: boolean }>;
   readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
-  readonly handleGroupVersion: () => void;
+  readonly handleGroupVersion: () => Promise<void>;
 }
 export const DEFAULT_POST_PER_PAGE = 20;
 

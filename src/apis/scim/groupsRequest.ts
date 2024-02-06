@@ -64,8 +64,7 @@ export const getGroupsSearch = createAsyncThunk<
       };
       const scimResponse = await fetch(scim_server_url + "/Groups/.search", scimRequest);
       if (scimResponse.ok) {
-        const scimResponseJSON = await scimResponse.json();
-        return scimResponseJSON;
+        return await scimResponse.json();
       } else {
         throw await scimResponse.json();
       }
@@ -128,9 +127,8 @@ export const putGroup = createAsyncThunk<
         body: JSON.stringify(payload),
       };
       const scimResponse = await fetch(scim_server_url + "/Groups/" + args.group.id, scimRequest);
-      const jsonResponse = await scimResponse.json();
       if (scimResponse.ok) {
-        return jsonResponse;
+        return await scimResponse.json();
       } else {
         throw await scimResponse.json();
       }
