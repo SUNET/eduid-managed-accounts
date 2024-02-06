@@ -41,7 +41,7 @@ export const createUser = createAsyncThunk<
         method: "POST",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(state.config.backend_url + "/Users/create", scimRequest);
+      const scimResponse = await fetch(state.config.maccapi_url + "/Users/create", scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
@@ -74,7 +74,7 @@ export const removeUser = createAsyncThunk<
         method: "POST",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(state.config.backend_url + "/Users/remove", scimRequest);
+      const scimResponse = await fetch(state.config.maccapi_url + "/Users/remove", scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
@@ -107,7 +107,7 @@ export const resetPassword = createAsyncThunk<
         method: "POST",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(state.config.backend_url + "/Users/reset_password", scimRequest);
+      const scimResponse = await fetch(state.config.maccapi_url + "/Users/reset_password", scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
