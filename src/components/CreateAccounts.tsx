@@ -432,6 +432,8 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
               onSubmit={async (event) => {
                 await handleSubmit(event);
                 form.reset();
+                form.resetFieldState("given_name");
+                form.resetFieldState("surname");
                 inputRef.current?.focus();
               }}
             >
