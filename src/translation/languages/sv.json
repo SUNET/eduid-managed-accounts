@@ -1,30 +1,30 @@
 {
-  "Authentication source or assurance level invalid": {
+  "Access denied: Authentication source or assurance level invalid": {
     "string": "Åtkomst nekades: Authentication source or assurance level invalid"
   },
-  "Bearer token error": {
+  "Access denied: Bearer token error": {
     "string": "Åtkomst nekades: Bearer token error"
+  },
+  "Access denied: Data owner requested in access token denied": {
+    "string": "Åtkomst nekades: Data owner requested in access token denied"
+  },
+  "Access denied: Missing correct entitlement in saml data": {
+    "string": "Åtkomst nekades: Missing correct entitlement in saml data"
+  },
+  "Access denied: No authentication header found": {
+    "string": "Åtkomst nekades: No authentication header found"
+  },
+  "Access denied: Unknown data_owner": {
+    "string": "Åtkomst nekades: Unknown data_owner"
   },
   "Could not load all members details. Try again": {
     "string": "Kunde inte ladda all detaljerad medlemsinformation, var vänlig försök igen."
   },
-  "Data owner requested in access token denied": {
-    "string": "Åtkomst nekades: Data owner requested in access token denied"
-  },
   "Failed with status 401: Unknown data_owner": {
     "string": "Åtkomst nekades: Unknown data owner"
   },
-  "Missing correct entitlement in saml data": {
-    "string": "Åtkomst nekades: Missing correct entitlement in saml data"
-  },
-  "No authentication header found": {
-    "string": "Åtkomst nekades: No authentication header found"
-  },
   "Some data in the Excel file is invalid. No new accounts has been created. For more details check the error message in the 'Add account by file import' area.": {
     "string": "Data i Excelfilen är ogiltig och nya konton har inte skapats. För mer detaljer se felmeddelande under sektionen 'Lägg till konton genom fil-import'."
-  },
-  "Unknown data_owner": {
-    "string": "Åtkomst nekades: Unknown data_owner"
   },
   "addToGroup-addButton": {
     "string": "Lägg till"
