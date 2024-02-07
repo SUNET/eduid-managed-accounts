@@ -55,6 +55,9 @@ export const getUsersSlice = createSlice({
       const index = state.members.findIndex((member) => member.id === action.payload.id);
       state.members[index].selected = action.payload.value;
     },
+    setAllSelected: (state, action: PayloadAction<boolean>) => {
+      state.members = state.members.map((member) => ({ ...member, selected: action.payload }));
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserDetails.fulfilled, (state, action) => {

@@ -53,9 +53,7 @@ export function MembersListTable({ postsPerPage, currentPage }: MembersListTable
   }, [membersDetails]);
 
   function handleSelectAll() {
-    membersDetails.forEach((member: ExtendedUserResponse) => {
-      dispatch(getUsersSlice.actions.setSelected({ id: member.id, value: !selectAll }));
-    });
+    dispatch(getUsersSlice.actions.setAllSelected(!selectAll));
   }
 
   function handleSelect(member: ExtendedUserResponse) {
