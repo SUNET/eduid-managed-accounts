@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { removeUser } from "../apis/maccapi/request";
 import { getGroupDetails } from "../apis/scim/groupsRequest";
@@ -7,50 +7,29 @@ import { deleteUser } from "../apis/scim/usersRequest";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import appSlice from "../slices/appReducers";
-import { ExtendedUserResponse } from "../slices/getUsers";
+import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
 import { MembersListTable } from "./MembersListTable";
 import NotificationModal from "./NotificationModal";
 import Pagination from "./Pagination";
 
 export interface MembersListTypes {
-  readonly members: Array<ExtendedUserResponse & { selected: boolean }>;
-  readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
   readonly handleGroupVersion: () => Promise<void>;
 }
 export const DEFAULT_POST_PER_PAGE = 20;
 
-export default function MembersList({ members, setMembers, handleGroupVersion }: MembersListTypes): JSX.Element {
+export default function MembersList({ handleGroupVersion }: MembersListTypes): JSX.Element {
+  const dispatch = useAppDispatch();
   const [copiedRowToClipboard, setCopiedRowToClipboard] = useState(false);
-  const isMemberSelected = members.filter((member) => member.selected);
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
   const membersDetails = useAppSelector((state) => state.members.members);
+  const isMemberSelected = membersDetails.filter((member) => member.selected);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState("");
-  const [sortedData, setSortedData] = useState(members);
   const [postsPerPage, setPostsPerPage] = useState(DEFAULT_POST_PER_PAGE);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAll, setShowAll] = useState(false);
-  const dispatch = useAppDispatch();
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = sortedData.slice(indexOfFirstPost, indexOfLastPost);
   const isFetching = useAppSelector((state) => state.app.isFetching);
   const [isClicked, setIsClicked] = useState<boolean>(false);
-
-  useEffect(() => {
-    setSortedData(members);
-  }, [members]);
-
-  useEffect(() => {
-    setMembers(
-      membersDetails.map((member: ExtendedUserResponse) => {
-        if (member.password) {
-          return { ...member, selected: true };
-        }
-        return { ...member, selected: false };
-      })
-    );
-  }, [membersDetails]);
 
   function exportHeaders() {
     const headerGivenName = document.getElementById("header-givenname")?.textContent ?? "Given name";
@@ -97,14 +76,12 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
       setCopiedRowToClipboard(false);
     }, 1000);
   }
-  const selectedUserIds = isMemberSelected?.map((user) => user.id) || [];
 
   async function removeSelectedUser() {
     dispatch(appSlice.actions.isFetching(true));
     await handleGroupVersion();
-    const memberToBeRemoved = membersDetails?.filter((user) => selectedUserIds.includes(user.id));
-    if (memberToBeRemoved && memberToBeRemoved.length > 0) {
-      for (const member of memberToBeRemoved) {
+    if (isMemberSelected && isMemberSelected.length > 0) {
+      for (const member of isMemberSelected) {
         await dispatch(removeUser({ eppn: member.externalId.split("@")[0] }));
         const deleteUserResponse = await dispatch(deleteUser({ id: member.id, version: member.meta.version }));
         if (deleteUser.fulfilled.match(deleteUserResponse)) {
@@ -133,15 +110,13 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
   function handleSorting(e: React.ChangeEvent<HTMLSelectElement>) {
     const value = e.target?.value;
     setSelectedValue(value);
-    let newData = [...members];
     if (value === "givenName") {
-      newData.sort((a, b) => a.name.givenName.toUpperCase().localeCompare(b.name.givenName, "sv"));
+      dispatch(getUsersSlice.actions.sortByGivenName());
     } else if (value === "surName") {
-      newData.sort((a, b) => a.name.familyName.toUpperCase().localeCompare(b.name.familyName, "sv"));
+      dispatch(getUsersSlice.actions.sortBySurname());
     } else {
-      newData.sort((a, b) => b.meta.created.localeCompare(a.meta.created));
+      dispatch(getUsersSlice.actions.sortByLatest());
     }
-    setSortedData(newData);
   }
 
   async function exportExcel() {
@@ -270,13 +245,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
           </div>
         </div>
       </div>
-      <MembersListTable
-        currentPosts={currentPosts}
-        sortedData={sortedData}
-        setMembers={setMembers}
-        currentPage={currentPage}
-        postsPerPage={postsPerPage}
-      />
+      <MembersListTable currentPage={currentPage} postsPerPage={postsPerPage} />
       <Pagination
         postsPerPage={postsPerPage}
         totalPosts={membersDetails.length}

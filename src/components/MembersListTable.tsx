@@ -9,41 +9,23 @@ import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
 import NotificationModal from "./NotificationModal";
 import Splash from "./Splash";
 
-interface MembersDetailsAndSelectedType extends ExtendedUserResponse {
-  selected: boolean;
-}
-
 interface MembersListTableTypes {
-  readonly currentPosts: MembersDetailsAndSelectedType[];
-  readonly sortedData: MembersDetailsAndSelectedType[];
   readonly postsPerPage: number;
   readonly currentPage: number;
-  readonly setMembers: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export function MembersListTable({
-  currentPosts,
-  sortedData,
-  postsPerPage,
-  currentPage,
-  setMembers,
-}: MembersListTableTypes) {
+export function MembersListTable({ postsPerPage, currentPage }: MembersListTableTypes) {
+  const dispatch = useAppDispatch();
   const membersDetails = useAppSelector((state) => state.members.members);
+  const isMemberSelected = membersDetails.filter((member) => member.selected);
   const isFetching = useAppSelector((state) => state.app.isFetching);
   const [showGeneratePasswordModal, setShowGeneratePasswordModal] = useState<boolean>(false);
-  const [selectedUser, setSelectedUser] = useState<{
-    id: string | null;
-    familyName: string | null;
-    givenName: string | null;
-    externalId: string | null;
-  }>({ id: null, familyName: null, givenName: null, externalId: null });
+  const [selectedUser, setSelectedUser] = useState<ExtendedUserResponse | null>(null);
   const [tooltipCopied, setTooltipCopied] = useState(false);
   const [selectAll, setSelectAll] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    setSelectAll(false);
-  }, [membersDetails]);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = membersDetails.slice(indexOfFirstPost, indexOfLastPost);
 
   function copyToClipboard(id: string) {
     const TempText = document.createElement("input");
@@ -62,36 +44,27 @@ export function MembersListTable({
     }, 1000);
   }
 
-  function handleSelectAll() {
-    setSelectAll((prevState: any) => !prevState);
-    const updatedMembers = sortedData.map((member: any) => ({
-      ...member,
-      selected: !selectAll,
-    }));
-
-    setMembers(updatedMembers);
-  }
-
-  function handleSelect(id: string) {
-    setMembers((prevMembers: []) =>
-      prevMembers.map((member: { id: string; selected: boolean }) =>
-        member.id === id ? { ...member, selected: !member.selected } : member
-      )
-    );
-    setSelectAll(false);
-  }
-
-  function handleGenerateNewPassword(id: string) {
-    setShowGeneratePasswordModal(true);
-    const selectedMember = membersDetails.find((member: any) => member.id === id);
-    if (selectedMember) {
-      setSelectedUser({
-        id: selectedMember.id,
-        familyName: selectedMember.name.familyName,
-        givenName: selectedMember.name.givenName,
-        externalId: selectedMember.externalId,
-      });
+  useEffect(() => {
+    if (membersDetails.length === isMemberSelected.length) {
+      setSelectAll(true);
+    } else {
+      setSelectAll(false);
     }
+  }, [membersDetails]);
+
+  function handleSelectAll() {
+    membersDetails.forEach((member: ExtendedUserResponse) => {
+      dispatch(getUsersSlice.actions.setSelected({ id: member.id, value: !selectAll }));
+    });
+  }
+
+  function handleSelect(member: ExtendedUserResponse) {
+    dispatch(getUsersSlice.actions.setSelected({ id: member.id, value: !member.selected }));
+  }
+
+  function handleGenerateNewPassword(member: ExtendedUserResponse) {
+    setSelectedUser(member);
+    setShowGeneratePasswordModal(true);
   }
 
   async function generateNewPassword() {
@@ -105,7 +78,7 @@ export function MembersListTable({
           })
         );
         setShowGeneratePasswordModal(false);
-        setSelectedUser({ id: null, familyName: null, givenName: null, externalId: null });
+        setSelectedUser(null);
       }
     }
   }
@@ -146,7 +119,7 @@ export function MembersListTable({
                     <input
                       type="checkbox"
                       checked={member.selected}
-                      onChange={() => handleSelect(member.id)}
+                      onChange={() => handleSelect(member)}
                       id={"selectMember" + (index + 1)}
                     />
                     <label htmlFor={"selectMember" + (index + 1)}>{(currentPage - 1) * postsPerPage + index + 1}</label>
@@ -199,7 +172,7 @@ export function MembersListTable({
                     <button
                       id="generate-new-password"
                       className="btn btn-link btn-sm"
-                      onClick={() => handleGenerateNewPassword(member.id)}
+                      onClick={() => handleGenerateNewPassword(member)}
                     >
                       <FormattedMessage defaultMessage="New password" id="manageGroup-newPasswordLink" />
                     </button>
@@ -223,7 +196,7 @@ export function MembersListTable({
           <FormattedMessage
             defaultMessage="Are you sure you want to generate a new password for {name}? If so, please press the OK button below."
             id="manageGroup-generateNewPasswordDialogParagraph"
-            values={{ name: `"${selectedUser.givenName} ${selectedUser.familyName}"` }}
+            values={{ name: `"${selectedUser?.name.givenName} ${selectedUser?.name.familyName}"` }}
           />
         }
         showModal={showGeneratePasswordModal}
