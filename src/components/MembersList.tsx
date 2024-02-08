@@ -39,7 +39,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
 
   useEffect(() => {
     setSortedData(members);
-  }, [members]);
+  }, [sortedData, members]);
 
   useEffect(() => {
     setMembers(
@@ -50,7 +50,7 @@ export default function MembersList({ members, setMembers, handleGroupVersion }:
         return { ...member, selected: false };
       })
     );
-  }, [membersDetails]);
+  }, [members, membersDetails]);
 
   function exportHeaders() {
     const headerGivenName = document.getElementById("header-givenname")?.textContent ?? "Given name";
