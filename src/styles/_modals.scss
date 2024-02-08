@@ -7,6 +7,14 @@
   width: 60%;
   margin: 0 20%;
   padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 210;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: 0;
 
   &-dialog {
     background-color: $white;
@@ -25,17 +33,19 @@
         .modal-title {
           width: 100%;
           display: flex;
+          justify-content: space-between;
           text-transform: none;
+
           @extend .heading-2 !optional;
 
           //remove below when fixed vite @extend rule
           margin-top: 0;
-          margin-bottom: 1em;
           line-height: 1.2;
           font-family: $inter-bold;
           font-weight: unset;
           font-size: 1.65rem;
           margin-bottom: 0.75em;
+
           @media (max-width: $bp-md) {
             font-size: 1.5rem;
           }
@@ -53,59 +63,9 @@
         flex-direction: column;
         font-size: 1.25rem;
         line-height: 1.4;
-        // captcha image
-        img {
-          padding-bottom: 20px;
-        }
-        input {
-          background-color: $body-gray;
-        }
-
-        form {
-          margin-top: 0;
-        }
-
-        // move to lists?
-        ol {
-          list-style-position: inside;
-          list-style-type: decimal;
-
-          li {
-            margin-bottom: 1.125rem;
-
-            span {
-              margin-top: 0.5rem;
-              font-family: $inter-bold;
-              display: block;
-              font-size: 1rem;
-            }
-          }
-        }
-
-        // .resend-code-container {
-        //   margin-top: 1rem;
-
-        //   a {
-        //     font-size: 1rem;
-        //   }
-        // }
 
         @media (max-width: $bp-lg) {
           font-size: 1.125rem;
-
-          .form-control,
-          input {
-            font-size: inherit;
-
-            &::placeholder {
-              font-size: inherit;
-            }
-          }
-
-          // .resend-code-container {
-          //   margin-top: 1rem;
-          //   font-size: 0.9rem;
-          // }
         }
       }
 
@@ -133,20 +93,6 @@
 
       .modal-body {
         font-size: 1.125rem;
-
-        .form-control,
-        input {
-          font-size: inherit;
-
-          &::placeholder {
-            font-size: inherit;
-          }
-        }
-
-        // .resend-code-container {
-        //   margin-top: 1rem;
-        //   font-size: 0.9rem;
-        // }
       }
     }
 
@@ -158,5 +104,32 @@
   @media (max-width: $bp-lg) {
     width: 100%;
     margin: 0;
+  }
+}
+
+.modal-backdrop {
+  z-index: 200;
+  background: #000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  &.fade {
+    opacity: 0;
+    transition: opacity 0.15s linear;
+
+    .modal-dialog {
+      transition: transform 0.3s ease-out;
+      transform: translate(0, -50px);
+    }
+  }
+  &.show {
+    opacity: 0.5;
+
+    .modal-dialog {
+      transform: none;
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, AppRootState } from "init-app";
 import { CompactSign, importJWK } from "jose";
 import { getSHA256Hash } from "../../common/CryptoUtils";
+import { AppDispatch, AppRootState } from "../../init-app";
 import { ContinueAccessToken, ContinueRequest, SubjectAssertion } from "../../typescript-clients/gnap";
 
 export interface PostContinueRequestResponse {
@@ -35,7 +35,7 @@ export const postContinueRequest = createAsyncThunk<
         interact_ref: args.interactRef,
       };
       const alg = "ES256";
-      const privateJwk = JSON.parse(localStorage.getItem("privateKey") ?? "");
+      const privateJwk = JSON.parse(sessionStorage.getItem("privateKey") ?? "");
       const privateKey = await importJWK(privateJwk, alg);
 
       const jwsHeader = {

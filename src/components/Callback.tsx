@@ -2,25 +2,26 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { postContinueRequest } from "../apis/gnap/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
-import { useAppDispatch } from "../hooks";
-import { INTERACTION_RESPONSE, NONCE } from "./../initLocalStorage";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { INTERACTION_RESPONSE, NONCE } from "../initSessionStorage";
 
 export default function Callback() {
+  const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
   const dispatch = useAppDispatch();
 
-  // Get "InteractionResponse" from LocalStorage
-  const value = localStorage.getItem(INTERACTION_RESPONSE) ?? "";
+  // Get "InteractionResponse" from sessionStorage
+  const value = sessionStorage.getItem(INTERACTION_RESPONSE) ?? "";
   const interactions = JSON.parse(value) ? JSON.parse(value) : {};
-  // Get "finish" and "nonce" from LocalStorage
+  // Get "finish" and "nonce" from sessionStorage
   const finish = interactions.interact.finish;
-  const nonce = localStorage.getItem(NONCE);
+  const nonce = sessionStorage.getItem(NONCE);
 
   // Get "hash" and "interact_ref" from URL query parameters
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const hashURL = params.get("hash");
   const interactRef = params.get("interact_ref") ?? undefined;
-  const url = "https://api.eduid.docker/auth/transaction";
+  const transaction_url = `${auth_server_url}/transaction`;
 
   const navigate = useNavigate();
 
@@ -31,13 +32,13 @@ export default function Callback() {
   useEffect(() => {
     async function testHash() {
       try {
-        const hashBaseString = `${nonce}\n${finish}\n${interactRef}\n${url}`;
+        const hashBaseString = `${nonce}\n${finish}\n${interactRef}\n${transaction_url}`;
         const hashCalculated = await getSHA256Hash(hashBaseString);
         if (hashCalculated === hashURL) {
           await continueRequest();
         } else navigate("/");
       } catch {
-        console.log("error");
+        console.log("testHash error");
       }
     }
     testHash();
@@ -52,6 +53,7 @@ export default function Callback() {
     if (interactions && interactRef) {
       const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
       if (postContinueRequest.fulfilled.match(response)) {
+        sessionStorage.clear(); // remove unnecessary data from sessionStorage
         navigate("/manage", {
           state: response.payload,
         });

@@ -1,45 +1,131 @@
 {
+  "Access denied: Authentication source or assurance level invalid": {
+    "string": "Åtkomst nekades: Authentication source or assurance level invalid"
+  },
+  "Access denied: Bearer token error": {
+    "string": "Åtkomst nekades: Bearer token error"
+  },
+  "Access denied: Data owner requested in access token denied": {
+    "string": "Åtkomst nekades: Data owner requested in access token denied"
+  },
+  "Access denied: Missing correct entitlement in saml data": {
+    "string": "Åtkomst nekades: Missing correct entitlement in saml data"
+  },
+  "Access denied: No authentication header found": {
+    "string": "Åtkomst nekades: No authentication header found"
+  },
+  "Access denied: Unknown data_owner": {
+    "string": "Åtkomst nekades: Unknown data_owner"
+  },
+  "Could not load all members details. Try again": {
+    "string": "Kunde inte ladda all detaljerad medlemsinformation, var vänlig försök igen."
+  },
+  "Failed with status 401: Unknown data_owner": {
+    "string": "Åtkomst nekades: Unknown data owner"
+  },
+  "Some data in the Excel file is invalid. No new accounts has been created. For more details check the error message in the 'Add account by file import' area.": {
+    "string": "Data i Excelfilen är ogiltig och nya konton har inte skapats. För mer detaljer se felmeddelande under sektionen 'Lägg till konton genom fil-import'."
+  },
   "addToGroup-addButton": {
     "string": "Lägg till"
   },
+  "addToGroup-downloadLabel": {
+    "string": "Skapa Excel dokument med kontonamnen, t.ex. m.h.a. denna tomma mall:"
+  },
+  "addToGroup-downloadLink": {
+    "string": "Ladda ned mall"
+  },
   "addToGroup-emptyValidation": {
-    "string": "Nödvändig"
+    "string": "Nödvändig."
   },
   "addToGroup-givenName": {
     "string": "Förnamn*"
   },
+  "addToGroup-givenNamePlaceholder": {
+    "developer_comment": "Placeholder for given name text input",
+    "string": "förnamn"
+  },
   "addToGroup-heading": {
     "string": "Lägg till konto till organisationen"
+  },
+  "addToGroup-headingImport": {
+    "string": "Lägg till konton genom fil-import"
+  },
+  "addToGroup-headingManually": {
+    "string": "Lägg till konton manuellt"
   },
   "addToGroup-hideList": {
     "string": "Läs mindre om att lägga till konton"
   },
-  "addToGroup-listItem1": {
+  "addToGroup-importLabel": {
+    "string": "Skapa konton från valt Excel-dokument:"
+  },
+  "addToGroup-list1Item1": {
     "string": "Skriv in förnamn och efternamn för varje konto, ett i taget."
   },
-  "addToGroup-listItem2": {
-    "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer för detta syfte."
+  "addToGroup-list1Item2": {
+    "string": "Ange namn så att varje individ går att särskilja, t.ex. genom att lägga till en initial. Det är inte tillåtet att använda personnummer med detta syfte."
   },
-  "addToGroup-listItem3": {
+  "addToGroup-list1Item3": {
     "string": "När du klickar på knappen LÄGG TILL så läggs kontot till organisationen med skapat användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
   },
-  "addToGroup-listItem4": {
-    "string": "överför till lämpligt externt format, t.ex. genom att exportera till Excel eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session."
+  "addToGroup-list1Item4": {
+    "string": "överför till lämpligt externt format, t.ex. genom att exportera en Excel-fil eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
   },
-  "addToGroup-listItem4Strong": {
+  "addToGroup-list1Item4Strong": {
+    "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
+  },
+  "addToGroup-list2Item1": {
+    "string": "Skapa ett 2-kolumns Excel-dokument innehållande för- och efternamn åt de konton som ska läggas till. Du kan ladda ned ett exempel att fylla i genom att klicka på länken LADDA NED MALL."
+  },
+  "addToGroup-list2Item2": {
+    "string": "Importera ditt ifyllda dokument genom att klicka på knappen VÄLJ FIL för att välja din .xls eller .xlsx fil. Namnet på det importerade dokumentet syns intill knappen."
+  },
+  "addToGroup-list2Item3": {
+    "string": "Skapa sedan konton från dokumentet genom att klicka på knappen SKAPA KONTON, så läggs de till organisationen med skapade användarnamn och lösenord och visas i en tabell nedan, i sektionen \"Hantera tillagda konton\", där nytillagda konton är förvalda."
+  },
+  "addToGroup-list2Item4": {
+    "string": "överför till lämpligt externt format, t.ex. genom att exportera till en ny kompletterad Excel-fil eller kopiera, eftersom det inte går att återse samma lösenord efter denna inloggade session eller sidan laddats om."
+  },
+  "addToGroup-list2Item4Strong": {
     "string": "Notera sedan det tillhörande EPPN/användarnamnet och lösenordet som det visas i tabellen"
   },
   "addToGroup-ninValidation": {
-    "string": "Det är inte tillåtet att spara personnummer"
+    "string": "Det är inte tillåtet att spara personnummer."
   },
   "addToGroup-paragraph": {
-    "string": "Lägg till varje konto genom att använda det här formuläret, för att skapa dess användarnamn och lösenord."
+    "string": "Lägg till varje konto, antingen genom att först skapa och importera ett förberett Excel-dokument eller ett i taget med hjälp av formuläret."
+  },
+  "addToGroup-selectButton": {
+    "string": "Välj fil"
+  },
+  "addToGroup-selectLabel": {
+    "string": "Välj ifyllt Excel-dokument:"
   },
   "addToGroup-showList": {
     "string": "Läs mer om att lägga till konton"
   },
   "addToGroup-surname": {
     "string": "Efternamn*"
+  },
+  "addToGroup-surnamePlaceholder": {
+    "developer_comment": "Placeholder for surname text input",
+    "string": "efternamn"
+  },
+  "excel-file-givenName-error": {
+    "string": "Förnamn \"{givenName}\" är ogiltigt:"
+  },
+  "excel-file-rowIndex-error": {
+    "string": "Excelfilen innehåller fel i rad {row}."
+  },
+  "excel-file-surName-error": {
+    "string": "Efternamn \"{surName}\" är ogiltigt:"
+  },
+  "excel-import": {
+    "string": "Skapa konton"
+  },
+  "header-logoutLink": {
+    "string": "Logga ut"
   },
   "intro-heading": {
     "string": "Välkommen {user}"
@@ -48,10 +134,16 @@
     "string": "I formulären nedan kan du hantera din organisations konton genom att lägga till elever, för att skapa deras individuella konton med unika användarnamn - EPPN - och lösenord, som de behöver för att kunna genomföra Digitala Nationella Provet."
   },
   "intro-leadEmphasis": {
-    "string": "Innehållet kan presenteras på svenska eller engelska, välj språk i sidfoten. Användning av tjänsten lämpar sig bäst i större format än mobila enheter för bästa läsbarhet av innehållet. "
+    "string": "Innehållet kan presenteras på svenska eller engelska, välj språk i sidfoten. Användning av tjänsten lämpar sig bäst i större format än mobila enheter. Läs gärna instruktionerna i sin helhet under LÄS MER OM... länkarna. Vid första gången eller många samtidigt, kan hanteringen av konton ta tid."
+  },
+  "intro-scope": {
+    "string": "Scope:"
   },
   "landing-header": {
     "string": "Välkommen till Hantera Konton med eduID"
+  },
+  "landing-info": {
+    "string": "Det här är en produktutveckling av eduID som ett led i Sunets regeringsuppdrag att bistå Skolverket kring digital identitet för nationella prov och bedömningsstöd, genom att erbjuda skolhuvudmän som har behov därav en inloggningstjänst (IdP) eller e-legitimation."
   },
   "landing-link": {
     "string": "Gå till inloggningstjänst"
@@ -74,17 +166,23 @@
   "manageGroup-copyRowButton": {
     "string": "Kopiera rad"
   },
-  "manageGroup-editLabel": {
-    "string": "Ändra valda rader:"
+  "manageGroup-downloading": {
+    "string": "Laddar ned..."
   },
-  "manageGroup-eppnColumn": {
-    "string": "EPPN/användarnamn"
+  "manageGroup-editLabel": {
+    "string": "Hantera valda rader:"
   },
   "manageGroup-exportButton": {
     "string": "Ladda ned Excel-fil"
   },
   "manageGroup-exportLabel": {
     "string": "Exportera valda rader till Excel:"
+  },
+  "manageGroup-generateNewPasswordDialogHeading": {
+    "string": "Generera ett nytt lösenord"
+  },
+  "manageGroup-generateNewPasswordDialogParagraph": {
+    "string": "Är du säker på att du vill skapa ett nytt lösenord för {name}? Klicka i så fall på knappen OK nedan."
   },
   "manageGroup-givenNameColumn": {
     "string": "Förnamn"
@@ -117,7 +215,7 @@
     "string": "Nytt lösenord"
   },
   "manageGroup-paragraph": {
-    "string": "Exportera, kopiera eller notera varje kontos EPPN/användarnamn och lösenord under samma session som det skapas."
+    "string": "Exportera, kopiera eller notera varje kontos EPPN/användarnamn och lösenord under samma session och sid-laddning som det skapas."
   },
   "manageGroup-passwordColumn": {
     "string": "Lösenord"
@@ -126,6 +224,7 @@
     "string": "Ta bort konton ur organisationen"
   },
   "manageGroup-removeMembersDialogParagraph": {
+    "string": "Är du säker på att du vill ta bort {selectedMemberLength} konton? Klicka i så fall på knappen OK nedan."
   },
   "manageGroup-removeRowButton": {
     "string": "Ta bort rad"
@@ -156,6 +255,9 @@
   },
   "manageGroup-surnameColumn": {
     "string": "Efternamn"
+  },
+  "manageGroup-usernameColumn": {
+    "string": "Användarnamn"
   },
   "modal.close": {
     "developer_comment": "Notification modal close label",

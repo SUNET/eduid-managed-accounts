@@ -1,70 +1,106 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Personnummer from "personnummer";
-import React, { useEffect, useRef, useState } from "react";
-import { Field, Form } from "react-final-form";
+import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useLocation, useNavigate } from "react-router-dom";
-import { GroupMember } from "typescript-clients/scim/models/GroupMember";
-import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
-import { getUserDetails, postUser } from "../apis/scim/usersRequest";
+import { createGroup, getGroupDetails, getGroupsSearch } from "../apis/scim/groupsRequest";
+import { getUserDetails } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { managedAccountsStore } from "../init-app";
+import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
-import MembersList, { MembersDetailsTypes } from "./MembersList";
+import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
+import CreateAccounts from "./CreateAccounts";
+import MembersList, { DEFAULT_POST_PER_PAGE } from "./MembersList";
+import MembersListIntro from "./MembersListIntro";
 
-export const GROUP_NAME = "Managed Accounts";
-
-interface ValidatePersonalData {
-  [key: string]: string;
-}
-
-interface ErrorsType {
-  [key: string]: React.ReactNode;
-}
+const GROUP_NAME = "Managed Accounts";
 
 export default function GroupManagement(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const managedAccountsDetails = useAppSelector((state) => state.groups.managedAccounts);
-  const membersDetails = useAppSelector((state) => state.members.members);
   const isLoaded = useAppSelector((state) => state.app.isLoaded);
+  const forcedLogout = useAppSelector((state) => state.app.forcedLogout);
+  const membersDetails = useAppSelector((state) => state.members.members);
   const locationState = location.state;
-  const accessToken = locationState?.access_token?.value;
-  const value = locationState?.subject.assertions[0].value;
+  const value = locationState?.subject?.assertions[0].value;
   const parsedUserInfo = value ? JSON.parse(value) : null;
+  const eduPersonPrincipalName: string = parsedUserInfo?.attributes?.eduPersonPrincipalName;
+  const scope = eduPersonPrincipalName?.split("@")[1];
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
+      dispatch(appSlice.actions.updateAccessToken(locationState?.access_token?.value));
       dispatch(getLoggedInUserInfoSlice.actions.updateUserInfo({ user: parsedUserInfo }));
     }
-  }, [parsedUserInfo]);
+  }, [parsedUserInfo, locationState]);
 
   useEffect(() => {
-    if (!membersDetails.length && accessToken) {
-      dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
+    if (forcedLogout || !locationState) {
+      navigate("/", { replace: true, state: null });
     }
-  }, [membersDetails]);
+  }, [forcedLogout, locationState]);
 
-  useEffect(() => {
-    if (locationState === null) {
-      navigate("/");
+  function checkAllMembersDetailsAreLoaded(groupResponseMembers: any): any {
+    const state = managedAccountsStore.getState();
+
+    if (groupResponseMembers.length !== state.members.members.length) {
+      dispatch(showNotification({ message: "Could not load all members details. Try again" }));
+      // TODO: here disable all the buttons to avoid working on a partially loaded list of members (or simply logout)
+      navigate("/", { replace: true, state: null });
     }
-  }, [navigate, locationState]);
+  }
 
   async function reloadMembersDetails(members: GroupMember[]) {
     dispatch(getUsersSlice.actions.initialize());
-    if (members) {
-      await Promise.all(
-        members?.map(async (member: GroupMember) => {
-          await dispatch(getUserDetails({ id: member.value, accessToken: accessToken }));
-        })
-      );
-      dispatch(getUsersSlice.actions.sortByLatest());
+    const chunkSize = DEFAULT_POST_PER_PAGE * 3; // empirical value
+    for (let i = 0; i < members.length; i += chunkSize) {
+      // run in chunks to avoid server overload
+      const chunk = members.slice(i, i + chunkSize);
+      if (chunk) {
+        await Promise.all(
+          chunk?.map(async (member: GroupMember) => {
+            await dispatch(getUserDetails({ id: member.value }));
+          })
+        );
+      }
+    }
+    checkAllMembersDetailsAreLoaded(members);
+    dispatch(getUsersSlice.actions.sortByLatest());
+  }
+
+  async function handleGroupVersion() {
+    const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id }));
+    if (getGroupDetails.fulfilled.match(response)) {
+      if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
+        // to protect the "state" in the current session we should copy the "password" and "selected"
+
+        // 1 - create an array of members {id: id, password: password, selected: selected} from store
+        const state = managedAccountsStore.getState();
+        const storeCopyMembersDetails: Array<{ externalId: string; password?: string }> = state.members.members
+          .filter((member) => member.password)
+          .map((member) => ({
+            externalId: member.externalId,
+            password: member.password,
+          }));
+
+        // 2 - reloadMembersDetails()
+        const members = response.payload.members;
+        if (members) await reloadMembersDetails(members);
+
+        // 3 - apply the "password" and "selected" to the reloadMembersDetails (filter if some accounts have been removed)
+        const existingStoreCopyMembersDetails = storeCopyMembersDetails.filter((copyMember) =>
+          state.members.members.map((storeMember) => storeMember.externalId).includes(copyMember.externalId)
+        );
+        existingStoreCopyMembersDetails.forEach(
+          (member) =>
+            member.password &&
+            dispatch(getUsersSlice.actions.addPassword({ externalId: member.externalId, password: member.password }))
+        );
+      }
     }
   }
 
@@ -79,19 +115,19 @@ export default function GroupManagement(): JSX.Element {
       try {
         dispatch(getUsersSlice.actions.initialize());
         dispatch(getGroupsSlice.actions.initialize());
-        const result = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME, accessToken: accessToken }));
+        const result = await dispatch(getGroupsSearch({ searchFilter: GROUP_NAME }));
         if (getGroupsSearch.fulfilled.match(result)) {
+          dispatch(appSlice.actions.isFetching(true));
           if (!result.payload?.Resources?.length) {
-            dispatch(createGroup({ displayName: GROUP_NAME, accessToken: accessToken }));
+            dispatch(createGroup({ displayName: GROUP_NAME }));
           } else if (result.payload.Resources?.length === 1) {
-            const response = await dispatch(
-              getGroupDetails({ id: result.payload.Resources[0].id, accessToken: accessToken })
-            );
+            const response = await dispatch(getGroupDetails({ id: result.payload.Resources[0].id }));
             if (getGroupDetails.fulfilled.match(response)) {
               const members = response.payload.members;
               if (members) await reloadMembersDetails(members);
             }
           }
+          dispatch(appSlice.actions.isFetching(false));
         } else if (getGroupsSearch.rejected.match(result)) {
           // when user get 401 error, it will redirect to login page or landing page
         }
@@ -103,109 +139,7 @@ export default function GroupManagement(): JSX.Element {
       initializeManagedAccountsGroup();
       dispatch(appSlice.actions.appIsLoaded(true));
     }
-  }, [dispatch, accessToken]);
-
-  async function addUser(values: any) {
-    await handleGroupVersion();
-    if (values.given_name && values.surname) {
-      try {
-        const eduPersonPrincipalName: string = parsedUserInfo.attributes?.eduPersonPrincipalName;
-        const scope = eduPersonPrincipalName.split("@")[1];
-        const createdUserResponse = await dispatch(
-          postUser({
-            familyName: values.surname,
-            givenName: values.given_name,
-            accessToken: accessToken,
-            scope: scope,
-          })
-        );
-        if (postUser.fulfilled.match(createdUserResponse)) {
-          const newGroupMember: GroupMember = {
-            $ref: createdUserResponse.payload.meta?.location,
-            value: createdUserResponse.payload.id,
-            display: createdUserResponse.payload.name?.familyName + " " + createdUserResponse.payload.name?.givenName,
-          };
-
-          let newMembersList = await managedAccountsDetails.members?.slice(); // copy array
-
-          await newMembersList?.push(newGroupMember);
-          // from here run again in case of "version mismatch"
-
-          const response = await dispatch(
-            putGroup({
-              group: {
-                ...managedAccountsDetails,
-                members: newMembersList,
-              },
-              accessToken: accessToken,
-            })
-          );
-        }
-      } catch (error) {
-        console.log("error", error);
-      }
-    }
-  }
-
-  async function handleGroupVersion() {
-    const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id, accessToken: accessToken }));
-    if (getGroupDetails.fulfilled.match(response)) {
-      if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
-        const members = response.payload.members;
-        if (members) await reloadMembersDetails(members);
-      }
-    }
-  }
-
-  function containsNationalIDNumber(params: string) {
-    // 0 -filter out all non-digits
-    const inputNumbers = params.replace(/\D/g, "");
-    // 1 - if less than 10 digits, return false
-    const ID_NUMBER_MIN_LENGTH = 10;
-    if (inputNumbers.length < ID_NUMBER_MIN_LENGTH) {
-      return false;
-    } else {
-      // 2 - else, test the first 10 characters and personnummer library
-      for (let i = 0; i < inputNumbers.length - 10 + 1; i++) {
-        if (Personnummer.valid(inputNumbers.substring(i, i + ID_NUMBER_MIN_LENGTH))) {
-          return true;
-        }
-      }
-    }
-  }
-
-  const validatePersonalData = (values: ValidatePersonalData) => {
-    const errors: ErrorsType = {};
-    if (values !== undefined) {
-      ["given_name", "surname"].forEach((inputName) => {
-        // check if the input is empty or it contains only spaces
-        if (!values[inputName] || !values[inputName].trim()) {
-          errors[inputName] = <FormattedMessage defaultMessage="Required" id="addToGroup-emptyValidation" />;
-          // check if it is national ID number
-        } else if (containsNationalIDNumber(values[inputName])) {
-          errors[inputName] = (
-            <FormattedMessage
-              defaultMessage="It is not allowed to save a national ID number"
-              id="addToGroup-ninValidation"
-            />
-          );
-        }
-      });
-    }
-    return errors;
-  };
-
-  const [members, setMembers] = useState<Array<MembersDetailsTypes & { selected: boolean }>>([]);
-  const [showMore, setShowMore] = useState(true);
-  function toggleShowMore() {
-    setShowMore(!showMore);
-  }
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  if (locationState === null) {
-    return <></>;
-  }
+  }, []);
 
   return (
     <React.Fragment>
@@ -215,7 +149,7 @@ export default function GroupManagement(): JSX.Element {
             defaultMessage="Welcome {user}"
             id="intro-heading"
             values={{
-              user: parsedUserInfo.attributes.displayName,
+              user: `${parsedUserInfo?.attributes?.givenName} ${parsedUserInfo?.attributes?.sn}`,
             }}
           />
         </h1>
@@ -231,7 +165,7 @@ export default function GroupManagement(): JSX.Element {
             <em>
               <FormattedMessage
                 defaultMessage="The contents can be presented in Swedish or English, choose language in the footer of this web page. 
-              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility of the forms."
+              You are advised to use the service in a larger browser window, i.e. not mobile device, for legibility and to read the full instructions under the READ MORE... links. If you are managing accounts for the first time, or many at once, it may take some time until complete."
                 id="intro-leadEmphasis"
               />
             </em>
@@ -239,129 +173,14 @@ export default function GroupManagement(): JSX.Element {
         </div>
       </section>
       <section>
-        <h2>
-          <FormattedMessage defaultMessage="Add account to organisation" id="addToGroup-heading" />
-        </h2>
-        <p>
-          <FormattedMessage
-            defaultMessage="Add every account by using this form, to create the username and password."
-            id="addToGroup-paragraph"
-          />
-        </p>
-        {showMore ? (
-          <button
-            type="button"
-            aria-label={showMore ? "hide instructions" : "show instructions"}
-            className="btn btn-link"
-            onClick={toggleShowMore}
-          >
-            <FormattedMessage defaultMessage="READ MORE ON HOW TO ADD ACCOUNTS" id="addToGroup-showList" />
-            <FontAwesomeIcon icon={faChevronDown as IconProp} />
-          </button>
-        ) : (
-          <>
-            <button
-              type="button"
-              aria-label={showMore ? "hide instructions" : "show instructions"}
-              className="btn btn-link"
-              onClick={toggleShowMore}
-            >
-              <FormattedMessage defaultMessage="READ LESS ON HOW TO ADD ACCOUNTS" id="addToGroup-hideList" />
-              <FontAwesomeIcon icon={faChevronUp as IconProp} />
-            </button>
-            <ol className="listed-steps">
-              <li>
-                <FormattedMessage
-                  defaultMessage="Enter the given name and surname for each account, one at a time."
-                  id="addToGroup-listItem1"
-                />
-              </li>
-              <li>
-                <FormattedMessage
-                  defaultMessage="Write the name so that you can distinguish the identity of the person even if there are 
-                identical names e.g. by adding an initial. It is not allowed to use personal ID numbers for this use."
-                  id="addToGroup-listItem2"
-                />
-              </li>
-              <li>
-                <FormattedMessage
-                  defaultMessage='When you click the ADD button the account will be added to the organisation with a created username and password and appearing in a table below in the "Manage added accounts" section, where the newly added accounts will be pre-selected.'
-                  id="addToGroup-listItem3"
-                />
-              </li>
-              <li>
-                <strong>
-                  <FormattedMessage
-                    defaultMessage="Then note the corresponding EPPN/username and password which appears in the table"
-                    id="addToGroup-listItem4Strong"
-                  />
-                </strong>
-                ,&nbsp;
-                <FormattedMessage
-                  defaultMessage="transfer it to an external system of your choice, e.g. by exporting to Excel or copying, as you will not be able to retrieve the same password afterwards, and it will only be visible during this logged in session."
-                  id="addToGroup-listItem4"
-                />
-              </li>
-            </ol>
-          </>
-        )}
-
-        <Form
-          validate={validatePersonalData}
-          onSubmit={addUser}
-          render={({ handleSubmit, form, submitting, invalid }) => (
-            <form
-              onSubmit={async (event) => {
-                await handleSubmit(event);
-                form.reset();
-                inputRef.current?.focus();
-              }}
-            >
-              <div className="flex-between">
-                <Field name="given_name">
-                  {({ input, meta }) => (
-                    <fieldset>
-                      <label htmlFor="givenName">
-                        <FormattedMessage defaultMessage="Given name*" id="addToGroup-givenName" />
-                      </label>
-                      <input type="text" {...input} placeholder="given name" id="givenName" ref={inputRef} autoFocus />
-                      {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
-                  )}
-                </Field>
-
-                <Field name="surname">
-                  {({ input, meta }) => (
-                    <fieldset>
-                      <label htmlFor="surName">
-                        <FormattedMessage defaultMessage="Surname*" id="addToGroup-surname" />
-                      </label>
-                      <input type="text" {...input} placeholder="surname" id="surName" />
-                      {meta.touched && meta.error && <span className="input-validate-error">{meta.error}</span>}
-                    </fieldset>
-                  )}
-                </Field>
-
-                <button disabled={submitting || invalid} className="btn btn-primary">
-                  <FormattedMessage defaultMessage="Add" id="addToGroup-addButton" />
-                </button>
-              </div>
-            </form>
-          )}
-        />
+        <CreateAccounts handleGroupVersion={handleGroupVersion} scope={scope} />
       </section>
-      <section>
-        <MembersList
-          handleGroupVersion={handleGroupVersion}
-          accessToken={accessToken}
-          members={members}
-          setMembers={setMembers}
-          membersDetails={membersDetails}
-        />
-      </section>
-
-      {/* <Splash showChildren={managedAccountsDetails.id}> */}
+      {membersDetails.length > 0 ? (
+        <section>
+          <MembersListIntro />
+          <MembersList handleGroupVersion={handleGroupVersion} />
+        </section>
+      ) : null}
     </React.Fragment>
-    // </Splash>
   );
 }

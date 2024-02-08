@@ -4,12 +4,11 @@ interface GetLoggedInUserInfoState {
   loggedInUser: {
     user?: {
       attributes: {
-        displayName: string;
         eduPersonAssurance: string[];
         eduPersonEntitlement: string[];
         eduPersonTargetedID: string;
+        eduPersonPrincipalName: string;
         givenName: string;
-        mail: string;
         sn: string;
       };
     };
@@ -20,12 +19,11 @@ export const initialState: GetLoggedInUserInfoState = {
   loggedInUser: {
     user: {
       attributes: {
-        displayName: "",
         eduPersonAssurance: [],
         eduPersonEntitlement: [],
         eduPersonTargetedID: "",
+        eduPersonPrincipalName: "",
         givenName: "",
-        mail: "",
         sn: "",
       },
     },

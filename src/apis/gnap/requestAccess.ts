@@ -20,7 +20,7 @@ export async function requestAccess(
   redirect_url: string
 ) {
   const atr: AccessTokenRequest = {
-    access: [{ scope: "eduid.docker", type: "scim-api" }],
+    access: [{ type: "scim-api" }, { type: "maccapi" }],
     flags: [AccessTokenFlags.BEARER],
   };
 

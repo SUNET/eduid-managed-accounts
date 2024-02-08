@@ -2,13 +2,13 @@
 @import "variables.scss";
 
 .listed-steps {
-  margin-left: $list-indent;
+  margin-bottom: 2rem;
   list-style-type: decimal;
 
   li {
-    font-size: 1.125rem;
-    line-height: 1.25;
-    margin-bottom: 2em;
+    margin-bottom: 1rem;
+    font-size: $txt-sm;
+    line-height: 1.375;
 
     &::marker {
       font-size: 1em;
@@ -19,27 +19,17 @@
       margin-bottom: 0;
     }
   }
-  @media (max-width: $bp-sm) {
-    /* counteracts additional list left margin in mobile mode */
-    .x-adjust {
-      margin-left: #{-1 * $list-indent};
+
+  .add-account & {
+    margin-bottom: 0;
+
+    li {
+      margin-bottom: 0;
+
+      label {
+        flex: 1;
+        font-size: 15px;
+      }
     }
   }
-}
-
-dl.terms {
-  dt {
-    @extend .heading-4 !optional;
-  }
-  dd {
-    margin-bottom: 0.5rem;
-    font-size: $txt-md;
-    display: list-item;
-    list-style-position: inside;
-
-    + dt {
-      margin-top: 1.5rem;
-    }
-  }
-  margin-bottom: 1rem;
 }

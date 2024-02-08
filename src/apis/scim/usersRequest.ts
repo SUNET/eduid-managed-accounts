@@ -1,36 +1,36 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, AppRootState } from "init-app";
-import { UserResponse } from "typescript-clients/scim";
-import { fakeEPPN } from "../../common/testEPPNData";
-import { handleErrorResponse } from "./error";
+import { ExtendedUserResponse } from "../../slices/getUsers";
 import { scimHeaders } from "./groupsRequest";
 
 export const postUser = createAsyncThunk<
-  UserResponse, // return type
+  ExtendedUserResponse, // return type
   {
     familyName: string;
     givenName: string;
-    accessToken: string;
-    scope: string;
+    loggedInUserScope: string;
+    externalId: string;
   }, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/postUser", async (args, thunkAPI) => {
+>("scim/postUser", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
-    if (args.accessToken) {
-      const eduIdEppn: string = fakeEPPN(); // what could be expected from eppn API
-      const organizerEppn: string = `${eduIdEppn.split("@")[0]}@${args.scope}`;
-      const headers = scimHeaders(args.accessToken);
+    const accessToken = state.app.accessToken;
+    if (accessToken) {
+      const eduIdEppnAccount: string = args.externalId.split("@")[0];
+      const headers = scimHeaders(accessToken);
       const payload = {
         schemas: ["urn:ietf:params:scim:schemas:core:2.0:User", "https://scim.eduid.se/schema/nutid/user/v1"],
-        externalId: eduIdEppn,
+        externalId: args.externalId, // PRODUCTION @eduid.se or STAGING @dev.eduid.se
         name: {
           familyName: args.familyName,
           givenName: args.givenName,
         },
         "https://scim.eduid.se/schema/nutid/user/v1": {
-          profiles: { connectIdp: { attributes: { eduPersonPrincipalName: organizerEppn } } },
+          profiles: {
+            connectIdp: { attributes: { eduPersonPrincipalName: `${eduIdEppnAccount}@${args.loggedInUserScope}` } },
+          },
         },
       };
       const scimRequest = {
@@ -38,13 +38,12 @@ export const postUser = createAsyncThunk<
         method: "POST",
         body: JSON.stringify(payload),
       };
-      const scimResponse = await fetch(scim_server_url + "/Users", scimRequest);
+      const scimResponse = await fetch(scim_server_url + "/Users/", scimRequest);
 
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        throw await scimResponse.json();
       }
     }
   } catch (error) {
@@ -53,15 +52,16 @@ export const postUser = createAsyncThunk<
 });
 
 export const getUserDetails = createAsyncThunk<
-  UserResponse, // return type
-  { id: string; accessToken: string }, // args type
+  ExtendedUserResponse, // return type
+  { id: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/getUserDetails", async (args, thunkAPI) => {
+>("scim/getUserDetails", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
-    if (args.accessToken) {
-      const headers = scimHeaders(args.accessToken);
+    const accessToken = state.app.accessToken;
+    if (accessToken) {
+      const headers = scimHeaders(accessToken);
       const scimRequest = {
         headers: headers,
         method: "GET",
@@ -71,8 +71,7 @@ export const getUserDetails = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        throw await scimResponse.json();
       }
     }
   } catch (error) {
@@ -82,25 +81,24 @@ export const getUserDetails = createAsyncThunk<
 
 export const deleteUser = createAsyncThunk<
   any, // return type
-  { user: { id: string; version: string }; accessToken: string }, // args type
+  { id: string; version: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
->("auth/deleteUser", async (args, thunkAPI) => {
+>("scim/deleteUser", async (args, thunkAPI) => {
   try {
     const state = thunkAPI.getState();
     const scim_server_url = state.config.scim_server_url;
-    if (args.accessToken) {
-      const headers = { ...scimHeaders(args.accessToken), "If-Match": args.user.version };
+    const accessToken = state.app.accessToken;
+    if (accessToken) {
+      const headers = { ...scimHeaders(accessToken), "If-Match": args.version };
       const scimRequest = {
         headers: headers,
         method: "DELETE",
       };
-      const scimResponse = await fetch(scim_server_url + "/Users/" + args.user.id, scimRequest);
+      const scimResponse = await fetch(scim_server_url + "/Users/" + args.id, scimRequest);
       if (scimResponse.ok) {
-        console.log("Successfully deleted user");
-        return args.user;
+        return args;
       } else {
-        const result = await scimResponse.json();
-        await handleErrorResponse(result);
+        throw await scimResponse.json();
       }
     }
   } catch (error) {

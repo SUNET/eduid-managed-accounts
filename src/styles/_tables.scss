@@ -3,57 +3,56 @@
 
 table {
   width: 100%;
-  font-size: 1.125rem;
+  font-size: $txt-sm;
   font-family: $inter-light;
   table-layout: fixed;
   background-color: $white;
+  border-collapse: collapse;
 
-  @media (max-width: $bp-md) {
-    font-size: 1rem;
+  th,
+  td {
+    text-align: left;
+    vertical-align: middle;
   }
 
-  & tbody {
+  th {
+    font-family: $inter-bold;
+    padding: 1rem 0.5rem;
+
+    &:first-child {
+      white-space: nowrap;
+      padding-left: 1rem;
+      width: 4.25rem;
+    }
+  }
+
+  tbody {
     margin-bottom: 1rem;
 
-    & th:first-child {
-      padding-left: 1rem;
-      padding-top: 0.75rem;
-      line-height: 1;
-    }
-
-    & td {
-      text-align: left;
-      vertical-align: middle;
-      line-height: 1;
-      padding-left: 20px;
-    }
-
-    td:first-child {
-      width: 20%;
-    }
-
-    & tr {
+    tr {
       height: 3rem;
 
-      &td:first-child {
-        padding-left: 1rem;
-        padding-right: 1rem;
+      &:nth-child(odd) {
+        background-color: $bg-gray;
       }
-    }
 
-    td:last-child {
-      a {
-        font-size: 0.75em;
+      td {
+        word-wrap: break-word;
+        line-height: 1;
+        padding: 0.25rem 0.5rem;
+
+        &:first-child {
+          padding-left: 1rem;
+
+          .flex-between {
+            justify-content: flex-start;
+          }
+        }
+
+        .btn-link {
+          height: auto;
+        }
       }
-    }
-
-    & tr.display-none {
-      display: none;
     }
   }
-}
-
-caption {
-  caption-side: top;
-  color: inherit;
 }

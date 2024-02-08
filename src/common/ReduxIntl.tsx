@@ -19,7 +19,7 @@ type Props = {
  * will result in re-rendering of all components using those settings (i.e. changing language).
  */
 export const ReduxIntlProvider: React.FC<Props> = ({ store, children }) => (
-  <ReduxProvider store={store} >
+  <ReduxProvider store={store}>
     <IntlProvider>{children}</IntlProvider>
   </ReduxProvider>
 );
