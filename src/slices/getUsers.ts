@@ -19,6 +19,7 @@ export type ExtendedUserResponse = UserResponse & {
   groups: Array<Group>;
   "https://scim.eduid.se/schema/nutid/user/v1"?: ExternalProfileWithScope;
   password?: string;
+  selected?: boolean;
 };
 
 export interface GetUsersState {
@@ -37,21 +38,35 @@ export const getUsersSlice = createSlice({
       state.members = [];
     },
     sortByLatest: (state) => {
-      state.members?.sort(function (a, b) {
-        return new Date(b.meta.created).valueOf() - new Date(a.meta.created).valueOf();
-      });
+      state.members?.sort((a, b) => b.meta.created.localeCompare(a.meta.created));
+    },
+    sortByGivenName: (state) => {
+      state.members?.sort((a, b) => a.name.givenName.toUpperCase().localeCompare(b.name.givenName, "sv"));
+    },
+    sortBySurname: (state) => {
+      state.members?.sort((a, b) => a.name.familyName.toUpperCase().localeCompare(b.name.familyName, "sv"));
     },
     addPassword: (state, action: PayloadAction<{ externalId: string; password: string }>) => {
-      // find externalId and add password to that object
       const index = state.members.findIndex((member) => member.externalId === action.payload.externalId);
       state.members[index].password = action.payload.password;
+      state.members[index].selected = true;
+    },
+    setSelected: (state, action: PayloadAction<{ id: string; value: boolean }>) => {
+      const index = state.members.findIndex((member) => member.id === action.payload.id);
+      state.members[index].selected = action.payload.value;
+    },
+    setAllSelected: (state, action: PayloadAction<boolean>) => {
+      state.members = state.members.map((member) => ({ ...member, selected: action.payload }));
     },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserDetails.fulfilled, (state, action) => {
+      // this initialize the state adding the property "selected" with default value "false"
+      action.payload.selected = false;
       state.members.push(action.payload);
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
+      action.payload.selected = true;
       state.members.unshift(action.payload);
     });
     builder.addCase(deleteUser.fulfilled, (state, action) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createGroup, getGroupDetails, getGroupsSearch } from "../apis/scim/groupsRequest";
@@ -9,7 +9,7 @@ import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
-import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
+import getUsersSlice from "../slices/getUsers";
 import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 import CreateAccounts from "./CreateAccounts";
 import MembersList, { DEFAULT_POST_PER_PAGE } from "./MembersList";
@@ -30,7 +30,6 @@ export default function GroupManagement(): JSX.Element {
   const parsedUserInfo = value ? JSON.parse(value) : null;
   const eduPersonPrincipalName: string = parsedUserInfo?.attributes?.eduPersonPrincipalName;
   const scope = eduPersonPrincipalName?.split("@")[1];
-  const [members, setMembers] = useState<Array<ExtendedUserResponse & { selected: boolean }>>([]);
 
   useEffect(() => {
     if (parsedUserInfo && !isLoaded) {
@@ -179,7 +178,7 @@ export default function GroupManagement(): JSX.Element {
       {membersDetails.length > 0 ? (
         <section>
           <MembersListIntro />
-          <MembersList handleGroupVersion={handleGroupVersion} members={members} setMembers={setMembers} />
+          <MembersList handleGroupVersion={handleGroupVersion} />
         </section>
       ) : null}
     </React.Fragment>
