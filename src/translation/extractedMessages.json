@@ -262,5 +262,14 @@
   "modal.close": {
     "developer_comment": "Notification modal close label",
     "string": "Close"
+  },
+  "not found heading": {
+    "string": "Page not found"
+  },
+  "not found link": {
+    "string": "Go to Managed Accounts"
+  },
+  "not found paragraph": {
+    "string": "We can't find what you are looking for. This may be due to a technical error or a typo. Please try again or use the link to move forward."
   }
 }
