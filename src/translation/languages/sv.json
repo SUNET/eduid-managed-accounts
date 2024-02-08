@@ -262,5 +262,14 @@
   "modal.close": {
     "developer_comment": "Notification modal close label",
     "string": "Stäng"
+  },
+  "not found heading": {
+    "string": "Sidan kan inte hittas"
+  },
+  "not found link": {
+    "string": "Gå till Managed Accounts"
+  },
+  "not found paragraph": {
+    "string": "Vi kan tyvärr inte hitta det du letar efter. Det kan bero på ett tekniskt fel eller stavfel. Vanligen prova igen eller använd länken för att ta dig vidare."
   }
 }
