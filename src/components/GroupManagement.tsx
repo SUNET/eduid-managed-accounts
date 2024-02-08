@@ -80,25 +80,33 @@ export default function GroupManagement(): JSX.Element {
 
         // 1 - create an array of members {id: id, password: password, selected: selected} from store
         const state = managedAccountsStore.getState();
-        const storeCopyMembersDetails: Array<{ externalId: string; password?: string }> = state.members.members
-          .filter((member) => member.password)
-          .map((member) => ({
-            externalId: member.externalId,
-            password: member.password,
-          }));
+        const storeCopyMembersDetails: Array<{ externalId: string; password?: string; selected?: boolean }> =
+          state.members.members
+            .filter((member) => member.password || member.selected)
+            .map((member) => ({
+              externalId: member.externalId,
+              password: member.password,
+              selected: member.selected,
+            }));
 
         // 2 - reloadMembersDetails()
         const members = response.payload.members;
         if (members) await reloadMembersDetails(members);
 
         // 3 - apply the "password" and "selected" to the reloadMembersDetails (filter if some accounts have been removed)
-        const existingStoreCopyMembersDetails = storeCopyMembersDetails.filter((copyMember) =>
-          state.members.members.map((storeMember) => storeMember.externalId).includes(copyMember.externalId)
+        // Read again from store to get the updated state
+        const updateState = managedAccountsStore.getState();
+        const temp = storeCopyMembersDetails.filter((copyMember) =>
+          updateState.members.members.some((member) => copyMember.externalId === member.externalId)
         );
-        existingStoreCopyMembersDetails.forEach(
-          (member) =>
-            member.password &&
-            dispatch(getUsersSlice.actions.addPassword({ externalId: member.externalId, password: member.password }))
+        temp.forEach((member: any) =>
+          dispatch(
+            getUsersSlice.actions.setAccountState({
+              externalId: member.externalId,
+              password: member.password,
+              selected: member.selected,
+            })
+          )
         );
       }
     }
