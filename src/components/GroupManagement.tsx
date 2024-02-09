@@ -9,7 +9,7 @@ import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
-import getUsersSlice from "../slices/getUsers";
+import getUsersSlice, { AccountState } from "../slices/getUsers";
 import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 import CreateAccounts from "./CreateAccounts";
 import MembersList, { DEFAULT_POST_PER_PAGE } from "./MembersList";
@@ -80,14 +80,13 @@ export default function GroupManagement(): JSX.Element {
 
         // 1 - create an array of members {id: id, password: password, selected: selected} from store
         const state = managedAccountsStore.getState();
-        const storeCopyMembersDetails: Array<{ externalId: string; password?: string; selected?: boolean }> =
-          state.members.members
-            .filter((member) => member.password || member.selected)
-            .map((member) => ({
-              externalId: member.externalId,
-              password: member.password,
-              selected: member.selected,
-            }));
+        const storeCopyMembersDetails: Array<AccountState> = state.members.members
+          .filter((member) => member.password || member.selected)
+          .map((member) => ({
+            externalId: member.externalId,
+            password: member.password,
+            selected: member.selected,
+          }));
 
         // 2 - reloadMembersDetails()
         const members = response.payload.members;
@@ -99,7 +98,7 @@ export default function GroupManagement(): JSX.Element {
         const temp = storeCopyMembersDetails.filter((copyMember) =>
           updateState.members.members.some((member) => copyMember.externalId === member.externalId)
         );
-        temp.forEach((member: any) =>
+        temp.forEach((member: AccountState) =>
           dispatch(
             getUsersSlice.actions.setAccountState({
               externalId: member.externalId,
