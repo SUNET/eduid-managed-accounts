@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { postContinueRequest } from "../apis/gnap/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { INTERACTION_RESPONSE, NONCE } from "../initSessionStorage";
+import { INTERACTION_RESPONSE, NONCE, RANDOM_GENERATED_KID } from "../initSessionStorage";
 
 export default function Callback() {
   const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
@@ -12,9 +12,10 @@ export default function Callback() {
   // Get "InteractionResponse" from sessionStorage
   const value = sessionStorage.getItem(INTERACTION_RESPONSE) ?? "";
   const interactions = JSON.parse(value) ? JSON.parse(value) : {};
-  // Get "finish" and "nonce" from sessionStorage
+  // Get "finish", "nonce" and "random_generated_kid" from sessionStorage
   const finish = interactions.interact.finish;
   const nonce = sessionStorage.getItem(NONCE);
+  const random_generated_kid = sessionStorage.getItem(RANDOM_GENERATED_KID) ?? "";
 
   // Get "hash" and "interact_ref" from URL query parameters
   const location = useLocation();
@@ -38,7 +39,7 @@ export default function Callback() {
           await continueRequest();
         } else navigate("/");
       } catch {
-        console.log("testHash error");
+        console.error("testHash error");
       }
     }
     testHash();
@@ -51,7 +52,13 @@ export default function Callback() {
    * */
   const continueRequest = async () => {
     if (interactions && interactRef) {
-      const response = await dispatch(postContinueRequest({ interactions: interactions, interactRef: interactRef }));
+      const response = await dispatch(
+        postContinueRequest({
+          interactions: interactions,
+          interactRef: interactRef,
+          random_generated_kid: random_generated_kid,
+        })
+      );
       if (postContinueRequest.fulfilled.match(response)) {
         sessionStorage.clear(); // remove unnecessary data from sessionStorage
         navigate("/manage", {

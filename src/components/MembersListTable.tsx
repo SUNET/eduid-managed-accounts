@@ -70,11 +70,13 @@ export function MembersListTable({ postsPerPage, currentPage }: MembersListTable
       const maccapiUserResponse = await dispatch(resetPassword({ eppn: selectedUser?.externalId?.split("@")[0] }));
       if (resetPassword.fulfilled.match(maccapiUserResponse)) {
         dispatch(
-          getUsersSlice.actions.setAccountState({
-            password: maccapiUserResponse.payload.user.password,
-            externalId: selectedUser?.externalId,
-            selected: true,
-          })
+          getUsersSlice.actions.setAccountsState([
+            {
+              password: maccapiUserResponse.payload.user.password,
+              externalId: selectedUser?.externalId,
+              selected: true,
+            },
+          ])
         );
         setShowGeneratePasswordModal(false);
         setSelectedUser(null);

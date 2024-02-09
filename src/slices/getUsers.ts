@@ -55,10 +55,14 @@ export const getUsersSlice = createSlice({
     setAllSelected: (state, action: PayloadAction<boolean>) => {
       state.members = state.members.map((member) => ({ ...member, selected: action.payload }));
     },
-    setAccountState: (state, action: PayloadAction<AccountState>) => {
-      const index = state.members.findIndex((member) => member.externalId === action.payload.externalId);
-      state.members[index].password = action.payload.password ? action.payload.password : undefined;
-      state.members[index].selected = action.payload.selected ? action.payload.selected : false;
+    setAccountsState: (state, action: PayloadAction<Array<AccountState>>) => {
+      action.payload.forEach((accountStateMember) => {
+        const index = state.members.findIndex(
+          (storeMember) => storeMember.externalId === accountStateMember.externalId
+        );
+        state.members[index].password = accountStateMember.password ? accountStateMember.password : undefined;
+        state.members[index].selected = accountStateMember.selected ? accountStateMember.selected : false;
+      });
     },
   },
   extraReducers: (builder) => {

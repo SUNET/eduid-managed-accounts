@@ -48,12 +48,21 @@ export function StartSession(): JSX.Element {
         const publicJwk = await exportJWK(publicKey);
 
         const nonce = generateNonce(24);
+        const random_generated_kid = generateNonce(32);
 
-        const response = await requestAccess(alg, publicJwk, privateKey, nonce, transaction_url, redirect_url);
+        const response = await requestAccess(
+          alg,
+          publicJwk,
+          privateKey,
+          nonce,
+          random_generated_kid,
+          transaction_url,
+          redirect_url
+        );
 
         if (response && Object.keys(response).length > 0) {
-          // Save in local storage and redirect
-          initSessionStorage(response, nonce, publicJwk, privateJwk);
+          // Save in sessionStorage and redirect
+          initSessionStorage(response, nonce, random_generated_kid, publicJwk, privateJwk);
           window.location.href = response.interact.redirect;
         }
       } catch (error) {

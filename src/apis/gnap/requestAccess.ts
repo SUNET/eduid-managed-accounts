@@ -16,6 +16,7 @@ export async function requestAccess(
   publicJwk: JWK,
   privateKey: KeyLike,
   nonce: string,
+  random_generated_kid: string,
   transaction_url: string,
   redirect_url: string
 ) {
@@ -25,7 +26,7 @@ export async function requestAccess(
   };
 
   const EllipticCurveJSONWebKey: ECJWK = {
-    kid: "random_generated_id",
+    kid: random_generated_kid,
     kty: publicJwk.kty as KeyType,
     crv: publicJwk.crv,
     x: publicJwk.x,
@@ -51,7 +52,7 @@ export async function requestAccess(
   const jwsHeader = {
     typ: "gnap-binding+jws",
     alg: alg,
-    kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
+    kid: random_generated_kid,
     htm: "POST",
     uri: transaction_url,
     created: Date.now(),
