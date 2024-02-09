@@ -123,9 +123,10 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
             })
           );
           dispatch(
-            getUsersSlice.actions.addPassword({
+            getUsersSlice.actions.setAccountState({
               password: maccapiUserResponse.payload.user.password,
               externalId: externalId,
+              selected: true,
             })
           );
           if (postUser.fulfilled.match(createdUserResponse)) {

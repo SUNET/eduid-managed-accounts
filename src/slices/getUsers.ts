@@ -9,6 +9,8 @@ type ExternalProfileWithScope = {
   profiles: { connectIdp: { attributes: { eduPersonPrincipalName: string } } } & NutidUserExtensionV1;
 };
 
+export type AccountState = { externalId: string; password?: string; selected?: boolean };
+
 // Managed Accounts required data format
 export type ExtendedUserResponse = UserResponse & {
   externalId: string;
@@ -46,17 +48,17 @@ export const getUsersSlice = createSlice({
     sortBySurname: (state) => {
       state.members?.sort((a, b) => a.name.familyName.toUpperCase().localeCompare(b.name.familyName, "sv"));
     },
-    addPassword: (state, action: PayloadAction<{ externalId: string; password: string }>) => {
-      const index = state.members.findIndex((member) => member.externalId === action.payload.externalId);
-      state.members[index].password = action.payload.password;
-      state.members[index].selected = true;
-    },
     setSelected: (state, action: PayloadAction<{ id: string; value: boolean }>) => {
       const index = state.members.findIndex((member) => member.id === action.payload.id);
       state.members[index].selected = action.payload.value;
     },
     setAllSelected: (state, action: PayloadAction<boolean>) => {
       state.members = state.members.map((member) => ({ ...member, selected: action.payload }));
+    },
+    setAccountState: (state, action: PayloadAction<AccountState>) => {
+      const index = state.members.findIndex((member) => member.externalId === action.payload.externalId);
+      state.members[index].password = action.payload.password ? action.payload.password : undefined;
+      state.members[index].selected = action.payload.selected ? action.payload.selected : false;
     },
   },
   extraReducers: (builder) => {

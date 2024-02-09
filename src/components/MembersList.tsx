@@ -6,6 +6,7 @@ import { getGroupDetails } from "../apis/scim/groupsRequest";
 import { deleteUser } from "../apis/scim/usersRequest";
 import currentDateTimeToString from "../common/time";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { managedAccountsStore } from "../init-app";
 import appSlice from "../slices/appReducers";
 import getUsersSlice, { ExtendedUserResponse } from "../slices/getUsers";
 import { MembersListTable } from "./MembersListTable";
@@ -40,7 +41,11 @@ export default function MembersList({ handleGroupVersion }: MembersListTypes): J
     return [headerGivenName, headerSurname, headerEPPN, headerUsername, headerPassword];
   }
 
-  function copyToClipboardAllMembers() {
+  async function copyToClipboardAllMembers() {
+    dispatch(appSlice.actions.isFetching(true));
+    await handleGroupVersion();
+    const state = managedAccountsStore.getState();
+    const isMemberSelected = state.members.members.filter((member) => member.selected);
     const memberGivenName = isMemberSelected.map((member: ExtendedUserResponse) => member.name.givenName);
     const memberFamilyName = isMemberSelected.map((member: ExtendedUserResponse) => member.name.familyName);
     const memberEPPN = isMemberSelected.map(
@@ -75,11 +80,14 @@ export default function MembersList({ handleGroupVersion }: MembersListTypes): J
     setTimeout(() => {
       setCopiedRowToClipboard(false);
     }, 1000);
+    dispatch(appSlice.actions.isFetching(false));
   }
 
   async function removeSelectedUser() {
     dispatch(appSlice.actions.isFetching(true));
     await handleGroupVersion();
+    const state = managedAccountsStore.getState();
+    const isMemberSelected = state.members.members.filter((member) => member.selected);
     if (isMemberSelected && isMemberSelected.length > 0) {
       for (const member of isMemberSelected) {
         await dispatch(removeUser({ eppn: member.externalId.split("@")[0] }));
@@ -121,6 +129,7 @@ export default function MembersList({ handleGroupVersion }: MembersListTypes): J
 
   async function exportExcel() {
     setIsClicked(() => !isClicked);
+    dispatch(appSlice.actions.isFetching(true));
     await handleGroupVersion();
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("EPPN Managed Accounts"); // maybe use Scope as sheet name?
@@ -134,6 +143,8 @@ export default function MembersList({ handleGroupVersion }: MembersListTypes): J
     ];
     worksheet.getRow(1).font = { bold: true };
     // read the data from state
+    const state = managedAccountsStore.getState();
+    const isMemberSelected = state.members.members.filter((member) => member.selected);
     isMemberSelected.forEach((member) => {
       worksheet.addRow({
         "given-name": member.name.givenName,
@@ -160,6 +171,7 @@ export default function MembersList({ handleGroupVersion }: MembersListTypes): J
         setIsClicked((prevIsClicked) => !prevIsClicked);
       }, 1000);
     });
+    dispatch(appSlice.actions.isFetching(false));
   }
 
   return (

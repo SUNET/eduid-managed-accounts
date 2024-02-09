@@ -9,7 +9,7 @@ import { showNotification } from "../slices/Notifications";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getLoggedInUserInfoSlice from "../slices/getLoggedInUserInfo";
-import getUsersSlice from "../slices/getUsers";
+import getUsersSlice, { AccountState } from "../slices/getUsers";
 import { GroupMember } from "../typescript-clients/scim/models/GroupMember";
 import CreateAccounts from "./CreateAccounts";
 import MembersList, { DEFAULT_POST_PER_PAGE } from "./MembersList";
@@ -80,11 +80,12 @@ export default function GroupManagement(): JSX.Element {
 
         // 1 - create an array of members {id: id, password: password, selected: selected} from store
         const state = managedAccountsStore.getState();
-        const storeCopyMembersDetails: Array<{ externalId: string; password?: string }> = state.members.members
-          .filter((member) => member.password)
+        const storeCopyMembersDetails: Array<AccountState> = state.members.members
+          .filter((member) => member.password || member.selected)
           .map((member) => ({
             externalId: member.externalId,
             password: member.password,
+            selected: member.selected,
           }));
 
         // 2 - reloadMembersDetails()
@@ -92,13 +93,19 @@ export default function GroupManagement(): JSX.Element {
         if (members) await reloadMembersDetails(members);
 
         // 3 - apply the "password" and "selected" to the reloadMembersDetails (filter if some accounts have been removed)
-        const existingStoreCopyMembersDetails = storeCopyMembersDetails.filter((copyMember) =>
-          state.members.members.map((storeMember) => storeMember.externalId).includes(copyMember.externalId)
+        // Read again from store to get the updated state
+        const updateState = managedAccountsStore.getState();
+        const temp = storeCopyMembersDetails.filter((copyMember) =>
+          updateState.members.members.some((member) => copyMember.externalId === member.externalId)
         );
-        existingStoreCopyMembersDetails.forEach(
-          (member) =>
-            member.password &&
-            dispatch(getUsersSlice.actions.addPassword({ externalId: member.externalId, password: member.password }))
+        temp.forEach((member: AccountState) =>
+          dispatch(
+            getUsersSlice.actions.setAccountState({
+              externalId: member.externalId,
+              password: member.password,
+              selected: member.selected,
+            })
+          )
         );
       }
     }
