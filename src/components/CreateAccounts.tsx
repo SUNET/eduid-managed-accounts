@@ -123,11 +123,13 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
             })
           );
           dispatch(
-            getUsersSlice.actions.setAccountState({
-              password: maccapiUserResponse.payload.user.password,
-              externalId: externalId,
-              selected: true,
-            })
+            getUsersSlice.actions.setAccountsState([
+              {
+                password: maccapiUserResponse.payload.user.password,
+                externalId: externalId,
+                selected: true,
+              },
+            ])
           );
           if (postUser.fulfilled.match(createdUserResponse)) {
             const newGroupMember: GroupMember = {
@@ -139,7 +141,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
           }
         }
       } catch (error) {
-        console.log("error", error);
+        console.error("error", error);
       }
     }
 

@@ -25,7 +25,7 @@ interface InteractionsTypes {
 
 export const postContinueRequest = createAsyncThunk<
   PostContinueRequestResponse, // return type
-  { interactions: InteractionsTypes; interactRef: string }, // args type
+  { interactions: InteractionsTypes; interactRef: string; random_generated_kid: string }, // args type
   { dispatch: AppDispatch; state: AppRootState }
 >("auth/continueRequest", async (args, thunkAPI) => {
   try {
@@ -41,7 +41,7 @@ export const postContinueRequest = createAsyncThunk<
       const jwsHeader = {
         typ: "gnap-binding+jws",
         alg: alg,
-        kid: "random_generated_id", // TODO: fix, coupled with publicKey, privateKey
+        kid: args.random_generated_kid,
         htm: "POST",
         uri: args.interactions.continue.uri,
         created: Date.now(),

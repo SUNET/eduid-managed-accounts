@@ -44,21 +44,19 @@ export default function GroupManagement(): JSX.Element {
     }
   }, [forcedLogout, locationState]);
 
-  function checkAllMembersDetailsAreLoaded(groupResponseMembers: any): any {
+  function checkAllMembersDetailsAreLoaded(groupResponseMembers: GroupMember[]): void {
     const state = managedAccountsStore.getState();
-
     if (groupResponseMembers.length !== state.members.members.length) {
       dispatch(showNotification({ message: "Could not load all members details. Try again" }));
-      // TODO: here disable all the buttons to avoid working on a partially loaded list of members (or simply logout)
       navigate("/", { replace: true, state: null });
     }
   }
 
-  async function reloadMembersDetails(members: GroupMember[]) {
+  async function reloadMembersDetails(members: GroupMember[]): Promise<void> {
     dispatch(getUsersSlice.actions.initialize());
     const chunkSize = DEFAULT_POST_PER_PAGE * 3; // empirical value
     for (let i = 0; i < members.length; i += chunkSize) {
-      // run in chunks to avoid server overload
+      // run in chunks (throttle) to avoid server overload
       const chunk = members.slice(i, i + chunkSize);
       if (chunk) {
         await Promise.all(
@@ -72,12 +70,11 @@ export default function GroupManagement(): JSX.Element {
     dispatch(getUsersSlice.actions.sortByLatest());
   }
 
-  async function handleGroupVersion() {
+  async function handleGroupVersion(): Promise<void> {
     const response = await dispatch(getGroupDetails({ id: managedAccountsDetails.id }));
     if (getGroupDetails.fulfilled.match(response)) {
       if (response.payload.meta.version !== managedAccountsDetails.meta.version) {
-        // to protect the "state" in the current session we should copy the "password" and "selected"
-
+        // to protect the "user state" of the current session we should copy the "password" and "selected"
         // 1 - create an array of members {id: id, password: password, selected: selected} from store
         const state = managedAccountsStore.getState();
         const storeCopyMembersDetails: Array<AccountState> = state.members.members
@@ -95,18 +92,10 @@ export default function GroupManagement(): JSX.Element {
         // 3 - apply the "password" and "selected" to the reloadMembersDetails (filter if some accounts have been removed)
         // Read again from store to get the updated state
         const updateState = managedAccountsStore.getState();
-        const temp = storeCopyMembersDetails.filter((copyMember) =>
+        const filteredStoreCopyMembersDetails = storeCopyMembersDetails.filter((copyMember) =>
           updateState.members.members.some((member) => copyMember.externalId === member.externalId)
         );
-        temp.forEach((member: AccountState) =>
-          dispatch(
-            getUsersSlice.actions.setAccountState({
-              externalId: member.externalId,
-              password: member.password,
-              selected: member.selected,
-            })
-          )
-        );
+        dispatch(getUsersSlice.actions.setAccountsState(filteredStoreCopyMembersDetails));
       }
     }
   }
@@ -137,9 +126,10 @@ export default function GroupManagement(): JSX.Element {
           dispatch(appSlice.actions.isFetching(false));
         } else if (getGroupsSearch.rejected.match(result)) {
           // when user get 401 error, it will redirect to login page or landing page
+          console.error("Error", result);
         }
       } catch (error) {
-        console.log("Error", error);
+        console.error("Error", error);
       }
     };
     if (!isLoaded) {
