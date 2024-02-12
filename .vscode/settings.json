@@ -11,7 +11,8 @@
     "Skolverket",
     "fortawesome",
     "fontawesome",
-    "givenname"
+    "givenname",
+    "buttonstyle"
   ],
   "cSpell.language": "en,en-US,en-GB,sv",
   "editor.rulers": [120],
