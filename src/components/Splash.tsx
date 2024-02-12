@@ -6,12 +6,12 @@ export const spinnerOpts = {
   rotate: 0, // The rotation offset
   direction: 1, // 1: clockwise, -1: counterclockwise
   speed: 1, // Rounds per second
-  trail: 60, // Afterglow percentage
+  readonlytrail: 60, // Afterglow percentage
 };
 
 interface SplashProps {
-  showChildren: boolean;
-  children?: React.ReactNode;
+  readonly showChildren: boolean;
+  readonly children?: React.ReactNode;
 }
 
 /**
@@ -49,7 +49,7 @@ export default function Splash(props: SplashProps): JSX.Element {
    */
   return (
     <div id="eduid-splash-and-children">
-      {!showChildren && <span ref={eduidSplash} id="eduid-splash-spinner" role="presentation"></span>}
+      {!showChildren && <span ref={eduidSplash} id="eduid-splash-spinner"></span>}
       {children}
     </div>
   );
