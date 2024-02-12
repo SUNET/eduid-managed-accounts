@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type notificationLevel = "error" | "info";
 
-export interface eduidNotification {
+export interface EduidNotificationType {
   message: string;
 }
 
 // Define a type for the slice state
 export interface NotificationState {
-  error?: eduidNotification;
+  error?: EduidNotificationType;
 }
 
 // export for use in tests
@@ -18,7 +18,7 @@ export const notificationsSlice = createSlice({
   name: "notifications",
   initialState,
   reducers: {
-    showNotification: (state, action: PayloadAction<eduidNotification>) => {
+    showNotification: (state, action: PayloadAction<EduidNotificationType>) => {
       if (action.payload.message) {
         state.error = action.payload;
       }
