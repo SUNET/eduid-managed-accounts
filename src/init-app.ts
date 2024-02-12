@@ -1,10 +1,14 @@
-import { configureStore } from "@reduxjs/toolkit";
-import logger from "redux-logger";
+import { Middleware, configureStore } from "@reduxjs/toolkit";
 import notifyAndDispatch from "./notify-middleware";
 import managedAccountsApp from "./store";
 
 /* setup to run the combined sagas */
-const middlewares = [notifyAndDispatch, logger];
+let middlewares: Array<Middleware> = [notifyAndDispatch];
+
+if (process.env.NODE_ENV !== "production") {
+  const reduxLogger = await import("redux-logger");
+  middlewares.push(reduxLogger.logger);
+}
 
 export const managedAccountsStore = configureStore({
   reducer: managedAccountsApp,
