@@ -6,7 +6,7 @@ export const spinnerOpts = {
   rotate: 0, // The rotation offset
   direction: 1, // 1: clockwise, -1: counterclockwise
   speed: 1, // Rounds per second
-  readonlytrail: 60, // Afterglow percentage
+  trail: 60, // Afterglow percentage
 };
 
 interface SplashProps {
