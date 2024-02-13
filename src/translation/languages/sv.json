@@ -112,6 +112,9 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "efternamn"
   },
+  "empty-group": {
+    "string": "Det finns inga konton tillagda"
+  },
   "excel-file-givenName-error": {
     "string": "Förnamn \"{givenName}\" är ogiltigt:"
   },
