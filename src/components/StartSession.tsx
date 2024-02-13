@@ -94,6 +94,7 @@ export function StartSession(): JSX.Element {
           <FormattedMessage defaultMessage="Go to login service" id="landing-link" />
         </button>
       </div>
+      <hr className="border-line trim" />
       <div className="text-small">
         <em>
           <FormattedMessage

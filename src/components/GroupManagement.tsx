@@ -172,12 +172,24 @@ export default function GroupManagement(): JSX.Element {
       <section>
         <CreateAccounts handleGroupVersion={handleGroupVersion} scope={scope} />
       </section>
+      <section>
+        <MembersListIntro />
+      </section>
       {membersDetails.length > 0 ? (
         <section>
-          <MembersListIntro />
           <MembersList handleGroupVersion={handleGroupVersion} />
         </section>
-      ) : null}
+      ) : (
+        <section>
+          <figure>
+            <div className="text-small">
+              <em>
+                <FormattedMessage defaultMessage="There are no accounts added" id="empty-group" />
+              </em>
+            </div>
+          </figure>
+        </section>
+      )}
     </React.Fragment>
   );
 }
