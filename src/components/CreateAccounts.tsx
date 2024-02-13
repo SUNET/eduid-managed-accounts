@@ -356,6 +356,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
                       id="file"
                       onChange={handleFileChange}
                       disabled={isFetching}
+                      accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                     />
                     <label
                       className={`btn-cover btn-sm ${!managedAccountsDetails?.id || isFetching ? "disabled" : ""}`}
