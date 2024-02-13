@@ -2,7 +2,7 @@ import React from "react";
 import { useIntl } from "react-intl";
 import { Alert } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { clearNotifications, eduidNotification } from "../slices/Notifications";
+import { EduidNotificationType, clearNotifications } from "../slices/Notifications";
 
 export function Notifications(): JSX.Element | null {
   const error = useAppSelector((state) => state.notifications.error);
@@ -15,7 +15,7 @@ export function Notifications(): JSX.Element | null {
   }
 
   // show errors first, information second
-  const show: eduidNotification | undefined = error ?? error;
+  const show: EduidNotificationType | undefined = error ?? error;
 
   if (!show) {
     // no messages to show
