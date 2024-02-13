@@ -78,6 +78,10 @@ hr.border-line {
   border-bottom: 2px solid $border-gray;
   border-top: none;
   opacity: unset;
+
+  &.trim {
+    margin: 0.5rem 0 1.5rem;
+  }
 }
 
 @media (max-width: $bp-lg) {
