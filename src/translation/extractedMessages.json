@@ -112,6 +112,9 @@
     "developer_comment": "Placeholder for surname text input",
     "string": "surname"
   },
+  "empty-group": {
+    "string": "There are no accounts added"
+  },
   "excel-file-givenName-error": {
     "string": "Given name \"{givenName}\" is invalid:"
   },

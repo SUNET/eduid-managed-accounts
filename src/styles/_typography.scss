@@ -98,6 +98,10 @@ p {
 
 .text-small {
   font-size: $txt-sm;
+
+  em {
+    color: $txt-gray;
+  }
 }
 
 strong {

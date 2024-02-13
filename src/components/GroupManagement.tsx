@@ -181,9 +181,13 @@ export default function GroupManagement(): JSX.Element {
         </section>
       ) : (
         <section>
-          <strong>
-            <FormattedMessage defaultMessage="There are no accounts" id="empty-group" />
-          </strong>
+          <figure>
+            <div className="text-small">
+              <em>
+                <FormattedMessage defaultMessage="There are no accounts added" id="empty-group" />
+              </em>
+            </div>
+          </figure>
         </section>
       )}
     </React.Fragment>
