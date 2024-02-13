@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { postContinueRequest } from "../apis/gnap/continueRequest";
 import { getSHA256Hash } from "../common/CryptoUtils";
@@ -38,8 +38,8 @@ export default function Callback() {
         if (hashCalculated === hashURL) {
           await continueRequest();
         } else navigate("/");
-      } catch {
-        console.error("testHash error");
+      } catch (error) {
+        console.error("testHash error", error);
       }
     }
     testHash();
@@ -67,5 +67,5 @@ export default function Callback() {
       }
     }
   };
-  return <></>;
+  return <React.Fragment> </React.Fragment>;
 }

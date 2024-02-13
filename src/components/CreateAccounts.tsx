@@ -165,7 +165,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
     addUsers([values]);
   }
 
-  const validatePersonalData = (values: ValidatePersonalData): ValidationErrors => {
+  function validatePersonalData(values: ValidatePersonalData): ValidationErrors {
     const errors: ValidationErrors = {};
     if (values !== undefined) {
       ["given_name", "surname"].forEach((inputName) => {
@@ -184,7 +184,7 @@ export default function CreateAccounts({ handleGroupVersion, scope }: CreateAcco
       });
     }
     return errors;
-  };
+  }
 
   function containsNationalIDNumber(params: string) {
     // 0 -filter out all non-digits

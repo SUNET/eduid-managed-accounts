@@ -36,7 +36,7 @@ export default function MembersListIntro(): JSX.Element {
           <FontAwesomeIcon icon={faChevronDown as IconProp} />
         </button>
       ) : (
-        <>
+        <Fragment>
           <button
             type="button"
             aria-label={showMore ? "hide instructions" : "show instructions"}
@@ -95,7 +95,7 @@ export default function MembersListIntro(): JSX.Element {
               />
             </li>
           </ol>
-        </>
+        </Fragment>
       )}
     </Fragment>
   );
