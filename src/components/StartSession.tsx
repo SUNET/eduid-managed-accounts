@@ -1,16 +1,15 @@
-import { GenerateKeyPairOptions, exportJWK, generateKeyPair } from "jose";
+import { Access, interactionStart } from "gnap-client-js";
 import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { requestAccess } from "../apis/gnap/requestAccess";
-import { generateNonce } from "../common/CryptoUtils";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { initSessionStorage } from "../initSessionStorage";
 import appSlice from "../slices/appReducers";
 import getGroupsSlice from "../slices/getGroups";
 import getPersonalDataSlice from "../slices/getLoggedInUserInfo";
 import getUsersSlice from "../slices/getUsers";
+import { REDIRECT_PATH } from "./Callback";
 
-export const REDIRECT_PATH = "/callback";
+// This is a configuration for the client
+export const TRANSACTION_PATH = "/transaction";
 
 /**
  * Implement Redirect-based Interaction flow
@@ -21,8 +20,8 @@ export function StartSession(): JSX.Element {
   const dispatch = useAppDispatch();
   const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
   const ma_website_url = useAppSelector((state) => state.config.ma_website_url);
-  const redirect_url = ma_website_url + REDIRECT_PATH;
-  const transaction_url = `${auth_server_url}/transaction`;
+  const redirectUrl = ma_website_url + REDIRECT_PATH;
+  const transactionUrl = auth_server_url + TRANSACTION_PATH;
 
   useEffect(() => {
     const initializeStore = () => {
@@ -34,40 +33,13 @@ export function StartSession(): JSX.Element {
     initializeStore();
   }, []);
 
-  async function redirect() {
-    if (transaction_url && redirect_url) {
-      try {
-        // configure request, generate key pair, generate nonce
-        const alg = "ES256";
-        const gpo: GenerateKeyPairOptions = {
-          crv: "25519",
-          extractable: true,
-        };
-        const { publicKey, privateKey } = await generateKeyPair(alg, gpo);
-        const privateJwk = await exportJWK(privateKey);
-        const publicJwk = await exportJWK(publicKey);
-
-        const nonce = generateNonce(24);
-        const random_generated_kid = generateNonce(32);
-
-        const response = await requestAccess(
-          alg,
-          publicJwk,
-          privateKey,
-          nonce,
-          random_generated_kid,
-          transaction_url,
-          redirect_url
-        );
-
-        if (response && Object.keys(response).length > 0) {
-          // Save in sessionStorage and redirect
-          initSessionStorage(response, nonce, random_generated_kid, publicJwk, privateJwk);
-          window.location.href = response.interact.redirect;
-        }
-      } catch (error) {
-        console.error("error:", error);
-      }
+  async function loginRedirect() {
+    try {
+      // config for which scopes request access
+      const accessArray: Array<string | Access> = [{ type: "scim-api" }, { type: "maccapi" }];
+      window.location.href = (await interactionStart(transactionUrl, redirectUrl, accessArray)) ?? "";
+    } catch (error) {
+      console.error("error:", error);
     }
   }
 
@@ -90,7 +62,7 @@ export function StartSession(): JSX.Element {
         />
       </p>
       <div className="buttons">
-        <button className="btn btn-link" onClick={redirect}>
+        <button className="btn btn-link" onClick={loginRedirect}>
           <FormattedMessage defaultMessage="Go to login service" id="landing-link" />
         </button>
       </div>

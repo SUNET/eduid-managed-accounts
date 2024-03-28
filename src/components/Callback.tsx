@@ -1,71 +1,34 @@
+import { interactionCallback } from "gnap-client-js";
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { postContinueRequest } from "../apis/gnap/continueRequest";
-import { getSHA256Hash } from "../common/CryptoUtils";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { INTERACTION_RESPONSE, NONCE, RANDOM_GENERATED_KID } from "../initSessionStorage";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../hooks";
+import { TRANSACTION_PATH } from "./StartSession";
+
+// This is a configuration for the client, that configure also the routing in ManagedAccountApp
+export const REDIRECT_PATH = "/callback";
 
 export default function Callback() {
-  const auth_server_url = useAppSelector((state) => state.config.auth_server_url);
-  const dispatch = useAppDispatch();
-
-  // Get "InteractionResponse" from sessionStorage
-  const value = sessionStorage.getItem(INTERACTION_RESPONSE) ?? "";
-  const interactions = JSON.parse(value) ? JSON.parse(value) : {};
-  // Get "finish", "nonce" and "random_generated_kid" from sessionStorage
-  const finish = interactions.interact.finish;
-  const nonce = sessionStorage.getItem(NONCE);
-  const random_generated_kid = sessionStorage.getItem(RANDOM_GENERATED_KID) ?? "";
-
-  // Get "hash" and "interact_ref" from URL query parameters
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const hashURL = params.get("hash");
-  const interactRef = params.get("interact_ref") ?? undefined;
-  const transaction_url = `${auth_server_url}/transaction`;
+  const auth_server_url = useAppSelector((state) => state.config.auth_server_url) ?? null;
+  const transactionUrl = auth_server_url + TRANSACTION_PATH;
 
   const navigate = useNavigate();
 
-  /**
-   * 1 - Test hash in url is the same than hash we calculate
-   * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-calculating-the-interaction
-   */
   useEffect(() => {
-    async function testHash() {
+    async function callback() {
       try {
-        const hashBaseString = `${nonce}\n${finish}\n${interactRef}\n${transaction_url}`;
-        const hashCalculated = await getSHA256Hash(hashBaseString);
-        if (hashCalculated === hashURL) {
-          await continueRequest();
-        } else navigate("/");
+        const response = await interactionCallback(transactionUrl);
+        navigate("/manage", {
+          state: response,
+        });
       } catch (error) {
-        console.error("testHash error", error);
+        console.log("error");
+        if (error instanceof Error && error.message === "Invalid hash") {
+          navigate("/");
+        }
       }
     }
-    testHash();
+    callback();
   }, []);
 
-  /**
-   * 2 -Continue Request Flow
-   * https://datatracker.ietf.org/doc/html/draft-ietf-gnap-core-protocol-16#name-continuing-a-grant-request
-   *
-   * */
-  const continueRequest = async () => {
-    if (interactions && interactRef) {
-      const response = await dispatch(
-        postContinueRequest({
-          interactions: interactions,
-          interactRef: interactRef,
-          random_generated_kid: random_generated_kid,
-        })
-      );
-      if (postContinueRequest.fulfilled.match(response)) {
-        sessionStorage.clear(); // remove unnecessary data from sessionStorage
-        navigate("/manage", {
-          state: response.payload,
-        });
-      }
-    }
-  };
   return <React.Fragment> </React.Fragment>;
 }
