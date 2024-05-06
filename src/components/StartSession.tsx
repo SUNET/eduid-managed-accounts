@@ -1,4 +1,4 @@
-import { Access, interactionStart } from "gnap-client-js";
+import { Access, interactionStart, ProofMethod } from "gnap-client-js";
 import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -37,7 +37,7 @@ export function StartSession(): JSX.Element {
     try {
       // config for which scopes request access
       const accessArray: Array<string | Access> = [{ type: "scim-api" }, { type: "maccapi" }];
-      window.location.href = (await interactionStart(transactionUrl, redirectUrl, accessArray)) ?? "";
+      await interactionStart(transactionUrl, ProofMethod.JWS, redirectUrl, accessArray);
     } catch (error) {
       console.error("error:", error);
     }
