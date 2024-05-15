@@ -1,4 +1,4 @@
-import { interactionCallback } from "gnap-client-js";
+import { redirectURICallback } from "gnap-client-js";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ export default function Callback() {
   useEffect(() => {
     async function callback() {
       try {
-        const response = await interactionCallback();
+        const response = await redirectURICallback();
         navigate("/manage", {
           state: response,
         });
