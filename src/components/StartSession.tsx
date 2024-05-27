@@ -37,7 +37,7 @@ export function StartSession(): JSX.Element {
     try {
       // config for which scopes request access
       const accessArray: Array<string | Access> = [{ type: "scim-api" }, { type: "maccapi" }];
-      await redirectURIStart(transactionUrl, ProofMethod.JWSD, redirectUrl, accessArray);
+      await redirectURIStart(redirectUrl, accessArray, transactionUrl, ProofMethod.JWSD);
     } catch (error) {
       console.error("error:", error);
     }

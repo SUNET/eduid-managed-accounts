@@ -1,4 +1,4 @@
-import { redirectURICallback } from "gnap-client-js";
+import { GrantResponse, redirectURICallback } from "gnap-client-js";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,12 +11,12 @@ export default function Callback() {
   useEffect(() => {
     async function callback() {
       try {
-        const response = await redirectURICallback();
+        const grantResponse: GrantResponse = await redirectURICallback();
         navigate("/manage", {
-          state: response,
+          state: grantResponse,
         });
       } catch (error) {
-        console.log("error");
+        console.error(error);
         if (error instanceof Error && error.message === "Invalid hash") {
           navigate("/");
         }
