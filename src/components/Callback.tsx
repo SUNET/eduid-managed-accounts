@@ -1,4 +1,4 @@
-import { GrantResponse, redirectURICallback } from "gnap-client-js";
+import { GrantResponse, redirectURIFinish } from "gnap-client-js";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ export default function Callback() {
   useEffect(() => {
     async function callback() {
       try {
-        const grantResponse: GrantResponse = await redirectURICallback();
+        const grantResponse: GrantResponse = await redirectURIFinish();
         navigate("/manage", {
           state: grantResponse,
         });
