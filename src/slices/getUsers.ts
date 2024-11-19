@@ -74,7 +74,6 @@ export const getUsersSlice = createSlice({
       state.members.push(action.payload);
     });
     builder.addCase(getUserDetails.rejected, (state, action) => {
-      // this initialize the state adding the property "selected" with default value "false"
       state.deletedMembers.push(action.payload as any);
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
