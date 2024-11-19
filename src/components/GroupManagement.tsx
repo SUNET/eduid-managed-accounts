@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createGroup, getGroupDetails, getGroupsSearch } from "../apis/scim/groupsRequest";
+import { createGroup, getGroupDetails, getGroupsSearch, putGroup } from "../apis/scim/groupsRequest";
 import { getUserDetails } from "../apis/scim/usersRequest";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { managedAccountsStore } from "../init-app";
@@ -46,7 +46,7 @@ export default function GroupManagement(): JSX.Element {
 
   function checkAllMembersDetailsAreLoaded(groupResponseMembers: GroupMember[]): void {
     const state = managedAccountsStore.getState();
-    if (groupResponseMembers.length !== state.members.members.length) {
+    if (groupResponseMembers.length !== state.members.members.length + state.members.deletedMembers.length) {
       dispatch(showNotification({ message: "Could not load all members details. Try again" }));
       navigate("/", { replace: true, state: null });
     }
@@ -66,6 +66,21 @@ export default function GroupManagement(): JSX.Element {
         );
       }
     }
+    const state = managedAccountsStore.getState();
+    if (state.members.deletedMembers.length) {
+      const finalArray = state.groups.managedAccounts?.members?.filter(
+        (x) => !state.members.deletedMembers.includes(x.value)
+      );
+      await dispatch(
+        putGroup({
+          group: {
+            ...state.groups.managedAccounts,
+            members: finalArray,
+          },
+        })
+      );
+    }
+
     checkAllMembersDetailsAreLoaded(members);
     dispatch(getUsersSlice.actions.sortByLatest());
   }

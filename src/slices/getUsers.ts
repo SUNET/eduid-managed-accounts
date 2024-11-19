@@ -26,10 +26,12 @@ export type ExtendedUserResponse = UserResponse & {
 
 export interface GetUsersState {
   members: ExtendedUserResponse[];
+  deletedMembers: Array<string>;
 }
 
 export const initialState: GetUsersState = {
   members: [],
+  deletedMembers: [],
 };
 
 export const getUsersSlice = createSlice({
@@ -70,6 +72,9 @@ export const getUsersSlice = createSlice({
       // this initialize the state adding the property "selected" with default value "false"
       action.payload.selected = false;
       state.members.push(action.payload);
+    });
+    builder.addCase(getUserDetails.rejected, (state, action) => {
+      state.deletedMembers.push(action.payload as any);
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
       action.payload.selected = true;
