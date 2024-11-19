@@ -67,10 +67,13 @@ export const getUserDetails = createAsyncThunk<
         method: "GET",
       };
       const scimResponse = await fetch(scim_server_url + "/Users/" + args.id, scimRequest);
-
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
+        if (scimResponse.status === 404) {
+          return thunkAPI.rejectWithValue(args.id);
+        }
+
         throw await scimResponse.json();
       }
     }
