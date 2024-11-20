@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Group } from "typescript-clients/scim/models/Group";
 import { Name } from "typescript-clients/scim/models/Name";
 import { NutidUserExtensionV1 } from "typescript-clients/scim/models/NutidUserExtensionV1";
@@ -73,8 +73,11 @@ export const getUsersSlice = createSlice({
       action.payload.selected = false;
       state.members.push(action.payload);
     });
-    builder.addCase(getUserDetails.rejected, (state, action) => {
-      state.deletedMembers.push(action.payload as any);
+    builder.addCase(getUserDetails.rejected, (state, action: PayloadAction<any>) => {
+      // push in the deletedMembers only if we receive a 404 error
+      if (action.payload?.httpStatus === 404) {
+        state.deletedMembers.push(action.payload.userId);
+      }
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
       action.payload.selected = true;

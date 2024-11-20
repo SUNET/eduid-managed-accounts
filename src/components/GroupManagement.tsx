@@ -66,6 +66,11 @@ export default function GroupManagement(): JSX.Element {
         );
       }
     }
+
+    // data integrity - test if all getUserDetails are loaded from getGroupDetails member list
+    checkAllMembersDetailsAreLoaded(members);
+
+    // remove members that received http 404 from group
     const state = managedAccountsStore.getState();
     if (state.members.deletedMembers.length) {
       const finalArray = state.groups.managedAccounts?.members?.filter(
@@ -81,7 +86,7 @@ export default function GroupManagement(): JSX.Element {
       );
     }
 
-    checkAllMembersDetailsAreLoaded(members);
+    // visualize table in order "by latest"
     dispatch(getUsersSlice.actions.sortByLatest());
   }
 

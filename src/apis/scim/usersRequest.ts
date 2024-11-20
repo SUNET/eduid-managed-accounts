@@ -51,6 +51,12 @@ export const postUser = createAsyncThunk<
   }
 });
 
+export interface UserDetailsError {
+  httpStatus: number;
+  userId: string;
+  detail: object;
+}
+
 export const getUserDetails = createAsyncThunk<
   ExtendedUserResponse, // return type
   { id: string }, // args type
@@ -70,11 +76,13 @@ export const getUserDetails = createAsyncThunk<
       if (scimResponse.ok) {
         return await scimResponse.json();
       } else {
-        if (scimResponse.status === 404) {
-          return thunkAPI.rejectWithValue(args.id);
-        }
+        const error: UserDetailsError = {
+          httpStatus: scimResponse.status,
+          userId: args.id,
+          detail: await scimResponse.json(),
+        };
 
-        throw await scimResponse.json();
+        throw error;
       }
     }
   } catch (error) {
