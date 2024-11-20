@@ -73,8 +73,10 @@ export const getUsersSlice = createSlice({
       action.payload.selected = false;
       state.members.push(action.payload);
     });
-    builder.addCase(getUserDetails.rejected, (state, action) => {
-      state.deletedMembers.push(action.payload as any);
+    builder.addCase(getUserDetails.rejected, (state, action: any) => {
+      if (action.payload?.status === 404) {
+        state.deletedMembers.push(action.payload.id);
+      }
     });
     builder.addCase(postUser.fulfilled, (state, action) => {
       action.payload.selected = true;
