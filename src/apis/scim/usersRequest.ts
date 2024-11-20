@@ -71,9 +71,8 @@ export const getUserDetails = createAsyncThunk<
         return await scimResponse.json();
       } else {
         if (scimResponse.status === 404) {
-          return thunkAPI.rejectWithValue(args.id);
+          return thunkAPI.rejectWithValue({ status: scimResponse.status, id: args.id });
         }
-
         throw await scimResponse.json();
       }
     }
