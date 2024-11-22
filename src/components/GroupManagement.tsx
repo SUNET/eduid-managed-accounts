@@ -66,6 +66,10 @@ export default function GroupManagement(): JSX.Element {
         );
       }
     }
+    // Check all members details are loaded, without any timeouts
+    checkAllMembersDetailsAreLoaded(members);
+
+    // Remove members that are not present (http 404) from group
     const state = managedAccountsStore.getState();
     if (state.members.deletedMembers.length) {
       const finalArray = state.groups.managedAccounts?.members?.filter(
@@ -81,7 +85,7 @@ export default function GroupManagement(): JSX.Element {
       );
     }
 
-    checkAllMembersDetailsAreLoaded(members);
+    // Sort members by latest, to be shown sorted in the tables
     dispatch(getUsersSlice.actions.sortByLatest());
   }
 
