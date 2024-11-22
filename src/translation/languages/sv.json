@@ -169,6 +169,9 @@
   "manageGroup-copyRowButton": {
     "string": "Kopiera rad"
   },
+  "manageGroup-createdColumn": {
+    "string": "Skapad den"
+  },
   "manageGroup-downloading": {
     "string": "Laddar ned..."
   },
