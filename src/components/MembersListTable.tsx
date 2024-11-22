@@ -129,7 +129,13 @@ export function MembersListTable({ postsPerPage, currentPage }: MembersListTable
                     <label htmlFor={"selectMember" + (index + 1)}>{(currentPage - 1) * postsPerPage + index + 1}</label>
                   </span>
                 </td>
-                <td>{member.meta.created.slice(0, "YYYY-MM-DD".length)}</td>
+                <td>
+                  {new Date(member.meta.created).getFullYear() +
+                    "-" +
+                    (new Date(member.meta.created).getMonth() + 1).toString().padStart(2, "0") +
+                    "-" +
+                    new Date(member.meta.created).getDate().toString().padStart(2, "0")}
+                </td>
                 <td>{member.name.givenName}</td>
                 <td>{member.name.familyName}</td>
                 <td>
