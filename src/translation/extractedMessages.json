@@ -169,6 +169,9 @@
   "manageGroup-copyRowButton": {
     "string": "Copy row"
   },
+  "manageGroup-createdColumn": {
+    "string": "Created"
+  },
   "manageGroup-downloading": {
     "string": "Downloading..."
   },
