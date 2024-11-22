@@ -98,6 +98,9 @@ export function MembersListTable({ postsPerPage, currentPage }: MembersListTable
                   </label>
                 </span>
               </th>
+              <th id="header-created">
+                <FormattedMessage defaultMessage="Created" id="manageGroup-createdColumn" />
+              </th>
               <th id="header-givenname">
                 <FormattedMessage defaultMessage="Given name" id="manageGroup-givenNameColumn" />
               </th>
