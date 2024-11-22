@@ -126,6 +126,7 @@ export function MembersListTable({ postsPerPage, currentPage }: MembersListTable
                     <label htmlFor={"selectMember" + (index + 1)}>{(currentPage - 1) * postsPerPage + index + 1}</label>
                   </span>
                 </td>
+                <td>{member.meta.created.slice(0, "YYYY-MM-DD".length)}</td>
                 <td>{member.name.givenName}</td>
                 <td>{member.name.familyName}</td>
                 <td>
